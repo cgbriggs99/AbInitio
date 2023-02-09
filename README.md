@@ -1,2 +1,2 @@
 # AbInitio
-A from-scratch implementation of ab-initio quantum chemistry methods, including basis set integrals.
+A from-scratch implementation of ab-initio quantum chemistry methods, including basis set integrals. It is implemented in C and C++. It depends on [ProgrammingUtilities](https://github.com/cgbriggs99/ProgrammingUtilites) for Gaussian quadrature for the Coulombic integrals, and for integrals of Slater-type orbitals. It depends on LAPACKE, LAPACK, CBLAS, and BLAS for computing the SCF procedure, as does ProgrammingUtilities for computing polynomial roots for Gaussian quadrature.
