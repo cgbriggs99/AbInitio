@@ -1,0 +1,8 @@
+build/*
+build_docs/*
+*~
+#*#
+*.o
+*.so
+*.a
+.#.*
