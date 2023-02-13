@@ -41,7 +41,7 @@ jobs:
       # Build your program with the given configuration
       run:
         # cmake --build ${{github.workspace}}progutils/build --config ${{env.BUILD_TYPE}}
-        cmake --build ${{github.workspace}}main/build --config ${{env.BUILD_TYPE}}
+        cmake --build ${{github.workspace}}main/build ${{github.workspace}}/main --config ${{env.BUILD_TYPE}}
 
     - name: Test
       working-directory: ${{github.workspace}}main/build
