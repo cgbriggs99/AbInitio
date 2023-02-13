@@ -25,6 +25,7 @@ jobs:
       with:
         repository: cgbriggs/AbInitio
         path: main
+        token: ${{secrets.MY_PAT}}
         
 #    - uses: actions/checkout@v3
 #      with:
