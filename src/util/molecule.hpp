@@ -8,10 +8,13 @@
 
 namespace compchem {
 
-  class Molecule : Copyable<Molecule> {
+  class Molecule {
   private:
 
-    std::vector<Atom *> atoms;
+    std::vector<Atom *> *atoms;
+    double comx, comy, comz;
+
+    void calc_com();
 
   public:
     Molecule(const std::vector<Atom *> &atoms);
@@ -20,12 +23,21 @@ namespace compchem {
 
     virtual ~Molecule();
 
-    Molecule &copy() const override;
+    Molecule *copy() const;
 
     int getsize() const;
 
     const std::vector<Atom *> &getatoms() const;
     const Atom &getatom(int index) const;
+    Atom &getatom(int index);
+
+    void addatom(Atom &atom);
+
+    double getcomx() const;
+    double getcomy() const;
+    double getcomz() const;
+
+    void translate_to_com();
   };
     
 }

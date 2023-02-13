@@ -4,7 +4,7 @@
 
 using namespace compchem;
 
-Polynomial<3> &sphereharm(int l, int ml) {
+Polynomial<3> &compchem::sphereharm(int l, int ml) {
   std::vector<std::array<int, 3> > r2pow = {{2, 0, 0}, {0, 2, 0}, {0, 0, 2}},
     xpow = {{1, 0, 0}}, ypow = {{0, 1, 0}}, zpow {{0, 0, 1}};
   std::vector<double> r2cos = {1, 1, 1}, xcos = {1};

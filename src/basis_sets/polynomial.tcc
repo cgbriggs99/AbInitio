@@ -83,8 +83,8 @@ void Polynomial<n>::reduce() {
 }
 
 template<int n>
-Polynomial<n> &Polynomial<n>::copy() const {
-  return *new Polynomial<n>(*this);
+Polynomial<n> *Polynomial<n>::copy() const {
+  return new Polynomial<n>(*this);
 }
 
 template<int n>

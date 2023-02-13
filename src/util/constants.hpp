@@ -1,0 +1,11 @@
+#ifndef __CONSTANTS_HPP__
+#define __CONSTANTS_HPP__
+
+
+#define PLANCK_SI 6.62607015e-34
+#define LIGHT_SI 299792458
+#define AVOGADRO 6.02214076e23
+#define AU_TO_KG 1.66053906660e-27
+#define BOHR_TO_M 5.29177210903e-11
+
+#endif

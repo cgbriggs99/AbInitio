@@ -2,7 +2,6 @@
 #ifndef __BASIS_SET_HPP__
 #define __BASIS_SET_HPP__
 
-#include "../util/copyable.hpp"
 #include "electron_configs.hpp"
 #include "polynomial.hpp"
 #include <vector>
@@ -11,11 +10,12 @@
 
 namespace compchem {
 
-  class BasisOrbital : public Copyable<BasisOrbital> {
+  class BasisOrbital {
   public :
-    virtual ~BasisOrbital() = 0;
+    virtual ~BasisOrbital() = default;
 
     virtual double eval(double x, double y, double z) const = 0;
+    virtual BasisOrbital *copy() const = 0;
   };
 
   class SlaterOrbital : public BasisOrbital {
@@ -36,7 +36,7 @@ namespace compchem {
     int getml() const;
     const Polynomial<3> &getharms() const;
 
-    BasisOrbital &copy() const override;
+    BasisOrbital *copy() const override;
   };
 
   double slater_rule(int n, int l, const compchem::GSConfig &conf);
@@ -62,7 +62,7 @@ namespace compchem {
 
     double eval(double x, double y, double z) const override;
 
-    BasisOrbital &copy() const override;
+    BasisOrbital *copy() const override;
   };
 
   

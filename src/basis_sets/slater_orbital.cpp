@@ -49,7 +49,7 @@ SlaterOrbital::SlaterOrbital(double Zeff, int n, int l, int ml) :
 }
 
 SlaterOrbital::SlaterOrbital(const SlaterOrbital &copy) :
-  Zeff(copy.Zeff), n(copy.n), l(copy.l), ml(copy.ml), harms(&copy.harms->copy()) {
+  Zeff(copy.Zeff), n(copy.n), l(copy.l), ml(copy.ml), harms(copy.harms->copy()) {
   ;
 }
 
@@ -85,6 +85,6 @@ const Polynomial<3> &SlaterOrbital::getharms() const {
   return *this->harms;
 }
 
-BasisOrbital &SlaterOrbital::copy() const {
-  return *new SlaterOrbital(*this);
+BasisOrbital *SlaterOrbital::copy() const {
+  return new SlaterOrbital(*this);
 }

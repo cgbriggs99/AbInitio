@@ -13,22 +13,21 @@
 
 namespace compchem {
 
-class GSConfig {
-private :
-	int *confs;
-	int size_confs;
-	int z;
-public :
-	GSConfig(int z, std::initializer_list<int> conf);
+  class GSConfig {
+  private :
+    int *confs;
+    int size_confs;
+    int z;
+  public :
+    GSConfig(int z, std::initializer_list<int> conf);
 
-	int getShells() const;
-	int getZ() const;
+    int getShells() const;
+    int getZ() const;
+    
+    int operator[](int index) const;
+  };
 
-	int operator[](int index) const;
-};
-
-extern GSConfig *gsconfigs;
-
+  const GSConfig &getconfig(int Z);
 
 }
 

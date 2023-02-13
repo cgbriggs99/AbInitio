@@ -80,7 +80,7 @@ double GaussianOrbital::eval(double x, double y, double z) const {
   return sum;
 }
 
-BasisOrbital &GaussianOrbital::copy() const {
-  return *new GaussianOrbital(*this);
+BasisOrbital *GaussianOrbital::copy() const {
+  return new GaussianOrbital(*this);
 }
   

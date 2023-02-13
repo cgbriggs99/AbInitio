@@ -4,11 +4,10 @@
 
 #include <vector>
 #include <array>
-#include "../util/copyable.hpp"
 
 namespace compchem {
   template<int n>
-  class Polynomial : public Copyable<Polynomial<n> > {
+  class Polynomial {
   private :
     std::vector<std::array<int, n> > pows;
     std::vector<double> coefs;
@@ -27,7 +26,7 @@ namespace compchem {
     double getcoef(int index) const;
     int getsize() const;
 
-    Polynomial<n> &copy() const override;
+    Polynomial<n> *copy() const;
 
     Polynomial<n> &operator+=(double rh);
     Polynomial<n> &operator-=(double rh);
@@ -74,6 +73,8 @@ namespace compchem {
     template<int m>
     friend bool operator!=(double lh, const Polynomial<m> &rh);
   };
+
+  
   
   //Polynomial<1> &genlaguerre(int n, double alpha);
 

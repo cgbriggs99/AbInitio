@@ -47,7 +47,7 @@ Atom::Atom(int Z, double x, double y, double z, int norbs, const BasisOrbital *p
   this->orbitals = std::vector<BasisOrbital *>(norbs);
 
   for(int i = 0; i < norbs; i++) {
-    this->orbitals[i] = &pass[i].copy();
+    this->orbitals[i] = pass[i].copy();
   }
 }
 
@@ -62,7 +62,7 @@ Atom::Atom(int Z, double mass, double x, double y, double z, int norbs, const Ba
   this->orbitals = std::vector<BasisOrbital *>(norbs);
 
   for(int i = 0; i < norbs; i++) {
-    this->orbitals[i] = &pass[i].copy();
+    this->orbitals[i] = pass[i].copy();
   }
 }
 
@@ -99,7 +99,7 @@ Atom::Atom(int Z, int charge, double x, double y, double z, int norbs, const Bas
   this->orbitals = std::vector<BasisOrbital *>(norbs);
 
   for(int i = 0; i < norbs; i++) {
-    this->orbitals[i] = &pass[i].copy();
+    this->orbitals[i] = pass[i].copy();
   }
 }
 
@@ -114,7 +114,7 @@ Atom::Atom(int Z, int charge, double mass, double x, double y, double z, int nor
   this->orbitals = std::vector<BasisOrbital *>(norbs);
 
   for(int i = 0; i < norbs; i++) {
-    this->orbitals[i] = &pass[i].copy();
+    this->orbitals[i] = pass[i].copy();
   }
 }
 
@@ -124,11 +124,12 @@ Atom::Atom(const Atom &copy) {
   this->x = copy.x;
   this->y = copy.y;
   this->z = copy.z;
+  this->mass = copy.mass;
   this->norbitals = copy.norbitals;
   this->orbitals = std::vector<BasisOrbital *>(this->norbitals);
 
   for(int i = 0; i < this->norbitals; i++) {
-    this->orbitals[i] = &(copy.orbitals[i]->copy());
+    this->orbitals[i] = (copy.orbitals[i]->copy());
   }
 }
 
@@ -172,7 +173,7 @@ const std::vector<BasisOrbital *> &Atom::getorbitals() const {
   return this->orbitals;
 }
 
-int getZFromSymb(const std::string &symb) {
+int compchem::getZFromSymb(const std::string &symb) {
   static std::string symbs[] = {
 "H",                                                                                                                                                       "He",
 "Li","Be",                                                                                                                        "B", "C", "N", "O", "F", "Ne",
@@ -195,7 +196,7 @@ int getZFromSymb(const std::string &symb) {
   return 0;
 }
 
-double getAbundantMass(int Z) {
+double compchem::getAbundantMass(int Z) {
   // Obtained from https://www.ciaaw.org.
   static double masses[] = {
     1.0078250322,
@@ -322,7 +323,24 @@ double getAbundantMass(int Z) {
   return 0;
 }
 
-Atom &Atom::copy() const {
+Atom *Atom::copy() const {
   Atom *out = new Atom(*this);
-  return *out;
+  return out;
+}
+
+void Atom::setorbitals(std::vector<BasisOrbital *> &orbs) {
+  this->orbitals.clear();
+  this->orbitals.swap(orbs);
+}
+
+void Atom::setx(double x) {
+  this->x = x;
+}
+
+void Atom::sety(double y) {
+  this->y = y;
+}
+
+void Atom::setz(double z) {
+  this->z = z;
 }

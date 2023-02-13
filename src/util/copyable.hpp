@@ -2,6 +2,7 @@
 #ifndef __COPYABLE_HPP__
 #define __COPYABLE_HPP__
 
+/*
 namespace compchem {
   template<typename T>
   class Copyable {
@@ -13,5 +14,6 @@ namespace compchem {
   };
 
 }
+*/
 
 #endif
