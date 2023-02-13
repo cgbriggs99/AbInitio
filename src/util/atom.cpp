@@ -322,7 +322,7 @@ double getAbundantMass(int Z) {
   return 0;
 }
 
-Atom &Atom::copy() {
+Atom &Atom::copy() const {
   Atom *out = new Atom(*this);
   return *out;
 }

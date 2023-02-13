@@ -8,7 +8,7 @@ Molecule::Molecule(const std::vector<Atom *> &atoms) {
   this->atoms = std::vector<Atom *>(atoms.size());
 
   for(Atom *atom : atoms) {
-    this->atoms.push_back(atom->copy());
+    this->atoms.push_back(&atom->copy());
   }
 }
 
@@ -16,7 +16,7 @@ Molecule::Molecule(const Molecule &copy) {
   this->atoms = std::vector<Atom *>(copy.atoms.size());
 
   for(Atom *atom : copy.atoms) {
-    this->atoms.push_back(atom->copy());
+    this->atoms.push_back(&atom->copy());
   }
 }
 
@@ -30,11 +30,11 @@ Molecule::~Molecule() {
   }
 }
 
-Molecule &Molecule::copy() {
+Molecule &Molecule::copy() const {
   return *new Molecule(*this);
 }
 
-int Molecule::getsize() {
+int Molecule::getsize() const {
   return this->atoms.size();
 }
 
@@ -42,6 +42,6 @@ const std::vector<Atom *> &Molecule::getatoms() const {
   return this->atoms;
 }
 
-const Atom &getatom(int index) const {
+const Atom &Molecule::getatom(int index) const {
   return *this->atoms.at(index);
 }

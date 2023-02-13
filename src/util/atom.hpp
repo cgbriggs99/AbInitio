@@ -9,7 +9,7 @@
 
 namespace compchem {
 
-  class Atom : Copyable {
+  class Atom : Copyable<Atom> {
   private :
     int Z;
     int charge;
@@ -43,7 +43,7 @@ namespace compchem {
     const std::vector<BasisOrbital *> &getorbitals() const;
     const BasisOrbital &getorbital(int index) const;
 
-    Atom &copy() override;
+    Atom &copy() const override;
   };
 
   int getZFromSymb(const std::string &symb);

@@ -26,10 +26,11 @@ add_subdirectory(src)
 include_directories(src)
 
 add_compile_options(-Wall -Wextra -Werror)
+target_link_library(abinit gcov ${MATH})
 
 if(BUILD_TESTING)
   
-  add_compile_options(--coverage -Og -g3 -ggdb -lgcov -pg)
+  add_compile_options(--coverage -Og -g3 -ggdb)
   add_subdirectory(tests)
 
 else()

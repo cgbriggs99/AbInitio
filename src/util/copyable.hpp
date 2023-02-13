@@ -3,13 +3,13 @@
 #define __COPYABLE_HPP__
 
 namespace compchem {
-
+  template<typename T>
   class Copyable {
 
   public :
     virtual ~Copyable() = 0;
 
-    virtual Copyable &copy() = 0;
+    virtual T &copy() const = 0;
   };
 
 }

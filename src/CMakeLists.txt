@@ -6,4 +6,4 @@ add_subdirectory(util)
 add_subdirectory(basis_sets)
 #add_subdirectory(integrals)
 
-include_directories(util)
+include_directories(util basis_sets)

@@ -8,7 +8,7 @@
 
 namespace compchem {
 
-  class Molecule : Copyable {
+  class Molecule : Copyable<Molecule> {
   private:
 
     std::vector<Atom *> atoms;
@@ -20,7 +20,7 @@ namespace compchem {
 
     virtual ~Molecule();
 
-    Molecule &copy() override;
+    Molecule &copy() const override;
 
     int getsize() const;
 
