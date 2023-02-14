@@ -21,6 +21,10 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
+    - name: Conda
+      run:
+        conda install lapacke
+        
     - uses: actions/checkout@v3
       with:
         path: main
