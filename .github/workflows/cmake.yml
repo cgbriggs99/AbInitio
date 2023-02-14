@@ -23,7 +23,7 @@ jobs:
     steps:
     - name: Conda
       run:
-        conda install lapacke
+        conda install liblapacke lapack -c conda-forge
         
     - uses: actions/checkout@v3
       with:
