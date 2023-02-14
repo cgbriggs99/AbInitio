@@ -11,3 +11,12 @@ target_compile_options(test_util PUBLIC --coverage)
 
 add_test(NAME valgrind_test_util COMMAND valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --track-origins=yes $<TARGET_FILE:test_util>)
 add_test(NAME util_cov COMMAND gcov test_util.cpp -m)
+
+#add_executable(test_input test_input.cpp)
+#target_link_libraries(test_util abinit)
+#target_link_libraries(test_util gcov)
+
+#target_compile_options(test_input PUBLIC --coverage)
+
+#add_test(NAME valgrind_test_input COMMAND valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all --track-origins=yes $<TARGET_FILE:test_input>)
+#add_test(NAME input_cov COMMAND gcov test_input.cpp -m)
