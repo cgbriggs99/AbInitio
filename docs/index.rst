@@ -13,6 +13,9 @@ This is a library that will handle quantum chemical computations, varying from s
    :caption: Contents:
 
    Utilities <utils/index>
+   Basis Sets <basis_sets/index>
+   Geometric Properties <geometric/index>
+   Input <input/index>
 
 
 

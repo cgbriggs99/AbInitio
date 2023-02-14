@@ -1,11 +1,12 @@
-#include "rotor.hpp"
-#include "../util/molecule.hpp"
+#include "${CMAKE_SOURCE_DIR}/src/geometric/rotor.hpp"
+#include "${CMAKE_SOURCE_DIR}/src/util/molecule.hpp"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <lapacke.h>
+// To be replaced with the appropriate lapacke header.
+#include "${LAPACKE_INC}"
 #include <array>
-#include "../util/constants.hpp"
+#include "${CMAKE_SOURCE_DIR}/src/util/constants.hpp"
 
 
 using namespace compchem;

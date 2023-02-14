@@ -10,7 +10,7 @@
 using namespace compchem;
 
 GSConfig::GSConfig(int z, std::initializer_list<int> conf) {
-	this->z = z;
+	this->Z = z;
 	this->size_confs = conf.size();
 	this->confs = new int[this->size_confs];
 	int i = 0;
@@ -25,7 +25,7 @@ int GSConfig::getShells() const {
 }
 
 int GSConfig::getZ() const {
-	return this->z;
+	return this->Z;
 }
 
 int GSConfig::operator[](int index) const {

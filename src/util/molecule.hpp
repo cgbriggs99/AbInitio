@@ -2,7 +2,6 @@
 #ifndef __MOLECULE_HPP__
 #define __MOLECULE_HPP__
 
-#include "copyable.hpp"
 #include "atom.hpp"
 #include <vector>
 

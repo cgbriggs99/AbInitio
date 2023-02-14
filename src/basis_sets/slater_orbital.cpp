@@ -1,7 +1,7 @@
 
 #include "basis_set.hpp"
 #include <cmath>
-#include "polynomial.hpp"
+#include "../util/polynomial.hpp"
 
 
 
@@ -51,6 +51,10 @@ SlaterOrbital::SlaterOrbital(double Zeff, int n, int l, int ml) :
 SlaterOrbital::SlaterOrbital(const SlaterOrbital &copy) :
   Zeff(copy.Zeff), n(copy.n), l(copy.l), ml(copy.ml), harms(copy.harms->copy()) {
   ;
+}
+
+SlaterOrbital::~SlaterOrbital() {
+  delete this->harms;
 }
 
 double SlaterOrbital::eval(double x, double y, double z) const {

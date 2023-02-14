@@ -234,12 +234,13 @@ Polynomial<n> &Polynomial<n>::operator*=(const Polynomial<n> &rh) {
 }
 
 template<int n>
-Polynomial<n> &Polynomial<n>::operator-() {
-  for(int i = 0; i < this->getsize(); i++) {
-    this->coefs[i] = -this->coefs[i];
+Polynomial<n> &Polynomial<n>::operator-() const {
+  Polynomial<n> *out = new Polynomial(*this);
+  for(int i = 0; i < out->getsize(); i++) {
+    out->coefs[i] = -out->coefs[i];
   }
-  this->reduce();
-  return *this;
+  out->reduce();
+  return *out;
 }
 
 template<int n>

@@ -2,8 +2,8 @@
 #ifndef __BASIS_SET_HPP__
 #define __BASIS_SET_HPP__
 
-#include "electron_configs.hpp"
-#include "polynomial.hpp"
+#include "../util/electron_configs.hpp"
+#include "../util/polynomial.hpp"
 #include <vector>
 #include <initializer_list>
 #include <exception>
@@ -25,7 +25,7 @@ namespace compchem {
     Polynomial<3> *harms;
   public :
     SlaterOrbital(double Zeff, int n, int l, int ml);
-    virtual ~SlaterOrbital() = default;
+    virtual ~SlaterOrbital();
     SlaterOrbital(const SlaterOrbital &copy);
 
     double eval(double x, double y, double z) const override;
@@ -49,7 +49,7 @@ namespace compchem {
   public :
     GaussianOrbital(int l, int ml, const std::vector<double> &coefs, const std::vector<double> &alphas);
     GaussianOrbital(const GaussianOrbital &copy);
-    virtual ~GaussianOrbital() = default;
+    virtual ~GaussianOrbital();
 
     const std::vector<double> &getcoefs() const;
     const std::vector<double> &getalphas() const;

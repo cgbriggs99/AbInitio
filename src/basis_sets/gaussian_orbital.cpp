@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <exception>
-#include "polynomial.hpp"
+#include "../util/polynomial.hpp"
 
 using namespace compchem;
 
@@ -35,6 +35,10 @@ GaussianOrbital::GaussianOrbital(const GaussianOrbital &copy) {
     this->alphas[i] = copy.alphas[i];
   }
   this->harms = copy.harms;
+}
+
+GaussianOrbital::~GaussianOrbital() {
+  delete this->harms;
 }
 
 const std::vector<double> &GaussianOrbital::getcoefs() const {

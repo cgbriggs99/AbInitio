@@ -9,9 +9,15 @@ include(CTest)
 
 check_library_exists(m sin "" MATH)
 
-find_library(LAPACKE_LIBRARIES lapacke HINTS ${LAPACKE_LIB_DIR})
+message("-- Finding LAPACKE")
 
-find_path(LAPACKE_INC lapacke.h HINTS ${LAPACKE_INCLUDE_DIR})
+option(LAPACKE_LIB_DIR "directory to find liblapacke" /usr/lib/)
+option(LAPACKE_INC_DIR "directory to find lapacke.h" /usr/include)
+
+find_library(LAPACKE_LIB lapacke HINTS ${LAPACKE_LIB_DIR} REQUIRED)
+message("Found lapacke library at " ${LAPACKE_LIB})
+find_file(LAPACKE_INC lapacke.h HINTS ${LAPACKE_INC_DIR} REQUIRED)
+message("Found lapacke.h at " ${LAPACKE_INC})
 
 if(${MATH})
   set(MATH m)
@@ -32,6 +38,11 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(abinit SHARED)
 add_dependencies(abinit util basis_sets input)
 
+if(BUILD_TESTING)
+  target_link_libraries(abinit gcov)
+endif()
+
+
 set_target_properties(abinit PROPERTIES POSITION_INDEPENDENT_CODE True)
 
 add_subdirectory(src)
@@ -39,6 +50,5 @@ include_directories(src)
 
 add_compile_options(-Wall -Wextra -Werror)
 
-target_link_libraries(abinit ${LAPACK_LIBRARIES} ${MATH})
-include_directories(${LAPACK_INC})
+target_link_libraries(abinit ${LAPACK_LIB} ${MATH})
 

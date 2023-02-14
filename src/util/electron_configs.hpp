@@ -17,7 +17,7 @@ namespace compchem {
   private :
     int *confs;
     int size_confs;
-    int z;
+    int Z;
   public :
     GSConfig(int z, std::initializer_list<int> conf);
 

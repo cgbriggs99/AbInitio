@@ -35,7 +35,7 @@ namespace compchem {
     Polynomial<n> &operator+=(const Polynomial<n> &rh);
     Polynomial<n> &operator-=(const Polynomial<n> &rh);
     Polynomial<n> &operator*=(const Polynomial<n> &rh);
-    Polynomial<n> &operator-();
+    Polynomial<n> &operator-() const;
     Polynomial<n> &operator=(double d);
     bool operator==(double d) const;
     bool operator==(const Polynomial<n> &rh) const;
@@ -82,7 +82,7 @@ namespace compchem {
   Polynomial<3> &sphereharm(int l, int ml);
 }
 
-#include "polynomial.tcc"
+#include "polynomial.template.cpp"
 
 
 #endif

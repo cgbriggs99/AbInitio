@@ -3,7 +3,6 @@
 #define __ATOM_HPP__
 
 #include "../basis_sets/basis_set.hpp"
-#include "copyable.hpp"
 #include <string>
 #include <vector>
 
