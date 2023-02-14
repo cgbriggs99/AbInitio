@@ -44,7 +44,7 @@ jobs:
       run: |
         cmake -B ${{github.workspace}}/lapack/build ${{github.workspace}}/lapack -DCMAKE_BUILD_TYPE=Release -DFC=$CONDA_PREFIX -DLAPACKE=ON
         cmake -B ${{github.workspace}}/main/build ${{github.workspace}}/main -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-          -DLAPACKE_INCLUDE_DIR=${{github.workspace}}/lapack/LAPACKE/include -DLAPACKE_LIBRARY_DIR=${{github.workspace}}/lapack/build
+          -DLAPACKE_INCLUDE_DIR=${{github.workspace}}/lapack/LAPACKE/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build
 
     - name: Build
       # Build your program with the given configuration
