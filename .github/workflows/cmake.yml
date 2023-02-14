@@ -43,7 +43,8 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: |
         cmake -B ${{github.workspace}}/lapack/build ${{github.workspace}}/lapack -DCMAKE_BUILD_TYPE=Release -DFC=$CONDA_PREFIX -DLAPACKE=ON
-        cmake -B ${{github.workspace}}/main/build ${{github.workspace}}/main -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DLAPACK_DIR=${{github.workspace}}/lapack
+        cmake -B ${{github.workspace}}/main/build ${{github.workspace}}/main -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DLAPACKE_DIR=${{github.workspace}}/lapack/LAPACKE
 
     - name: Build
       # Build your program with the given configuration
