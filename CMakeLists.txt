@@ -9,9 +9,9 @@ include(CTest)
 
 check_library_exists(m sin "" MATH)
 
-find_library(LAPACKE_LIBRARIES lapacke)
+find_library(LAPACKE_LIBRARIES lapacke HINTS ENV CONDA_PREFIX)
 
-find_path(LAPACKE_INC lapacke.h)
+find_path(LAPACKE_INC lapacke.h HINTS ENV CONDA_PREFIX)
 
 if(${MATH})
   set(MATH m)
