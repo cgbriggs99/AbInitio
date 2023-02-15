@@ -23,6 +23,7 @@ jobs:
     steps:
     - name: Conda
       run: |
+        conda init bash
         conda activate
         conda install gfortran valgrind -c conda-forge
       
