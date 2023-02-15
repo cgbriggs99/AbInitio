@@ -51,7 +51,7 @@ jobs:
         
     - name: Configure Project
       run: cmake -B ${{github.workspace}}/main/build -DLAPACKE_INC_DIR=${{github.workspace}}/lapack/build/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build/lib \
-         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}}/main
+         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DVALGRIND=${CONDA}/bin/valgrind ${{github.workspace}}/main
           
           
     - name: Build Project
