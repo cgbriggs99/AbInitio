@@ -49,8 +49,9 @@ jobs:
         cmake --build ${{github.workspace}}/lapack/build
         
     - name: Configure Project
-      run: cmake -B ${{github.workspace}}/main/build ${{github.workspace}}/main -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-          -DLAPACKE_INC_DIR=${{github.workspace}}/lapack/LAPACKE/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build/lib
+      run: cmake -B ${{github.workspace}}/main/build -DLAPACKE_INC_DIR=${{github.workspace}}/lapack/LAPACKE/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build/lib \
+        ${{github.workspace}}/main -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+          
           
     - name: Build Project
       run: cmake --build ${{github.workspace}}/main/build --config ${{env.BUILD_TYPE}}
