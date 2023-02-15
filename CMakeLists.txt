@@ -24,7 +24,8 @@ if(${MATH})
 endif()
 
 if(BUILD_TESTING)
-  find_program(VALGRIND valgrind HINTS ENV CONDA_PREFIX)
+  message("-- Looking for valgrind in " ${CONDA_PREFIX})
+  find_program(VALGRIND valgrind HINTS ${CONDA_PREFIX})
   add_compile_options(--coverage -Og -g3 -ggdb -lgcov -pg)
   add_subdirectory(tests)
 
