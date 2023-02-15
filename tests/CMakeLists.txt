@@ -11,7 +11,7 @@ macro(test_recipe target source)
     set(SOURCE_FILE ${source})
   endif()
   add_executable(${target} ${SOURCE_FILE})
-  target_link_libraries(${target} abinit gcov ${LAPACKE_LIB} ${MATH})
+  target_link_libraries(${target} abinit gcov ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
   target_compile_options(${target} PUBLIC --coverage)
   add_test(NAME valgrind_${target} COMMAND valgrind --leak-check=full
     --show-leak-kinds=all --errors-for-leak-kinds=all --track-origins=yes

@@ -50,5 +50,5 @@ include_directories(src)
 
 add_compile_options(-Wall -Wextra -Werror)
 
-target_link_libraries(abinit ${LAPACK_LIB} ${MATH})
+target_link_libraries(abinit ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
 
