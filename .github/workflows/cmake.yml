@@ -24,6 +24,7 @@ jobs:
     - name: Conda
       run: |
         conda init bash
+        sh ~/.bashrc
         conda activate
         conda install gfortran valgrind -c conda-forge
       
