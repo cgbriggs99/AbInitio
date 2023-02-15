@@ -23,7 +23,7 @@ jobs:
     steps:
     - name: Conda
       run: |
-        conda install gfortran valgrind -c conda-forge
+        conda install gfortran -c conda-forge
       
     - uses: actions/checkout@v3
       with:
@@ -51,7 +51,7 @@ jobs:
         
     - name: Configure Project
       run: cmake -B ${{github.workspace}}/main/build -DLAPACKE_INC_DIR=${{github.workspace}}/lapack/build/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build/lib \
-         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DVALGRIND=${CONDA}/bin/valgrind ${{github.workspace}}/main
+         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}}/main
           
           
     - name: Build Project
