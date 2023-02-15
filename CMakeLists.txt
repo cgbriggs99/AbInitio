@@ -15,16 +15,18 @@ option(LAPACKE_LIB_DIR "directory to find liblapacke" /usr/lib/)
 option(LAPACKE_INC_DIR "directory to find lapacke.h" /usr/include)
 
 find_library(LAPACKE_LIB lapacke HINTS ${LAPACKE_LIB_DIR} REQUIRED)
-message("Found lapacke library at " ${LAPACKE_LIB})
+message("-- Found lapacke library at " ${LAPACKE_LIB})
 find_file(LAPACKE_INC lapacke.h HINTS ${LAPACKE_INC_DIR} REQUIRED)
-message("Found lapacke.h at " ${LAPACKE_INC})
+message("-- Found lapacke.h at " ${LAPACKE_INC})
 
 if(${MATH})
   set(MATH m)
 endif()
 
 if(BUILD_TESTING)
-  find_program(VALGRIND valgrind HINTS ENV CONDA_PREFIX CONDA)
+  message("-- Looking for valgrind in " $ENV{CONDA_PREFIX} " and " $ENV{CONDA})
+  find_program(VALGRIND valgrind HINTS $ENV{CONDA_PREFIX} $ENV{CONDA})
+  message("-- valgrind: " ${VALGRIND})
   add_compile_options(--coverage -Og -g3 -ggdb -lgcov -pg)
   add_subdirectory(tests)
 
