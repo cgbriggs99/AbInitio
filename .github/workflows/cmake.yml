@@ -47,7 +47,7 @@ jobs:
     - name: Build LAPACK
       # Build your program with the given configuration
       run: |
-        cmake --build ${{github.workspace}}/lapack/build
+        cmake --build ${{github.workspace}}/lapack/build -j2
         
     - name: Configure Project
       run: cmake -B ${{github.workspace}}/main/build -DLAPACKE_INC_DIR=${{github.workspace}}/lapack/build/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build/lib \
