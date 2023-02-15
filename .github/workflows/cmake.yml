@@ -22,7 +22,9 @@ jobs:
 
     steps:
     - name: Conda
-      run: conda install gfortran valgrind -c conda-forge
+      run: |
+        conda activate
+        conda install gfortran valgrind -c conda-forge
       
     - uses: actions/checkout@v3
       with:
@@ -41,7 +43,7 @@ jobs:
     - name: Configure LAPACK
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/lapack/build ${{github.workspace}}/lapack -DCMAKE_BUILD_TYPE=Release -DFC=$CONDA_PREFIX -DLAPACKE=ON
+      run: cmake -B ${{github.workspace}}/lapack/build ${{github.workspace}}/lapack -DCMAKE_BUILD_TYPE=Release -DLAPACKE=ON
 
     - name: Build LAPACK
       # Build your program with the given configuration
