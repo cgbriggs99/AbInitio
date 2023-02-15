@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - name: Conda
-      run: conda install gfortran -c conda-forge
+      run: conda install gfortran valgrind -c conda-forge
       
     - uses: actions/checkout@v3
       with:
