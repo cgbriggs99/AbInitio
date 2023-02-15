@@ -10,13 +10,41 @@ macro(test_recipe target source)
   else()
     set(SOURCE_FILE ${source})
   endif()
+
   add_executable(${target} ${SOURCE_FILE})
-  target_link_libraries(${target} abinit gcov ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
-  target_compile_options(${target} PUBLIC --coverage)
-  add_test(NAME valgrind_${target} COMMAND ${VALGRIND} --leak-check=full
-    --show-leak-kinds=all --errors-for-leak-kinds=all --track-origins=yes
-    $<TARGET_FILE:${target}>)
-  add_test(NAME gcov_${target} COMMAND gcov ${source} -m)
+  # On linux, use valgrind.
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    if(LAPACK_LINKER_FLAGS)
+      target_link_options(${target} PUBLIC ${LAPACK_LINKER_FLAGS})
+    endif()
+    if(LAPACKE_LIB_DIR)
+      target_link_directories(${target} PUBLIC ${LAPACKE_LIB_DIR})
+    endif()
+    if(LAPACKE_LIB)
+      target_link_libraries(${target} PUBLIC abinit gcov ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
+    else()
+      target_link_libraries(${target} PUBLIC abinit gcov ${MATH} ${LAPACK_LIBRARIES})
+    endif()
+    target_compile_options(${target} PUBLIC --coverage)
+    add_test(NAME valgrind_${target} COMMAND valgrind --leak-check=full
+      --show-leak-kinds=all --errors-for-leak-kinds=all --track-origins=yes
+      $<TARGET_FILE:${target}>)
+    add_test(NAME gcov_${target} COMMAND gcov ${source} -m)
+  else() # Valgrind doesn't work under windows or mac.
+    if(LAPACK_LINKER_FLAGS)
+      target_link_options(${target} PUBLIC ${LAPACK_LINKER_FLAGS})
+    endif()
+    if(LAPACKE_LIB_DIR)
+      target_link_directories(${target} PUBLIC ${LAPACKE_LIB_DIR})
+    endif()
+    if(LAPACKE_LIB)
+      target_link_libraries(${target} PUBLIC abinit gcov ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
+    else()
+      target_link_libraries(${target} PUBLIC abinit gcov ${MATH} ${LAPACK_LIBRARIES})
+    endif()
+    
+    add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
+  endif()
   unset(SOURCE_FILE)
 endmacro()
 

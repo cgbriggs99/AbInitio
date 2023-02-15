@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 // To be replaced with the appropriate lapacke header.
-#include "${LAPACKE_INC}"
+#include <${LAPACKE_HEADER}>
 #include <array>
 #include "${CMAKE_SOURCE_DIR}/src/util/constants.hpp"
 
