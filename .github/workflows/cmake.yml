@@ -23,9 +23,6 @@ jobs:
     steps:
     - name: Conda
       run: |
-        conda init bash
-        sh ~/.bashrc
-        conda activate
         conda install gfortran valgrind -c conda-forge
       
     - uses: actions/checkout@v3
