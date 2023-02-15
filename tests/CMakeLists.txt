@@ -26,7 +26,7 @@ macro(test_recipe target source)
       target_link_libraries(${target} PUBLIC abinit gcov ${MATH} ${LAPACK_LIBRARIES})
     endif()
     target_compile_options(${target} PUBLIC --coverage)
-    add_test(NAME valgrind_${target} COMMAND valgrind --leak-check=full
+    add_test(NAME valgrind_${target} COMMAND ${VALGRIND} --leak-check=full
       --show-leak-kinds=all --errors-for-leak-kinds=all --track-origins=yes
       $<TARGET_FILE:${target}>)
     add_test(NAME gcov_${target} COMMAND gcov ${source} -m)

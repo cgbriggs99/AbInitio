@@ -11,6 +11,12 @@ option(LAPACKE_LIB_DIR "The directory to find the lapacke library.")
 option(LAPACKE_LIB "The name of the lapacke library.")
 option(LAPACK_DIR "The root directory for lapack" 0)
 option(LAPACK_INC_DIR "The directory to find lapack.h" 0)
+option(VALGRIND "Fully qualified path for valgrind, if not in the standard search path." valgrind)
+
+if(NOT VALGRIND)
+  set(VALGRIND valgrind)
+endif()
+
 
 if(USE_MKL)
   message("-- Using MKL.")
