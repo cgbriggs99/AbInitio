@@ -63,7 +63,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: |
         pwd
-        ctest -C ${{env.BUILD_TYPE}} --test-dir ${{github.workspace}}/main/build
+        ctest -C ${{env.BUILD_TYPE}} --test-dir ${{github.workspace}}/main/build --output-on-failure
         
       
 
