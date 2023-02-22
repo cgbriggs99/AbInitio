@@ -12,6 +12,12 @@ option(LAPACKE_LIB "The name of the lapacke library.")
 option(LAPACK_DIR "The root directory for lapack" 0)
 option(LAPACK_INC_DIR "The directory to find lapack.h" 0)
 option(VALGRIND "Fully qualified path for valgrind, if not in the standard search path.")
+option(EXTRAMATH_DIR "Path to find the integral library and header." 0)
+
+if(NOT EXTRAMATH_DIR)
+  message(SEND_ERROR "Need to know where to find extramath.")
+endif()
+include_directories(${EXTRAMATH_DIR}/include)
 
 if(USE_MKL)
   message("-- Using MKL.")
@@ -138,11 +144,11 @@ if(BLAS_LINKER_FLAGS)
   target_link_options(abinit ${BLAS_LINKER_FLAGS})
 endif()
 
-target_link_directories(abinit PUBLIC ${LAPACKE_LIB_DIR})
+target_link_directories(abinit PUBLIC ${LAPACKE_LIB_DIR} ${EXTRAMATH_DIR}/lib)
 if(LAPACKE_LIB)
-  target_link_libraries(abinit PUBLIC ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
+  target_link_libraries(abinit PUBLIC extramath ${LAPACKE_LIB} ${MATH} ${LAPACK_LIBRARIES})
 else()
-  target_link_libraries(abinit PUBLIC ${MATH} ${LAPACK_LIBRARIES})
+  target_link_libraries(abinit PUBLIC extramath ${MATH} ${LAPACK_LIBRARIES})
 endif()
 
 
