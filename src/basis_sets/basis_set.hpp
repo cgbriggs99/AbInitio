@@ -43,18 +43,21 @@ namespace compchem {
 
   class GaussianOrbital : public BasisOrbital {
   private :
-    std::vector<double> coefs, alphas;
+    double *coefs, *alphas;
     int l, ml;
     Polynomial<3> *harms;
+    int size = 0;
+    void sort();
   public :
     GaussianOrbital(int l, int ml, const std::vector<double> &coefs, const std::vector<double> &alphas);
     GaussianOrbital(const GaussianOrbital &copy);
     virtual ~GaussianOrbital();
 
-    const std::vector<double> &getcoefs() const;
-    const std::vector<double> &getalphas() const;
+    const double *getcoefs() const;
+    const double *getalphas() const;
     double getcoef(int index) const;
     double getalpha(int index) const;
+    
     int getnterms() const;
     int getl() const;
     int getml() const;
@@ -63,6 +66,8 @@ namespace compchem {
     double eval(double x, double y, double z) const override;
 
     BasisOrbital *copy() const override;
+
+    GaussianOrbital &operator=(const GaussianOrbital &other);
   };
 
   

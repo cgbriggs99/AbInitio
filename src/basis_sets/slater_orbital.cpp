@@ -7,7 +7,7 @@
 
 using namespace compchem;
 
-double slater_rule(int n, int l, const compchem::GSConfig &conf) {
+double compchem::slater_rule(int n, int l, const compchem::GSConfig &conf) {
   static std::array<int, 19> lvals = std::array<int, 19>({0, 0, 1, 0, 1, 0, 2, 1, 0, 2, 1, 0, 3, 2, 1, 0, 3, 2, 1});
   static std::array<int, 19> nvals = std::array<int, 19>({1, 2, 2, 3, 3, 4, 3, 4, 5, 4, 5, 6, 4, 5, 6, 7, 5, 6, 7});
   if(n == 1) {
@@ -44,7 +44,7 @@ double slater_rule(int n, int l, const compchem::GSConfig &conf) {
 }
 
 SlaterOrbital::SlaterOrbital(double Zeff, int n, int l, int ml) :
-  Zeff(Zeff), n(n), l(l), ml(ml), harms(&sphereharm(l, ml)) {
+  Zeff(Zeff), n(n), l(l), ml(ml), harms(sphereharm(l, ml)) {
   ;
 }
 

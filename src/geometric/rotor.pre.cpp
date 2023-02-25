@@ -15,18 +15,13 @@ using namespace compchem;
 
 rotor_t compchem::comprotor(const Molecule &mol, std::array<double, 3> *out) {
 
-  double *moment = new double[9], *eye = new double[9];
+  double *moment = new double[9];
   double comx = mol.getcomx(), comy = mol.getcomy(), comz = mol.getcomz();
-  double *real = new double[3], *imag = new double[3], *beta = new double[3];
+  double *real = new double[3], *imag = new double[3];
 
   for(int i = 0; i < 3; i++) {
     for(int j = 0; j < 3; j++) {
       moment[i + 3 * j] = 0;
-      if(i == j) {
-	eye[i + 3 * j] = 1;
-      } else {
-	eye[i + 3 * j] = 0;
-      }
     }
   }
 
@@ -46,7 +41,7 @@ rotor_t compchem::comprotor(const Molecule &mol, std::array<double, 3> *out) {
     moment[8] += mass * ((x - comx) * (x - comx) + (y - comy) * (y - comy));
   }
 
-  LAPACKE_dggev(LAPACK_COL_MAJOR, 'N', 'N', 3, moment, 3, eye, 3, real, imag, beta, nullptr, 1, nullptr, 1);
+  LAPACKE_dgeev(LAPACK_COL_MAJOR, 'N', 'N', 3, moment, 3, real, imag, nullptr, 1, nullptr, 1);
 
   // Sort the eigenvalues.
   if(real[0] > real[1]) {
@@ -72,23 +67,24 @@ rotor_t compchem::comprotor(const Molecule &mol, std::array<double, 3> *out) {
   (*out)[2] = PLANCK_SI / (8 * M_PI * M_PI * LIGHT_SI * AU_TO_KG *
 			 BOHR_TO_M * BOHR_TO_M * real[2]);
 
-  delete imag, moment, eye, beta;
+  delete[] imag;
+  delete[] moment;
 
   // Determine the rotor type.
   if(real[0] == real[1] && real[1] == real[2]) {
-    delete real;
+    delete[] real;
     return SPHERICAL;
   } else if(real[1] == real[2] && real[0] < real[1] / MUCH_LESS) {
-    delete real;
+    delete[] real;
     return LINEAR;
   } else if(real[0] == real[1] && real[1] != real[2]) {
-    delete real;
+    delete[] real;
     return OBLATE;
   } else if(real[1] == real[2] && real[0] != real[1]) {
-    delete real;
+    delete[] real;
     return PROLATE;
   } else {
-    delete real;
+    delete[] real;
     return ASSYMETRIC;
   }
 }
