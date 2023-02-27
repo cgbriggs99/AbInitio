@@ -34,24 +34,37 @@ jobs:
         repository: Reference-LAPACK/lapack-release
         path: lapack
         
-#    - uses: actions/checkout@v3
-#      with:
-#        repository: cgbriggs/ProgrammingUtilities
-#        path: progutils
+    - uses: actions/checkout@v3
+      with:
+        repository: cgbriggs/ProgrammingUtilities
+        path: progutils
 
     - name: Configure LAPACK
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/lapack/build ${{github.workspace}}/lapack -DCMAKE_BUILD_TYPE=Release -DLAPACKE=ON
+      run: |
+        cmake -B ${{github.workspace}}/lapack/build ${{github.workspace}}/lapack -DCMAKE_BUILD_TYPE=Release -DLAPACKE=ON \
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
 
     - name: Build LAPACK
       # Build your program with the given configuration
       run: |
-        cmake --build ${{github.workspace}}/lapack/build -j2
+        cmake --build ${{github.workspace}}/lapack/build -j3
+        cmake --install ${{github.workspace}}/lapack/build
+        
+    - name: Configure ProgrammingUtilities
+      run: |
+        cmake -B ${{github.workspace}}/progutils/build ${{github.workspace}}/progutils -DCMAKE_BUILD_TYPE=release -DMATH_ROOT=${{github.workspace}}/install \
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+
+    - name: Build ProgrammingUtilities
+      run: |
+        cmake --build ${{github.workspace}}/progutils/build -j3
+        cmake --install ${{github.workspace}}/install
         
     - name: Configure Project
-      run: cmake -B ${{github.workspace}}/main/build -DLAPACKE_INC_DIR=${{github.workspace}}/lapack/build/include -DLAPACKE_LIB_DIR=${{github.workspace}}/lapack/build/lib \
-         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}}/main
+      run: cmake -B ${{github.workspace}}/main/build -DLAPACKE_DIR=${{github.workspace}}/install \
+         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}}/main -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
           
           
     - name: Build Project
