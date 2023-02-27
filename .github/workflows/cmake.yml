@@ -56,7 +56,7 @@ jobs:
     - name: Configure ProgrammingUtilities
       run: |
         cmake -B ${{github.workspace}}/progutils/build ${{github.workspace}}/progutils -DCMAKE_BUILD_TYPE=release -DMATH_ROOT=${{github.workspace}}/install \
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install -DBUILD_TESTING=0
 
     - name: Build ProgrammingUtilities
       run: |
