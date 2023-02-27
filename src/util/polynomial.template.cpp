@@ -490,7 +490,12 @@ double Polynomial<n>::eval(const double *r) const {
 
 template<int n>
 double Polynomial<n>::eval(std::initializer_list<double> r) const {
-  double vars[n] = r;
+  double vars[n];
+  int k = 0;
+  for(double d : r) {
+    vars[k] = d;
+    k++;
+  }
   
   double sum = 0;
   for(int i = 0; i < this->getsize(); i++) {

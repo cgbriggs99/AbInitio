@@ -59,12 +59,19 @@ SlaterOrbital::~SlaterOrbital() {
 
 double SlaterOrbital::eval(double x, double y, double z) const {
 
-  double r = sqrt(x * x + y * y + z * z);
+  double r = std::sqrt(x * x + y * y + z * z);
 
   double harm = this->harms->eval(x, y, z);
+  if(this->getn() - this->getl() <= 1) {
+    return std::exp(-r * this->getZeff()) * harm *
+      std::pow(2 * this->getZeff(), this->getn()) *
+      std::sqrt(2 * this->getZeff() / std::tgamma(2 * this->getn() + 1));
+  }
 
-  return std::pow(2 * this->getZeff(), this->getn() + 0.5) /
-    exp(0.5 * lgamma(2 * this->getn()) - this->getZeff() * r) * harm;
+  return std::pow(r, this->getn() - this->getl() - 1) *
+    std::exp(-this->getZeff() * r) * harm *
+    std::pow(2 * this->getZeff(), this->getn()) *
+    std::sqrt(2 * this->getZeff() / std::tgamma(2 * this->getn() + 1));
 }
 
 

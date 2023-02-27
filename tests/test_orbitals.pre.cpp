@@ -47,16 +47,17 @@ int test_inputter() {
 
   return warns;
 }
-
-double kernel1(const double *r, int dim, const void *pass) {
-  const Polynomial<3> *poly = (const Polynomial<3> *) pass;
-
-  return poly->eval(r);
-}
   
 
 double kernel(const double *r, int dim, const void *pass) {
   const GaussianOrbital *orb = (const GaussianOrbital *) pass;
+
+  return orb->eval(r[0], r[1], r[2]) * orb->eval(r[0], r[1], r[2]) /
+    std::exp(-(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]));
+}
+
+double kernel2(const double *r, int dim, const void *pass) {
+  const SlaterOrbital *orb = (const SlaterOrbital *) pass;
 
   return orb->eval(r[0], r[1], r[2]) * orb->eval(r[0], r[1], r[2]) /
     std::exp(-(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]));
@@ -91,6 +92,38 @@ int test_ints() {
   
   ASSERT_WARN_MSG(NEAR(int2, 1), warns,
 		  "Got %lf, expected 1.\n", int2);
+
+  // Integrals are not accurate enough to handle the tail behavior.
+  // Only converges to 1 when Zeff is 1, but theoretically should
+  // for others.
+  double zeff = 1;
+  SlaterOrbital *orb2 = new SlaterOrbital(zeff, 1, 0, 0);
+
+  ASSERT_WARN(NEAR(orb2->getZeff(), zeff), warns);
+
+  ASSERT_WARN_MSG(NEAR(orb2->getharms().eval(0, 0, 0),
+		       std::sqrt(1 / (4 * M_PI))), warns,
+		  "Got %lf, expected %lf.\n",
+		  orb2->getharms().eval(0, 0, 0),
+		  std::sqrt(1 / (4 * M_PI)));
+  
+  ASSERT_WARN_MSG(NEAR(orb2->eval(0, 0, 0), 2 * zeff * std::sqrt(zeff) *
+		       std::sqrt(1 / (4 * M_PI))), warns,
+		  "Got %lf, expected %lf.\n",
+		  orb2->eval(0, 0, 0),
+		  2 * zeff * std::sqrt(zeff) * std::sqrt(1 / (4 * M_PI)));
+  ASSERT_WARN_MSG(NEAR(orb2->eval(1, 0, 0), orb2->eval(-1, 0, 0)), warns,
+		  "Function not symmetric.\n");
+
+  double starts[3] = {0, 0, 0},
+    ends[3] = {30, 30, 30};
+  int bounds[3] = {__INTEGRAL_BOTH__, __INTEGRAL_BOTH__, __INTEGRAL_BOTH__};
+  
+  double int3 = gausshermiteintnd(kernel2, 3, 18, (void *) orb2);
+
+  ASSERT_WARN_MSG(NEAR(int3, 1), warns,
+		  "Got %lf, expected 1.\n", int3);
+  delete orb2;
 
   return warns;
 
