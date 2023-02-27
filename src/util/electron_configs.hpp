@@ -20,14 +20,16 @@ namespace compchem {
     int Z;
   public :
     GSConfig(int z, std::initializer_list<int> conf);
-
+    GSConfig(int z, const std::vector<int> &conf);
+    ~GSConfig();
+    
     int getShells() const;
     int getZ() const;
     
     int operator[](int index) const;
   };
 
-  const GSConfig &getconfig(int Z);
+  GSConfig *getconfig(int Z);
 
 }
 

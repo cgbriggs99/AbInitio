@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <stdexcept>
 #include "input.hpp"
-#include <ctype.h>
+#include <cctype>
 #include "../util/atom.hpp"
 #include "../util/molecule.hpp"
 
