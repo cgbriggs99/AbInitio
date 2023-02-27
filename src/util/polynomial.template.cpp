@@ -11,6 +11,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <cstdlib>
+#include <initializer_list>
 
 namespace compchem {
 
@@ -459,6 +460,42 @@ double Polynomial<n>::eval(double x,...) const {
     double prod = this->coefs[i];
     for(int j = 0; j < n; j++) {
       // constant term.
+      if(this->pows[i * n + j] == 0) {
+	prod *= 1;
+      } else {
+	prod *= std::pow(vars[j], this->pows[i * n + j]);
+      }
+    }
+    sum += prod;
+  }
+  return sum;
+}
+
+template<int n>
+double Polynomial<n>::eval(const double *r) const {
+  double sum = 0;
+  for(int i = 0; i < this->getsize(); i++) {
+    double prod = this->coefs[i];
+    for(int j = 0; j < n; j++) {
+      if(this->pows[i * n + j] == 0) {
+	prod *= 1;
+      } else {
+	prod *= std::pow(r[j], this->pows[i * n + j]);
+      }
+    }
+    sum += prod;
+  }
+  return sum;
+}
+
+template<int n>
+double Polynomial<n>::eval(std::initializer_list<double> r) const {
+  double vars[n] = r;
+  
+  double sum = 0;
+  for(int i = 0; i < this->getsize(); i++) {
+    double prod = this->coefs[i];
+    for(int j = 0; j < n; j++) {
       if(this->pows[i * n + j] == 0) {
 	prod *= 1;
       } else {

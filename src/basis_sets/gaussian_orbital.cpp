@@ -10,30 +10,6 @@
 
 using namespace compchem;
 
-static void renorm_harms(Polynomial<3> *harms) {
-  for(int i = 0; i < harms->getsize(); i++) {
-    if(harms->getcoef(i) < 0) {
-      const int *expo = harms->gettermorder(i);
-      harms->setcoef(i,
-		     -std::sqrt(std::exp(std::lgamma(expo[0] + 1) +
-					std::lgamma(expo[1] + 1) +
-					std::lgamma(expo[2] + 1) -
-					std::lgamma(2 * expo[0] + 1) -
-					std::lgamma(2 * expo[1] + 1) -
-					std::lgamma(2 * expo[2] + 1))));
-    } else {
-      const int *expo = harms->gettermorder(i);
-      harms->setcoef(i,
-		     std::sqrt(std::exp(std::lgamma(expo[0] + 1) +
-					std::lgamma(expo[1] + 1) +
-					std::lgamma(expo[2] + 1) -
-					std::lgamma(2 * expo[0] + 1) -
-					std::lgamma(2 * expo[1] + 1) -
-					std::lgamma(2 * expo[2] + 1))));
-    }
-  }
-}
-
 GaussianOrbital::GaussianOrbital(int l, int ml, const std::vector<double> &coefs, const std::vector<double> &alphas) {
   this->l = l;
   this->ml = ml;
@@ -46,7 +22,6 @@ GaussianOrbital::GaussianOrbital(int l, int ml, const std::vector<double> &coefs
     this->alphas[i] = alphas[i];
   }
   this->harms = sphereharm(l, ml);
-  renorm_harms(this->harms);
   if(coefs.size() != alphas.size()) {
     delete[] this->coefs;
     delete[] this->alphas;
@@ -129,8 +104,12 @@ double GaussianOrbital::eval(double x, double y, double z) const {
 
   double sum = 0;
   for(int i = 0; i < this->getnterms(); i++) {
-    sum += this->getcoef(i) * std::pow(2 * this->getalpha(i) / M_PI, 0.75) * poly * exp(-this->getalpha(i) * r2) *
-      std::pow(8 * this->getalpha(i), this->getl() / 2.0);
+    sum += 2 * this->getcoef(i) * poly * exp(-this->getalpha(i) * r2) *
+      std::pow(8 * this->getalpha(i) * this->getalpha(i) * this->getalpha(i)
+	       / M_PI, 0.25) *
+      std::sqrt(2 * std::pow(8 * this->getalpha(i), this->getl()) *
+		std::exp(std::lgamma(this->getl() + 2) -
+			 std::lgamma(2 * this->getl() + 3)));
   }
   return sum;
 }

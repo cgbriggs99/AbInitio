@@ -678,6 +678,12 @@ int test_poly() {
   }
   delete check;
   delete p1;
+
+  p1 = sphereharm(0, 0);
+  ASSERT_WARN_MSG(NEAR(p1->eval(0, 0, 0), std::sqrt(1 / (4 * M_PI))), warns,
+		  "Got %lf, expected %lf.\n",
+		  p1->eval(0, 0, 0), std::sqrt(1 / (4 * M_PI)));
+  delete p1;
   
   return warns;
 }

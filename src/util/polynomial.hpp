@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <array>
+#include <initializer_list>
 
 namespace compchem {
   template<int n>
@@ -56,6 +57,8 @@ namespace compchem {
     Polynomial<n> &operator=(Polynomial<n> &&rh);
 
     double eval(double x,...) const;
+    double eval(const double *r) const;
+    double eval(std::initializer_list<double> r) const;
 
     Polynomial<n> &translate(double x, ...);
 
