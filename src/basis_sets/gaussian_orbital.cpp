@@ -16,19 +16,27 @@ GaussianOrbital::GaussianOrbital(int l, int ml, const std::vector<double> &coefs
   this->coefs = new double[coefs.size()];
   this->alphas = new double[alphas.size()];
   this->size = coefs.size();
+  this->norms = new double[coefs.size()];
 
   for(int i = 0; i < coefs.size(); i++) {
     this->coefs[i] = coefs[i];
     this->alphas[i] = alphas[i];
+    this->norms[i] = 2 * std::pow(8 * alphas[i] * alphas[i] *
+			      alphas[i] / M_PI, 0.25) *
+      std::sqrt(2 * std::pow(8 * alphas[i], l) *
+		std::exp(std::lgamma(l + 2) -
+			 std::lgamma(2 * l + 3)));
   }
   this->harms = sphereharm(l, ml);
   if(coefs.size() != alphas.size()) {
     delete[] this->coefs;
     delete[] this->alphas;
     delete this->harms;
+    delete[] this->norms;
     this->coefs = nullptr;
     this->alphas = nullptr;
     this->harms = nullptr;
+    this->norms = nullptr;
     throw new std::exception();
   }
   this->sort();
@@ -39,11 +47,13 @@ GaussianOrbital::GaussianOrbital(const GaussianOrbital &copy) {
   this->ml = copy.ml;
   this->coefs = new double[copy.getnterms()];
   this->alphas = new double[copy.getnterms()];
+  this->norms = new double[copy.getnterms()];
   this->size = copy.getnterms();
 
   for(int i = 0; i < copy.getnterms(); i++) {
     this->coefs[i] = copy.coefs[i];
     this->alphas[i] = copy.alphas[i];
+    this->norms[i] = copy.norms[i];
   }
   this->harms = copy.harms->copy();
 }
@@ -57,6 +67,9 @@ GaussianOrbital::~GaussianOrbital() {
   }
   if(this->harms != nullptr) {
     delete this->harms;
+  }
+  if(this->norms != nullptr) {
+    delete this->norms;
   }
 }
 
@@ -193,3 +206,53 @@ void GaussianOrbital::sort(void) {
 }
   
   
+double GaussianOrbital::getnorm(int index) {
+  if(index < 0 || index >= this->size) {
+    throw new std::out_of_range("Term index out of bounds in Gaussian orbital.");
+  }
+  return this->norms[index];
+}
+
+double GaussianOrbital::laplacian(double x, double y, double z) const {
+
+  double sum = 0;
+
+  for(int i = 0; i < this->getnterms(); i++) {
+    for(int j = 0; j < this->->getharms().getsize(); j++) {
+      int pows1[3] = this->getharms().gettermorder(j);
+      sum += this->getnorm(i) * this->getharms().getcoef(j) *
+	this->getcoef(i);
+	((pows1[0] >= 2? (pows1[0] * (pows1[0] - 1) *
+			  std::pow(x, pows1[0] - 2) *
+			  std::pow(y, pows1[1]) *
+			  std::pow(z, pows1[2])) : 0) +
+	 (pows1[1] >= 2? (pows1[1] * (pows1[1] - 1) *
+			  std::pow(x, pows1[0]) *
+			  std::pow(y, pows[1] - 2) *
+			  std::pow(z, pows[2])) : 0) +
+	 (pows1[2] >= 2? (pows1[2] * (pows1[2] - 1) *
+			  std::pow(x, pows1[0]) *
+			  std::pow(y, pows1[1]) *
+			  std::pow(z, pows1[2] - 2)) : 0) -
+	 4 * o1->getalpha(i) * ((pows1[0] >= 1?
+				 (pows1[0] * std::pow(x, pows1[0]) *
+				  std::pow(y, pows1[1]) *
+				  std::pow(z, pows1[2])): 0) +
+				(pows1[1] >= 1?
+				 (pows1[1] * std::pow(x, pows1[0]) *
+				  std::pow(y, pows1[1]) *
+				  std::pow(z, pows1[2])): 0) +
+				(pows1[2] >= 1?
+				 (pows1[2] * std::pow(x, pows1[0]) *
+				  std::pow(y, pows1[1]) *
+				  std::pow(z, pows1[2])): 0)) +
+	 std::pow(x, pows1[0]) *
+	 std::pow(y, pows1[1]) *
+	 std::pow(z, pows1[2]) *
+	 (4 * (x * x + y * y + z * z) * this->getalpha(i) * this->getalpha(i)
+	  - 2 * this->getalpha(i))) *
+	  std::exp(-this->getalpha(i) * (x * x + y * y + z * z));
+    }
+  }
+  return sum;
+}

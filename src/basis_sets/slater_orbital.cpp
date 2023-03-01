@@ -99,3 +99,36 @@ const Polynomial<3> &SlaterOrbital::getharms() const {
 BasisOrbital *SlaterOrbital::copy() const {
   return new SlaterOrbital(*this);
 }
+
+double SlaterOrbital::laplacian(double x, double y, double z) const {
+  double sum = 0;
+  for(int i = 0; i < this->getharms().getsize(); i++) {
+    int pows1[3] = this->getharms().gettermorder(i);
+    sum += ((pows1[0] >= 2? (pows1[0] * (pows1[0] - 1) *
+			     std::pow(x, pows1[0] - 2) *
+			     std::pow(y, pows1[1]) *
+			     std::pow(z, pows1[2])) : 0) +
+	    (pows1[1] >= 2? (pows1[1] * (pows1[1] - 1) *
+			     std::pow(x, pows1[0]) *
+			     std::pow(y, pows[1] - 2) *
+			     std::pow(z, pows[2])) : 0) +
+	    (pows1[2] >= 2? (pows1[2] * (pows1[2] - 1) *
+			     std::pow(x, pows1[0]) *
+			     std::pow(y, pows1[1]) *
+			     std::pow(z, pows1[2] - 2)) : 0) -
+	    2 * this->getZeff() / std::sqrt(x * x + y * y + z * z) *
+	    ((pows1[0] >= 1? (pows1[0] * std::pow(x, pows1[0])): 0) +
+	     (pows1[1] >= 1? (pows1[1] * std::pow(y, pows1[1])): 0) +
+	     (pows1[2] >= 1? (pows1[2] * std::pow(z, pows1[2])): 0)) +
+	    0.5 * std::pow(x, pows1[0]) *
+	    std::pow(y, pows1[1]) *
+	    std::pow(z, pows1[2]) * (this->getZeff() * this->getZeff() *
+				     (x * x + y * y + z * z) -
+				     2.5 * this->getZeff()) /
+	    std::sqrt(x * x + y * y + z * z)) *
+      std::exp(-this->getZeff() * std::sqrt(x * x + y * y + z * z));
+  }
+  return std::pow(2 * this->getZeff(), this->getn()) *
+    std::sqrt(2 * this->getZeff() / std::tgamma(2 * this->getn() + 1)) *
+    sum;
+}

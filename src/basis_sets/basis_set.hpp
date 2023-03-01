@@ -16,6 +16,8 @@ namespace compchem {
 
     virtual double eval(double x, double y, double z) const = 0;
     virtual BasisOrbital *copy() const = 0;
+
+    virtual double laplacian(double x, double y, double z) const = 0;
   };
 
   class SlaterOrbital : public BasisOrbital {
@@ -30,6 +32,8 @@ namespace compchem {
 
     double eval(double x, double y, double z) const override;
 
+    double laplacian(double x, double y, double z) const override;
+
     double getZeff() const;
     int getn() const;
     int getl() const;
@@ -43,7 +47,7 @@ namespace compchem {
 
   class GaussianOrbital : public BasisOrbital {
   private :
-    double *coefs, *alphas;
+    double *coefs, *alphas, *norms;
     int l, ml;
     Polynomial<3> *harms;
     int size = 0;
@@ -61,9 +65,11 @@ namespace compchem {
     int getnterms() const;
     int getl() const;
     int getml() const;
+    double getnorm(int index) const;
     const Polynomial<3> &getharms() const;
 
     double eval(double x, double y, double z) const override;
+    double laplacian(double x, double y, double z) const override;
 
     BasisOrbital *copy() const override;
 
