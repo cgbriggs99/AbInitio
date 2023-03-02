@@ -93,7 +93,7 @@ std::vector<double> compchem::STO_nGComputer::gradient(
       }
       sum1 += coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
     }
-    out[i] = (1 - lambda) * sum1 - 2 * this->sfunc(N, l, alphas[i], zeff);
+    out[i] = -this->sfunc(N, l, alphas[i], zeff) - lambda * sum1;
   }
   // Compute the alpha gradient.
   for(int i = 0; i < this->getnGauss(); i++) {
@@ -105,16 +105,16 @@ std::vector<double> compchem::STO_nGComputer::gradient(
       }
       sum1 += coefs[i] * coefs[j] * this->gderiva1(l, alphas[i], alphas[j]);
     }
-    out[i + this->getnGauss()] += sum1 * (1 - lambda) -
-      2 * coefs[i] * this->sderiv(N, l, alphas[i], zeff);
+    out[i + this->getnGauss()] = -coefs[i] *
+      this->sderiv(N, l, alphas[i], zeff) - lambda * sum1;
   }
 
   // Compute the contribution of the Lagrange multiplier.
-  out[2 * this->getnGauss()] = -1;
+  out[2 * this->getnGauss()] = 1;
   for(int i = 0; i < this->getnGauss(); i++) {
-    out[2 * this->getnGauss()] += coefs[i] * coefs[i];
+    out[2 * this->getnGauss()] -= coefs[i] * coefs[i];
     for(int j = 0; j < i; j++) {
-      out[2 * this->getnGauss()] += 2 * coefs[i] * coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
+      out[2 * this->getnGauss()] -= 2 * coefs[i] * coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
     }
   }
     
@@ -161,21 +161,21 @@ double compchem::STO_nGComputer::loss(const std::vector<double> &coefs,
 
   // Compute the orthogonal terms.
   for(int i = 0; i < this->getnGauss(); i++) {    // Gaussian
-    sum += coefs[i] * coefs[i] * (-lambda + 1);
+    sum -= lambda * coefs[i] * coefs[i];
   }
   sum += 1;   // Slater
 
   // Compute the Gaussian-Gaussian term.
   for(int i = 0; i < this->getnGauss(); i++) {
     for(int j = 0; j < i; j++) {
-      sum += 2 * coefs[i] * coefs[j] * (1 - lambda) *
+      sum -= lambda * 2 * coefs[i] * coefs[j] *
 	this->gfunc(l, alphas[i], alphas[j]);
     }
   }
 
   // Compute the Gaussian-Slater term.
   for(int i = 0; i < this->getnGauss(); i++) {
-    sum -= 2 * this->sfunc(N, l, alphas[i], zeff) * coefs[i];
+    sum += this->sfunc(N, l, alphas[i], zeff) * coefs[i];
   }
 
   return sum;
@@ -248,7 +248,7 @@ void compchem::STO_nGComputer::gradientdescent(
     coefs2 = coefs;
     lambda2 = lambda1;
     
-    // Descend.
+    // Descend
     for(int i = 0; i < this->getnGauss(); i++) {
       coefs[i] -= step * grad1[i];
       alphas[i] -= step * grad1[i + this->getnGauss()];
