@@ -17,7 +17,7 @@ namespace compchem {
 class STO_nGComputer {
 private :
   int n;
-  
+
   void gradientdescent(std::vector<double> &coefs,
 		       std::vector<double> &alphas,
 		       double zeff, int N, int l) const;
@@ -34,6 +34,9 @@ public:
   int getnGauss() const;
   
   std::vector<GaussianOrbital> *compute(int Z) const;
+  std::vector<GaussianOrbital> *compute(int Z,
+					const std::vector<double> &guess_c,
+					const std::vector<double> &guess_a) const;
 
   double gfunc(int l, double alpha1, double alpha2) const;
   double gderiva1(int l, double alpha1, double alpha2) const;

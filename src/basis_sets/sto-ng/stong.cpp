@@ -21,47 +21,54 @@ int compchem::STO_nGComputer::getnGauss() const {
 
 double compchem::STO_nGComputer::gfunc(int l, double alpha1,
 				       double alpha2) const {
-  return std::pow(4 * alpha1 * alpha2 / M_PI / M_PI, 0.75) * std::tgamma(l + 1.5) /
-    std::pow(alpha1 + alpha2, l + 1.5) *
-    M_PI * std::pow(64 * alpha1 * alpha2, l / 2.0) *
-    std::exp(std::lgamma(l + 2) - std::lgamma(2 * l + 3)) * 4;
+  // Beautiful identity that I found.
+  double arit = (alpha1 + alpha2) / 2,
+    geom = std::sqrt(alpha1 * alpha2);
+  return std::pow(geom / arit, l + 1.5);
 }
 
 double compchem::STO_nGComputer::gderiva1(int l, double alpha1,
 					  double alpha2) const {
   return this->gfunc(l, alpha1, alpha2) *
-    (l / 2.0 / alpha1 + 3.0 / (4.0 * alpha1) - (l + 1.5) / (alpha1 + alpha2)) * 4;
+    ((2 * l + 3) / (4 * alpha1) - (l + 1.5) / (alpha1 + alpha2));
 }
 
 double compchem::STO_nGComputer::sfunc(int N, int l, double alpha,
 				      double zeta) const {
-  return std::pow(2 * alpha / M_PI, 0.75) * std::pow(2 * zeta, N) *
-    std::sqrt(2 * zeta / std::tgamma(2 * N + 1)) *
-    std::pow(alpha, -(N + l + 2.0) / 2.0) * (std::tgamma((N + l + 2.0) / 2.0) *
-	   hyper1f1((N + l + 2.0) / 2.0, 0.5, zeta * zeta / 4 / alpha) -
-	   zeta / std::sqrt(alpha) * std::tgamma((N + l + 3.0) / 2.0) *
-	   hyper1f1((N + l + 3.0) / 2.0, 1.5, zeta * zeta / 4 / alpha)) * 2 *
-    std::sqrt(M_PI * std::pow(8 * alpha, l) * std::exp(std::lgamma(l + 2) -
-						       std::lgamma(2 * l + 3)));
+  return 2 * std::pow(8 * alpha * alpha * alpha / M_PI, 0.25) *
+    std::pow(2 * zeta, N) *
+    std::sqrt(std::pow(8 * alpha, l) * zeta *
+	      std::tgamma(l + 2) / std::tgamma(2 * l + 3) /
+	      std::tgamma(2 * N + 1)) *
+    std::pow(alpha, -(N + l + 2.0) / 2.0) *
+    (std::tgamma((N + l + 2.0) / 2.0) *
+     hyper1f1((N + l + 2.0) / 2.0, 0.5, zeta * zeta / (4 * alpha)) -
+     zeta / std::sqrt(alpha) * std::tgamma((N + l + 3.0) / 2.0) *
+     hyper1f1((N + l + 3.0) / 2.0, 1.5, zeta * zeta / (4 * alpha)));
 }
 
 double compchem::STO_nGComputer::sderiv(int N, int l, double alpha,
 				      double zeta) const {
-  return 2 * std::pow(2 * zeta, N) * std::sqrt(2 * zeta /
-						 std::tgamma(2 * N + 1)) *
-    std::pow(alpha, -(2 * N + 2 * l + 11.0) / 4.0) / (6 * std::pow(2, 0.25) *
-						      std::pow(M_PI, 0.75)) *
-    (zeta * std::tgamma((N + l + 3.0) / 2.0) *
-     (zeta * zeta * (N + l + 3) *
-      hyper1f1((N + l + 5.0) / 2.0, 2.5, zeta * zeta / 4 / alpha) +
-      3 * alpha * (2 * N + 2 * l + 3) *
-      hyper1f1((N + l + 3.0) / 2.0, 1.5, zeta * zeta / 4 / alpha)) -
-     3 * std::sqrt(alpha) * std::tgamma((N + l + 2.0) / 2.0) *
-     (zeta * zeta * (N + l + 2) *
-      hyper1f1((N + l + 4.0) / 2.0, 1.5, zeta * zeta / 4 / alpha) +
-      alpha * (2 * N + 2 * l + 1) *
-      hyper1f1((N + l + 2.0) / 2.0, 0.5, zeta * zeta / 4 / alpha))) +
-    this->sfunc(N, l, alpha, zeta) / alpha;
+  // Until I can find the analytic derivative, use the numeric derivative.
+  return (this->sfunc(N, l, alpha + 0.00001 * alpha, zeta) -
+	  this->sfunc(N, l, alpha, zeta)) / (0.00001 * alpha);
+
+  
+  /*
+  return -(2 * N + 1.0) / (4 * alpha) * this->sfunc(N, l, alpha, zeta) +
+    2 * std::pow(8 * alpha * alpha * alpha / M_PI, 0.25) *
+    std::pow(2 * zeta, N) *
+    std::sqrt(zeta * std::pow(8 * alpha, l) * std::tgamma(l + 2) /
+	      std::tgamma(2 * N + 1) / std::tgamma(2 * l + 3)) *
+    std::pow(alpha, -(N + l + 7.0) / 2.0) * zeta / 12.0 *
+    (zeta * zeta * (N + l + 3) * std::tgamma((N + l + 3.0) / 2.0) *
+     hyper1f1((N + l + 5.0) / 2.0, 2.5, zeta * zeta / (4 * alpha)) -
+     3 * std::sqrt(alpha) * zeta * (N + l + 2) *
+     std::tgamma((N + l + 3.0) / 2.0) *
+     hyper1f1((N + l + 4.0) / 2.0, 1.5, zeta * zeta / (4 * alpha)) +
+     6 * alpha * std::tgamma((N + l + 3.0) / 2.0) *
+     hyper1f1((N + l + 3.0) / 2.0, 1.5, zeta * zeta / (4 * alpha)));
+  */
 }
 
 
@@ -73,33 +80,42 @@ std::vector<double> compchem::STO_nGComputer::gradient(
   
   std::vector<double> out = std::vector<double>(2 * this->getnGauss() + 1);
 
+  for(int i = 0; i < out.size(); i++) {
+    out[i] = 0;
+  }
+
   // Compute the coefficient gradient.
   for(int i = 0; i < this->getnGauss(); i++) {
     double sum1 = 2 * coefs[i];
-    for(int j = 0; j < i; j++) {
-      sum1 += 2 * coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
+    for(int j = 0; j < this->getnGauss(); j++) {
+      if(i == j) {
+	continue;
+      }
+      sum1 += coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
     }
-    out[i] = (1 - lambda) * sum1 - this->sfunc(N, l, alphas[i], zeff);
+    out[i] = (1 - lambda) * sum1 - 2 * this->sfunc(N, l, alphas[i], zeff);
   }
   // Compute the alpha gradient.
   for(int i = 0; i < this->getnGauss(); i++) {
     double sum1 = 0;
-    for(int j = 0; j < i; j++) {
-      sum1 += 2 * coefs[i] * coefs[j] * this->gderiva1(l, alphas[i], alphas[j]);
+    for(int j = 0; j < this->getnGauss(); j++) {
+      if(i == j) {
+	// Not needed, but it should avoid computing trivial values.
+	continue;
+      }
+      sum1 += coefs[i] * coefs[j] * this->gderiva1(l, alphas[i], alphas[j]);
     }
     out[i + this->getnGauss()] += sum1 * (1 - lambda) -
-      this->sderiv(N, l, alphas[i], zeff);
+      2 * coefs[i] * this->sderiv(N, l, alphas[i], zeff);
   }
 
   // Compute the contribution of the Lagrange multiplier.
-  out[2 * this->getnGauss()] = 1;
+  out[2 * this->getnGauss()] = -1;
   for(int i = 0; i < this->getnGauss(); i++) {
-    out[2 * this->getnGauss()] -= coefs[i] * coefs[i];
-    double sum2 = 0;
+    out[2 * this->getnGauss()] += coefs[i] * coefs[i];
     for(int j = 0; j < i; j++) {
-      sum2 -= 2 * coefs[i] * coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
+      out[2 * this->getnGauss()] += 2 * coefs[i] * coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
     }
-    out[2 * this->getnGauss()] -= 2 * coefs[i] * sum2;
   }
     
   return out;
@@ -151,19 +167,15 @@ double compchem::STO_nGComputer::loss(const std::vector<double> &coefs,
 
   // Compute the Gaussian-Gaussian term.
   for(int i = 0; i < this->getnGauss(); i++) {
-    double sum2 = 0;
-    for(int j = 0; j < this->getnGauss(); j++) {
-      if(i == j) {
-	continue;
-      }
-      sum2 += coefs[j] * this->gfunc(l, alphas[i], alphas[j]);
+    for(int j = 0; j < i; j++) {
+      sum += 2 * coefs[i] * coefs[j] * (1 - lambda) *
+	this->gfunc(l, alphas[i], alphas[j]);
     }
-    sum += 2 * coefs[i] * sum2 * (-lambda + 1);
   }
 
   // Compute the Gaussian-Slater term.
   for(int i = 0; i < this->getnGauss(); i++) {
-    sum -= this->sfunc(N, l, alphas[i], zeff) * coefs[i];
+    sum -= 2 * this->sfunc(N, l, alphas[i], zeff) * coefs[i];
   }
 
   return sum;
@@ -172,8 +184,8 @@ double compchem::STO_nGComputer::loss(const std::vector<double> &coefs,
       
 
 #define CONVERGENCE 1e-8
-#define STEP 1e-3
-#define MAX_CYCLES 100
+#define STEP 1e-2
+#define MAX_CYCLES 1000
 void compchem::STO_nGComputer::gradientdescent(
 		       std::vector<double> &coefs,
 		       std::vector<double> &alphas,
@@ -183,7 +195,7 @@ void compchem::STO_nGComputer::gradientdescent(
     grad2 = std::vector<double>(2 * this->getnGauss() + 1),
     coefs2 = std::vector<double>(this->getnGauss()),
     alphas2 = std::vector<double>(this->getnGauss());
-  double step, lambda1 = 2, lambda2;
+  double step, lambda1 = 1, lambda2;
   int cycle = 0;
 
   do {
@@ -229,7 +241,8 @@ void compchem::STO_nGComputer::gradientdescent(
     for(int i = 0; i < this->getnGauss(); i++) {
       std::fprintf(stderr, "%lf ", alphas[i]);
     }
-    std::fprintf(stderr, "], Lambda: %lf.\n\n", lambda1);
+    std::fprintf(stderr, "], Lambda: %lf.\n", lambda1);
+    std::fprintf(stderr, "Loss: %lf.\n\n", this->loss(coefs, alphas, zeff, N, l, lambda1));
 
     alphas2 = alphas;
     coefs2 = coefs;
@@ -315,7 +328,10 @@ void compchem::STO_nGComputer::gradientdescentptype(
   return;
 }
 
-std::vector<compchem::GaussianOrbital> *compchem::STO_nGComputer::compute(int Z) const {
+std::vector<compchem::GaussianOrbital> *compchem::STO_nGComputer::compute(
+        int Z, const std::vector<double> &guess_c,
+	const std::vector<double> &guess_a) const {
+  
   static std::array<int, 19> lvals = std::array<int, 19>({0, 0, 1, 0, 1, 0, 2, 1, 0, 2, 1, 0, 3, 2, 1, 0, 3, 2, 1});
   static std::array<int, 19> nvals = std::array<int, 19>({1, 2, 2, 3, 3, 4, 3, 4, 5, 4, 5, 6, 4, 5, 6, 7, 5, 6, 7});
   
@@ -334,10 +350,83 @@ std::vector<compchem::GaussianOrbital> *compchem::STO_nGComputer::compute(int Z)
 
     // Set initial guess.
     for(int i = 0; i < this->getnGauss(); i++) {
-      coefs->at(i) = 0;
-      alphas->at(i) = std::cos(i) * std::cos(i);
+      if(i < guess_c.size()) {
+	coefs->at(i) = guess_c[i];
+      } else if(i == 0) {
+	coefs->at(i) = 1;
+      } else {
+	coefs->at(i) = 0;
+      }
+      if(i < guess_a.size()) {
+	alphas->at(i) = guess_a[i];
+      } else {
+	alphas->at(i) = 8 * std::sqrt(zeff) / (i + 1);
+      }
     }
-    coefs->at(0) = 1;
+
+    // s-type orbital, so store a pointer to it.
+    if(lvals[i] == 0) {
+      this->gradientdescent(*coefs, *alphas, zeff, nvals[i], lvals[i]);
+      if(last_stype_alpha != nullptr) {
+	delete last_stype_alpha;
+	last_stype_alpha = nullptr;
+      }
+      last_stype_alpha = new std::vector<double>(*alphas);
+    } else if(lvals[i] == 1) {    // p-type orbital, so use s-type alphas.
+      this->gradientdescentptype(*coefs, *last_stype_alpha, zeff, nvals[i],
+				 lvals[i]);
+    } else {
+      this->gradientdescent(*coefs, *alphas, zeff, nvals[i], lvals[i]);
+    }
+
+    // Add all the orbitals.
+    for(int ml = -lvals[i]; ml <= lvals[i]; ml++) {
+      if(lvals[i] == 1) {
+	out->push_back(GaussianOrbital(lvals[i], ml, *coefs,
+					   *last_stype_alpha));
+      } else {
+	out->push_back(GaussianOrbital(lvals[i], ml, *coefs, *alphas));
+      }
+    }
+    delete coefs;
+    delete alphas;
+  }
+  delete config;
+  if(last_stype_alpha != nullptr) {
+    delete last_stype_alpha;
+  }
+
+  return out;
+  
+}
+
+std::vector<compchem::GaussianOrbital> *compchem::STO_nGComputer::compute(int Z) const {
+  
+  static std::array<int, 19> lvals = std::array<int, 19>({0, 0, 1, 0, 1, 0, 2, 1, 0, 2, 1, 0, 3, 2, 1, 0, 3, 2, 1});
+  static std::array<int, 19> nvals = std::array<int, 19>({1, 2, 2, 3, 3, 4, 3, 4, 5, 4, 5, 6, 4, 5, 6, 7, 5, 6, 7});
+  
+  std::vector<GaussianOrbital> *out = new std::vector<GaussianOrbital>();
+
+  std::vector<double> *last_stype_alpha = nullptr;
+  GSConfig *config = compchem::getconfig(Z);
+  
+  for(int i = 0; i < config->getShells(); i++) {
+    // Compute the Slater parameter.
+    double zeff = Z - slater_rule(nvals[i], lvals[i], *config);
+
+    // Compute the coefficients and scales.
+    std::vector<double> *coefs = new std::vector<double>(this->getnGauss()),
+      *alphas = new std::vector<double>(this->getnGauss());
+
+    // Set initial guess.
+    for(int i = 0; i < this->getnGauss(); i++) {
+      if(i == 0) {
+	coefs->at(i) = 1;
+      } else {
+	coefs->at(i) = 0;
+      }
+      alphas->at(i) = 8 * std::sqrt(zeff) / (i + 1);
+    }
 
     // s-type orbital, so store a pointer to it.
     if(lvals[i] == 0) {

@@ -127,7 +127,89 @@ int test_ints() {
 
   return warns;
 
-}  
+}
+
+int test_sto_3g(void) {
+  FILE *fp = fopen("${CMAKE_SOURCE_DIR}/tests/sto-3g.gbs", "r");
+  int warns = 0;
+  STO_nGComputer compute = STO_nGComputer(3);
+
+  ASSERT_WARN(NEAR(compute.gfunc(1, 1, 2), compute.gfunc(1, 2, 1)), warns);
+  ASSERT_WARN_MSG(NEAR(compute.gfunc(1, 2, 2), 1), warns,
+		  "Got %lf, expected 1.\n",
+		  compute.gfunc(1, 2, 2));
+  ASSERT_WARN_MSG(NEAR(compute.gderiva1(1, 2, 2), 0), warns,
+		  "Got %lf, expected 0.\n",
+		  compute.gderiva1(1, 2, 2));
+
+  std::vector<GaussianOrbital> *h_psi = readPsi4file(fp, 1);
+  std::vector<double> coefs = {h_psi->at(0).getcoef(0),
+    h_psi->at(0).getcoef(1),
+    h_psi->at(0).getcoef(2)},
+    alphas = {h_psi->at(0).getalpha(0),
+    h_psi->at(0).getalpha(1),
+    h_psi->at(0).getalpha(2)},
+    grad = compute.gradient(coefs, alphas, 1, 1, 0, 0);
+
+  double sum = 0;
+  for(int i = 0; i < 3; i++) {
+    sum += coefs[i] * coefs[i];
+    for(int j = 0; j < i; j++) {
+      sum += 2 * coefs[i] * coefs[j] * compute.gfunc(0, alphas[i], alphas[j]);
+    }
+  }
+  ASSERT_WARN_MSG(NEAR(sum, 1), warns,
+		  "Got %lf, expected 1.\n",
+		  sum);
+
+  ASSERT_WARN_MSG(NEAR(hyper1f1(2.5, 1.5, 1 / (4 *alphas[2])), 8.73385),
+		  warns,
+		  "Got %lf, expected %lf.\n",
+		  hyper1f1(2.5, 1.5, 1 / 4 / alphas[2]), 8.73385);
+  
+  ASSERT_WARN_MSG(NEAR(compute.sfunc(1, 0, alphas[2], 1), 0.951579), warns,
+		  "Got %lf, expected %lf.\n",
+		  compute.sfunc(1, 0, alphas[2], 1), 0.951579);
+
+  // Compute a derivative to compare.
+  double deriv = (compute.sfunc(1, 0, alphas[2] + 0.001, 1) -
+		  compute.sfunc(1, 0, alphas[2], 1)) / 0.001;
+
+  ASSERT_WARN_MSG(NEAR(compute.sderiv(1, 0, alphas[2], 1), deriv), warns,
+		  "Got %lf, expected %lf.\n",
+		  compute.sderiv(1, 0, alphas[2], 1), deriv);
+
+  for(int i = 0; i < 3; i++) {
+    ASSERT_WARN_MSG(NEAR(grad[i], 0), warns,
+		"Got %lf, expected 0.\n", grad[i]);
+    ASSERT_WARN_MSG(NEAR(grad[i + 3], 0), warns,
+		    "Got %lf, expected 0.\n", grad[i + 3]);
+  }
+  ASSERT_WARN_MSG(NEAR(grad[6], 0), warns,
+		  "Got %lf, expected 0.\n", grad[6]);
+  std::vector<GaussianOrbital> *h_comp = compute.compute(1, coefs, alphas);
+  fclose(fp);
+
+  ASSERT_WARN(h_psi->size() == 1, warns);
+  ASSERT_WARN(h_psi->size() == h_comp->size(), warns);
+
+  for(int i = 0; i < 3; i++) {
+    ASSERT_WARN_MSG(NEAR(h_psi->at(0).getcoef(i),
+			 h_comp->at(0).getcoef(i)), warns,
+		    "Got %lf, expected %lf.\n",
+		    h_comp->at(0).getcoef(i),
+		    h_psi->at(0).getcoef(i));
+    ASSERT_WARN_MSG(NEAR(h_psi->at(0).getalpha(i),
+			 h_comp->at(0).getalpha(i)), warns,
+		    "Got %lf, expected %lf.\n",
+		    h_comp->at(0).getalpha(i),
+		    h_psi->at(0).getalpha(i));
+  }
+  delete h_psi;
+  delete h_comp;
+  return warns;
+}
+  
 
 int main(void) {
 
@@ -142,6 +224,13 @@ int main(void) {
   }
 
   ret = test_ints();
+  if(ret == -1) {
+    errs++;
+  } else {
+    warns += ret;
+  }
+
+  ret = test_sto_3g();
   if(ret == -1) {
     errs++;
   } else {

@@ -8,6 +8,6 @@ set_target_properties(basis_sets PROPERTIES POSITION_INDEPENDEND_CODE True)
 
 target_sources(abinit PUBLIC $<TARGET_OBJECTS:basis_sets>)
 
-#add_subdirectory(sto-ng)
+add_subdirectory(sto-ng)
 
 install(FILES basis_set.hpp TYPE INCLUDE)
