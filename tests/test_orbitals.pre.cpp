@@ -149,7 +149,7 @@ int test_sto_3g(void) {
     alphas = {h_psi->at(0).getalpha(0),
     h_psi->at(0).getalpha(1),
     h_psi->at(0).getalpha(2)},
-    grad = compute.gradient(coefs, alphas, 1, 1, 0, 0);
+    grad = compute.gradient(coefs, alphas, 1, 0, 0);
 
   double sum = 0;
   for(int i = 0; i < 3; i++) {
@@ -167,17 +167,17 @@ int test_sto_3g(void) {
 		  "Got %lf, expected %lf.\n",
 		  hyper1f1(2.5, 1.5, 1 / 4 / alphas[2]), 8.73385);
   
-  ASSERT_WARN_MSG(NEAR(compute.sfunc(1, 0, alphas[2], 1), 0.951579), warns,
+  ASSERT_WARN_MSG(NEAR(compute.sfunc(1, 0, alphas[2]), 0.951579), warns,
 		  "Got %lf, expected %lf.\n",
-		  compute.sfunc(1, 0, alphas[2], 1), 0.951579);
+		  compute.sfunc(1, 0, alphas[2]), 0.951579);
 
   // Compute a derivative to compare.
-  double deriv = (compute.sfunc(1, 0, alphas[2] + 0.001, 1) -
-		  compute.sfunc(1, 0, alphas[2], 1)) / 0.001;
+  double deriv = (compute.sfunc(1, 0, alphas[2] + 0.0001) -
+		  compute.sfunc(1, 0, alphas[2])) / 0.0001;
 
-  ASSERT_WARN_MSG(NEAR(compute.sderiv(1, 0, alphas[2], 1), deriv), warns,
+  ASSERT_WARN_MSG(NEAR(compute.sderiv(1, 0, alphas[2]), deriv), warns,
 		  "Got %lf, expected %lf.\n",
-		  compute.sderiv(1, 0, alphas[2], 1), deriv);
+		  compute.sderiv(1, 0, alphas[2]), deriv);
 
   for(int i = 0; i < 3; i++) {
     ASSERT_WARN_MSG(NEAR(grad[i], 0), warns,

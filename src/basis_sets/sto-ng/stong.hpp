@@ -20,11 +20,7 @@ private :
 
   void gradientdescent(std::vector<double> &coefs,
 		       std::vector<double> &alphas,
-		       double zeff, int N, int l) const;
-  
-  void gradientdescentptype(std::vector<double> &coefs,
-			    const std::vector<double> &alphas,
-			    double zeff, int N, int l) const;
+		       int N, int l) const;
   
 public:
   ~STO_nGComputer() = default;
@@ -40,20 +36,16 @@ public:
 
   double gfunc(int l, double alpha1, double alpha2) const;
   double gderiva1(int l, double alpha1, double alpha2) const;
-  double sfunc(int N, int l, double alpha, double zeta) const;
-  double sderiv(int N, int l, double alpha, double zeta) const;
+  double sfunc(int N, int l, double alpha) const;
+  double sderiv(int N, int l, double alpha) const;
   
   double loss(const std::vector<double> &coefs,
 	      const std::vector<double> &alphas,
-	      double zeff, int N, int l, double lambda) const;
+	      int N, int l, double lambda) const;
   
   std::vector<double> gradient(const std::vector<double> &coefs,
 			       const std::vector<double> &alphas,
-			       double zeff, int N, int l, double lambda) const;
-  
-  std::vector<double> gradientptype(const std::vector<double> &coefs,
-				    const std::vector<double> &alphas,
-				    double zeff, int N, int l, double lambda) const;
+			       int N, int l, double lambda) const;
   
 };
 
