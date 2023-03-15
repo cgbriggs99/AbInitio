@@ -725,9 +725,12 @@ Polynomial<n> &Polynomial<n>::translate(double x, ...) {
   va_end(list);
 
   Polynomial<n> *out = new Polynomial<n>();
-  Polynomial<n> *terms[n];
+  Polynomial<n> **terms = new Polynomial<n> *[n];
   // Set up a sneaky way to initialize the terms.
-  int pow[2 * n - 1] = 0;
+  int *pow = new int[2 * n - 1];
+  for(int i = 0; i < 2 * n - 1; i++) {
+    pow[i] = 0;
+  }
   pow[n - 1] = 1;
   double one = 1;
   for(int i = 0; i < n; i++) {

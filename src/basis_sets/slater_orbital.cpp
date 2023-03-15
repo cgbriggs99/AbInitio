@@ -103,15 +103,15 @@ BasisOrbital *SlaterOrbital::copy() const {
 double SlaterOrbital::laplacian(double x, double y, double z) const {
   double sum = 0;
   for(int i = 0; i < this->getharms().getsize(); i++) {
-    int pows1[3] = this->getharms().gettermorder(i);
+    const int *pows1 = this->getharms().gettermorder(i);
     sum += ((pows1[0] >= 2? (pows1[0] * (pows1[0] - 1) *
 			     std::pow(x, pows1[0] - 2) *
 			     std::pow(y, pows1[1]) *
 			     std::pow(z, pows1[2])) : 0) +
 	    (pows1[1] >= 2? (pows1[1] * (pows1[1] - 1) *
 			     std::pow(x, pows1[0]) *
-			     std::pow(y, pows[1] - 2) *
-			     std::pow(z, pows[2])) : 0) +
+			     std::pow(y, pows1[1] - 2) *
+			     std::pow(z, pows1[2])) : 0) +
 	    (pows1[2] >= 2? (pows1[2] * (pows1[2] - 1) *
 			     std::pow(x, pows1[0]) *
 			     std::pow(y, pows1[1]) *

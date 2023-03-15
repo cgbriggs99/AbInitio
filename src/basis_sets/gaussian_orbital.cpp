@@ -206,7 +206,7 @@ void GaussianOrbital::sort(void) {
 }
   
   
-double GaussianOrbital::getnorm(int index) {
+double GaussianOrbital::getnorm(int index) const {
   if(index < 0 || index >= this->size) {
     throw new std::out_of_range("Term index out of bounds in Gaussian orbital.");
   }
@@ -218,8 +218,8 @@ double GaussianOrbital::laplacian(double x, double y, double z) const {
   double sum = 0;
 
   for(int i = 0; i < this->getnterms(); i++) {
-    for(int j = 0; j < this->->getharms().getsize(); j++) {
-      int pows1[3] = this->getharms().gettermorder(j);
+    for(int j = 0; j < this->getharms().getsize(); j++) {
+      const int *pows1 = this->getharms().gettermorder(j);
       sum += this->getnorm(i) * this->getharms().getcoef(j) *
 	this->getcoef(i);
 	((pows1[0] >= 2? (pows1[0] * (pows1[0] - 1) *
@@ -228,13 +228,13 @@ double GaussianOrbital::laplacian(double x, double y, double z) const {
 			  std::pow(z, pows1[2])) : 0) +
 	 (pows1[1] >= 2? (pows1[1] * (pows1[1] - 1) *
 			  std::pow(x, pows1[0]) *
-			  std::pow(y, pows[1] - 2) *
-			  std::pow(z, pows[2])) : 0) +
+			  std::pow(y, pows1[1] - 2) *
+			  std::pow(z, pows1[2])) : 0) +
 	 (pows1[2] >= 2? (pows1[2] * (pows1[2] - 1) *
 			  std::pow(x, pows1[0]) *
 			  std::pow(y, pows1[1]) *
 			  std::pow(z, pows1[2] - 2)) : 0) -
-	 4 * o1->getalpha(i) * ((pows1[0] >= 1?
+	 4 * this->getalpha(i) * ((pows1[0] >= 1?
 				 (pows1[0] * std::pow(x, pows1[0]) *
 				  std::pow(y, pows1[1]) *
 				  std::pow(z, pows1[2])): 0) +
