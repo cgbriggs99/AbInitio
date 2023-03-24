@@ -134,11 +134,12 @@ Atom::Atom(const Atom &copy) {
 }
 
 Atom::~Atom() {
-  for(int i = 0; i < this->norbitals; i++) {
-    if(this->orbitals[i] != nullptr) {
-      delete this->orbitals[i];
+  for(auto b : this->orbitals) {
+    if(b != nullptr) {
+      delete b;
     }
   }
+  this->orbitals.clear();
 }
 
 double Atom::getx() const {
@@ -171,6 +172,10 @@ int Atom::getnorbitals() const {
 
 const std::vector<BasisOrbital *> &Atom::getorbitals() const {
   return this->orbitals;
+}
+
+const BasisOrbital &Atom::getorbital(int index) const {
+  return *this->orbitals.at(index);
 }
 
 int compchem::getZFromSymb(const std::string &symb) {
@@ -328,9 +333,15 @@ Atom *Atom::copy() const {
   return out;
 }
 
-void Atom::setorbitals(std::vector<BasisOrbital *> &orbs) {
+void Atom::setorbitals(const std::vector<BasisOrbital *> &orbs) {
+  for(auto b : this->orbitals) {
+    delete b;
+  }
   this->orbitals.clear();
-  this->orbitals.swap(orbs);
+  for(auto b : orbs) {
+    this->orbitals.push_back(b->copy());
+  }
+  this->norbitals = orbs.size();
 }
 
 void Atom::setx(double x) {
@@ -343,4 +354,8 @@ void Atom::sety(double y) {
 
 void Atom::setz(double z) {
   this->z = z;
+}
+
+std::array<double, 3> Atom::getpos() const {
+  return std::array<double, 3>{this->getx(), this->gety(), this->getz()};
 }

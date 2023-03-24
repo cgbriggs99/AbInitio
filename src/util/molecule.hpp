@@ -38,8 +38,9 @@ namespace compchem {
 
     void translate_to_com();
   };
-    
-}
 
+
+  double nuclear_repulsion(const Molecule &mol);
+}
 
 #endif

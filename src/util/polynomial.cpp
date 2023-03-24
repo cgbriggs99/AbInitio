@@ -4,7 +4,7 @@
 
 using namespace compchem;
 
-Polynomial<3> &compchem::sphereharm(int l, int ml) {
+Polynomial<3> *compchem::sphereharm(int l, int ml) {
   std::vector<std::array<int, 3> > r2pow = {{2, 0, 0}, {0, 2, 0}, {0, 0, 2}},
     xpow = {{1, 0, 0}}, ypow = {{0, 1, 0}}, zpow {{0, 0, 1}};
   std::vector<double> r2cos = {1, 1, 1}, xcos = {1};
@@ -30,15 +30,19 @@ Polynomial<3> &compchem::sphereharm(int l, int ml) {
       acoef /= p + 1;
     }
 
-    for(int k = 0; k < (l - ml) / 2; k++) {
+    for(int k = 0; k <= (l - ml) / 2; k++) {
       *pi += picoef * compchem::pow(*r2, 2 * k) * compchem::pow(*z, l - 2 * k - ml);
       picoef *= -(l - k) * (l - 2 * k - ml) * (l - 2 * k - 1 - ml);
       picoef /= (k + 1) * (2 * l - 2 * k) * (2 * l - 2 * k - 1);
     }
 
     *pi *= norm * *a;
-    delete a, r2, x, y, z;
-    return *pi;
+    delete a;
+    delete r2;
+    delete x;
+    delete y;
+    delete z;
+    return pi;
   } else if(ml < 0) {
     Polynomial<3> *b = new Polynomial<3>();
     double norm = sqrt((2 * l + 1) / (2 * M_PI));
@@ -56,7 +60,7 @@ Polynomial<3> &compchem::sphereharm(int l, int ml) {
       bcoef /= p + 1;
     }
 
-    for(int k = 0; k < (l + ml) / 2; k++) {
+    for(int k = 0; k <= (l + ml) / 2; k++) {
       *pi += picoef * compchem::pow(*r2, 2 * k) *
 	compchem::pow(*z, l - 2 * k + ml);
       picoef *= -(l - k) * (l - 2 * k + ml) * (l - 2 * k - 1 + ml);
@@ -64,21 +68,28 @@ Polynomial<3> &compchem::sphereharm(int l, int ml) {
     }
 
     *pi *= norm * *b;
-    delete b, r2, x, y, z;
-    return *pi;
+    delete b;
+    delete r2;
+    delete x;
+    delete y;
+    delete z;
+    return pi;
   } else {
     double norm = sqrt((2 * l + 1) / (4 * M_PI));
     double picoef = exp(lgamma(2 * l + 1) - 2 * lgamma(l + 1)) *
       std::pow(2, -l);
 
-    for(int k = 0; k < l / 2; k++) {
+    for(int k = 0; k <= l / 2; k++) {
       *pi += picoef * compchem::pow(*r2, 2 * k) * compchem::pow(*z, l - 2 * k);
       picoef *= -(l - k) * (l - 2 * k) * (l - 2 * k - 1);
       picoef /= (k + 1) * (2 * l - 2 * k) * (2 * l - 2 * k - 1);
     }
 
     *pi *= norm;
-    delete r2, x, y, z;
-    return *pi;
+    delete r2;
+    delete x;
+    delete y;
+    delete z;
+    return pi;
   }
 }
