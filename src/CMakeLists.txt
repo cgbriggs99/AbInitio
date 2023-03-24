@@ -8,4 +8,4 @@ add_subdirectory(input)
 add_subdirectory(geometric)
 add_subdirectory(integrals)
 
-include_directories(util basis_sets input geometric)
+include_directories(util basis_sets input geometric procedure)
