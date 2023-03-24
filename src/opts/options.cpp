@@ -2,6 +2,7 @@
 #include <utility>
 #include <cctype>
 #include "options.hpp"
+#include "default_options.hpp"
 #include <stdexcept>
 
 using namespace compchem;
@@ -20,20 +21,20 @@ OptionList::OptionList(const OptionList &copy) {
   this->double_opts = std::map<string, double>();
   this->string_opts = std::map<string, string>();
 
-  for(pair<const string, bool> kv : copy.bool_opts) {
-    this->bool_opts[kv.first()] = kv.second();
+  for(pair<string, bool> kv : copy.bool_opts) {
+    this->bool_opts[kv.first] = kv.second;
   }
 
-  for(pair<const string, int> kv : copy.int_opts) {
-    this->int_opts[kv.first()] = kv.second();
+  for(pair<string, int> kv : copy.int_opts) {
+    this->int_opts[kv.first] = kv.second;
   }
 
-  for(pair<const string, double> kv : copy.double_opts) {
-    this->double_opts[kv.first()] = kv.second();
+  for(pair<string, double> kv : copy.double_opts) {
+    this->double_opts[kv.first] = kv.second;
   }
 
-  for(pair<const string, string> kv : copy.string_opts) {
-    this->string_opts[kv.first()] = kv.second();
+  for(pair<string, string> kv : copy.string_opts) {
+    this->string_opts[kv.first] = kv.second;
   }
 }
 
@@ -75,35 +76,35 @@ string OptionList::to_upper(const char *str) {
 }
 
 bool OptionList::isoptionbool(const string &str) {
-  return this->bool_opts.find(OptionList::to_upper(str)) != 0;
+  return this->bool_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptionbool(const char *str) {
-  return this->bool_opts.find(OptionList::to_upper(str)) != 0;
+  return this->bool_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptionint(const string &str) {
-  return this->int_opts.find(OptionList::to_upper(str)) != 0;
+  return this->int_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptionint(const char *str) {
-  return this->int_opts.find(OptionList::to_upper(str)) != 0;
+  return this->int_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptiondouble(const string &str) {
-  return this->double_opts.find(OptionList::to_upper(str)) != 0;
+  return this->double_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptiondouble(const char *str) {
-  return this->double_opts.find(OptionList::to_upper(str)) != 0;
+  return this->double_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptionstring(const string &str) {
-  return this->string_opts.find(OptionList::to_upper(str)) != 0;
+  return this->string_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::isoptionstring(const char *str) {
-  return this->string_opts.find(OptionList::to_upper(str)) != 0;
+  return this->string_opts.count(OptionList::to_upper(str)) != 0;
 }
 
 bool OptionList::getbooloption(const string &str) {
