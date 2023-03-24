@@ -61,15 +61,19 @@ GaussianOrbital::GaussianOrbital(const GaussianOrbital &copy) {
 GaussianOrbital::~GaussianOrbital() {
   if(this->coefs != nullptr) {
     delete[] this->coefs;
+    this->coefs = nullptr;
   }
   if(this->alphas != nullptr) {
     delete[] this->alphas;
+    this->alphas = nullptr;
   }
   if(this->harms != nullptr) {
     delete this->harms;
+    this->harms = nullptr;
   }
   if(this->norms != nullptr) {
-    delete this->norms;
+    delete[] this->norms;
+    this->norms = nullptr;
   }
 }
 

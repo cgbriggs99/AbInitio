@@ -2,6 +2,7 @@
 #include "molecule.hpp"
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 using namespace compchem;
 
@@ -40,6 +41,7 @@ Molecule::~Molecule() {
   for(Atom *atom : *this->atoms) {
     delete atom;
   }
+  this->atoms->clear();
   delete this->atoms;
 }
 
@@ -109,4 +111,18 @@ double Molecule::getcomy() const {
 
 double Molecule::getcomz() const {
   return this->comz;
+}
+
+double compchem::nuclear_repulsion(const compchem::Molecule &mol) {
+  double sum = 0;
+  for(int i = 1; i < mol.getsize(); i++) {
+    for(int j = 0; j < i; j++) {
+      const compchem::Atom &a1 = mol.getatom(i), &a2 = mol.getatom(j);
+      sum += a1.getZ() * a2.getZ() /
+	std::sqrt((a1.getx() - a2.getx()) * (a1.getx() - a2.getx()) +
+		  (a1.gety() - a2.gety()) * (a1.gety() - a2.gety()) +
+		  (a1.getz() - a2.getz()) * (a1.getz() - a2.getz()));
+    }
+  }
+  return sum;
 }

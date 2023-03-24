@@ -34,6 +34,7 @@ namespace compchem {
     double getx() const;
     double gety() const;
     double getz() const;
+    std::array<double, 3> getpos() const;
 
     double getmass() const;
     int getZ() const;
@@ -42,7 +43,7 @@ namespace compchem {
     const std::vector<BasisOrbital *> &getorbitals() const;
     const BasisOrbital &getorbital(int index) const;
 
-    void setorbitals(std::vector<BasisOrbital *> &orbs);
+    void setorbitals(const std::vector<BasisOrbital *> &orbs);
 
     Atom *copy() const;
 

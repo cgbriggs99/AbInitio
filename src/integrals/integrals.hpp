@@ -11,6 +11,8 @@
 #include <array>
 #include <vector>
 #include <initializer_list>
+#include "../util/molecule.hpp"
+#include "../util/tei_array.hpp"
 
 namespace compchem {
 
@@ -37,6 +39,7 @@ public:
 			  std::array<double, 3> c1,
 			  std::array<double, 3> c2, std::array<double, 3> c3,
 			  std::array<double, 3> c4) const = 0;
+
 };
 
 class NumericIntegral : public IntegralMethod {
@@ -67,7 +70,7 @@ public :
 };
   
   
-class AnalyticIntegral : public NumericIntegral {
+class AnalyticIntegral {
 public :
   AnalyticIntegral() = default;
   virtual ~AnalyticIntegral() = default;
@@ -90,8 +93,20 @@ public :
 			  std::array<double, 3> c1,
 			  std::array<double, 3> c2, std::array<double, 3> c3,
 			  std::array<double, 3> c4) const;
+};  
+  
+  
+template<typename Ints>
+class IntegralFactory {
+public:
+  static void Smatrix(const Molecule *mol, double *out, int *dim);
+  static void Tmatrix(const Molecule *mol, double *out, int *dim);
+  static void Vmatrix(const Molecule *mol, double *out, int *dim);
+  static TEIArray *TEIints(const Molecule *mol);
 };
 
 }
+
+#include "integral_factory.template.cpp"
 
 #endif /* GAUSSIAN_HPP_ */

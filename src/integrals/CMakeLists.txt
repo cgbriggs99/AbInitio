@@ -3,9 +3,10 @@ cmake_minimum_required(VERSION 3.13)
 
 project(AbInitio)
 
-add_library(integrals OBJECT gaussian.cpp numeric.cpp)
+add_library(integrals OBJECT gaussian_overlap.cpp gaussian_kinetic.cpp
+  gaussian_exchange.cpp gaussian_coulomb.cpp)
 set_target_properties(integrals PROPERTIES POSITION_INDEPENDEND_CODE True)
 
 target_sources(abinit PUBLIC $<TARGET_OBJECTS:integrals>)
 
-install(FILES integrals.hpp TYPE INCLUDE)
+install(FILES integrals.hpp integral_factory.template.cpp TYPE INCLUDE)

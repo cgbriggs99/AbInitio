@@ -7,7 +7,7 @@
 
 namespace compchem {
 
-  std::vector<GaussianOrbital> *readPsi4file(std::FILE *fp, int Z, int charge = 0);
+  std::vector<BasisOrbital *> *readPsi4file(std::FILE *fp, int Z, int charge = 0);
 
 }
 

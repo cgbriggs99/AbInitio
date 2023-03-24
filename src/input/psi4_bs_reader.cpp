@@ -10,9 +10,10 @@ using namespace std;
 
 #define BUFF_SIZE 1024
 
-std::vector<GaussianOrbital> *compchem::readPsi4file(std::FILE *fp, int Z, int charge) {
+std::vector<BasisOrbital *> *compchem::readPsi4file(std::FILE *fp, int Z, int charge) {
 
-  std::vector<GaussianOrbital> *out = new std::vector<GaussianOrbital>();
+  std::rewind(fp); 
+  std::vector<BasisOrbital *> *out = new std::vector<BasisOrbital *>();
   char buffer[BUFF_SIZE + 1];
   bool comment = false;
 
@@ -124,6 +125,9 @@ std::vector<GaussianOrbital> *compchem::readPsi4file(std::FILE *fp, int Z, int c
 	    if(isupper(buffer[0])) {
 	      currl = 3 + buffer[0] - 'F';
 	    } else {
+	      for(auto b : *out) {
+		delete b;
+	      }
 	      out->clear();
 	      delete out;
 	      throw new std::runtime_error("Could not recognize orbital symbol at line " + to_string(linenum) +  "\n");
@@ -165,7 +169,7 @@ std::vector<GaussianOrbital> *compchem::readPsi4file(std::FILE *fp, int Z, int c
 	if(currgauss >= ngauss) {
 	  if(currz == Z && currcharge == charge) {
 	    for(int ml = -currl; ml <= currl; ml++) {
-	      out->emplace_back(currl, ml, coefs, alphas);
+	      out->push_back(new GaussianOrbital(currl, ml, coefs, alphas));
 	    }
 	  }
 	  coefs.clear();
@@ -189,9 +193,9 @@ std::vector<GaussianOrbital> *compchem::readPsi4file(std::FILE *fp, int Z, int c
 	// Finish gathering orbitals. Add the s and p orbitals.
 	if(currgauss >= ngauss) {
 	  if(currz == Z && currcharge == charge) {
-	    out->emplace_back(0, 0, coefs, alphas);
+	    out->push_back(new GaussianOrbital(0, 0, coefs, alphas));
 	    for(int ml = -1; ml <= 1; ml++) {
-	      out->emplace_back(1, ml, coefs2, alphas);
+	      out->push_back(new GaussianOrbital(1, ml, coefs2, alphas));
 	    }
 	  }
 	  alphas.clear();
@@ -210,6 +214,9 @@ std::vector<GaussianOrbital> *compchem::readPsi4file(std::FILE *fp, int Z, int c
     } else {
       // Not end of a token. Add character.
       if(end == BUFF_SIZE) {
+	for(auto b : *out) {
+	  delete b;
+	}
 	out->clear();
 	delete out;
 	throw new std::runtime_error("Malformed line at line " + to_string(linenum) + "\n");
@@ -220,6 +227,9 @@ std::vector<GaussianOrbital> *compchem::readPsi4file(std::FILE *fp, int Z, int c
     }
   }
 
+  for(auto b : *out) {
+    delete b;
+  }
   out->clear();
   delete out;
   throw new std::runtime_error("Basis set not found!\n");

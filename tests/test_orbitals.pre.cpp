@@ -20,7 +20,7 @@ int test_inputter() {
     return -1;
   }
 
-  std::vector<GaussianOrbital> *horbs, *corbs, *tiorbs;
+  std::vector<BasisOrbital *> *horbs, *corbs, *tiorbs;
 
   horbs = readPsi4file(fp, 1);
   rewind(fp);
@@ -31,12 +31,22 @@ int test_inputter() {
   fclose(fp);
 
   ASSERT_WARN(horbs->size() == 1, warns);
-  ASSERT_WARN(horbs->at(0).getnterms() == 3, warns);
+  ASSERT_WARN(static_cast<GaussianOrbital *>(horbs->at(0))->getnterms() == 3, warns);
   ASSERT_WARN(corbs->size() == 5, warns);
-  ASSERT_WARN(corbs->at(0).getnterms() == 3, warns);
+  ASSERT_WARN(static_cast<GaussianOrbital *>(corbs->at(0))->getnterms() == 3, warns);
   ASSERT_WARN(tiorbs->size() == 18, warns);
-  ASSERT_WARN(tiorbs->at(0).getnterms() == 3, warns);
+  ASSERT_WARN(static_cast<GaussianOrbital *>(tiorbs->at(0))->getnterms() == 3, warns);
 
+  for(auto b : *horbs) {
+    delete b;
+  }
+  for(auto b : *corbs) {
+    delete b;
+  }
+  for(auto b : *tiorbs) {
+    delete b;
+  }
+  
   horbs->clear();
   corbs->clear();
   tiorbs->clear();
