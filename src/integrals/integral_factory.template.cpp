@@ -9,6 +9,99 @@
 #include <exception>
 #include <stdexcept>
 #include <vector>
+#include <thread>
+#include <cmath>
+#include "../opts/options.hpp"
+
+template<typename Ints>
+void compchem::IntegralFactory<Ints>::s_routine(const std::vector<const compchem::GaussianOrbital *> *orbs,
+		      const std::vector<std::array<double, 3> *> *centers,
+		      double *out,
+		      int dim, int thread_num, int threads,
+		      compchem::OptionList &opts) {
+  Ints method = Ints(opts);
+
+  int max_size = (dim * (dim + 1)) / 2;
+
+  for(int i = (int) (thread_num * (double) max_size / threads);
+      i < ((thread_num == threads - 1)? max_size:
+	   (int) ((thread_num + 1) * (double) max_size / threads)); i++) {
+    // Calculate the indices.
+    int mu = (int) std::floor((std::sqrt(1 + 8 * i) - 1) / 2.0);
+    int nu = i - (mu * (mu + 1)) / 2;
+
+    // Compute.
+    double res = method.overlap(orbs->at(mu),
+				orbs->at(nu),
+				*centers->at(mu),
+				*centers->at(nu));
+    out[mu * dim + nu] = res;
+    out[nu * dim + mu] = method.overlap(orbs->at(nu),
+				orbs->at(mu),
+				*centers->at(nu),
+				*centers->at(mu));
+  }
+}
+
+template<typename Ints>
+void compchem::IntegralFactory<Ints>::t_routine(const std::vector<const compchem::GaussianOrbital *> *orbs,
+		      const std::vector<std::array<double, 3> *> *centers,
+		      double *out,
+		      int dim, int thread_num, int threads,
+		      compchem::OptionList &opts) {
+  Ints method = Ints(opts);
+
+  int max_size = (dim * (dim + 1)) / 2;
+
+  for(int i = (int) (thread_num * (double) max_size / threads);
+      i < ((thread_num == threads - 1)? max_size:
+	   (int) ((thread_num + 1) * (double) max_size / threads)); i++) {
+    // Calculate the indices.
+    int mu = (int) std::floor((std::sqrt(1 + 8 * i) - 1) / 2.0);
+    int nu = i - (mu * (mu + 1)) / 2;
+
+    // Compute.
+    double res = method.laplacian(orbs->at(mu),
+				orbs->at(nu),
+				*centers->at(mu),
+				*centers->at(nu));
+    out[mu * dim + nu] = res;
+    out[nu * dim + mu] = res;
+  }
+}
+
+template<typename Ints>
+void compchem::IntegralFactory<Ints>::v_routine(const std::vector<const compchem::GaussianOrbital *> *orbs,
+						const std::vector<std::array<double, 3> *> *centers,
+						double *out,
+						int dim, int thread_num, int threads,
+						compchem::OptionList &opts,
+						const compchem::Molecule *mol) {
+  Ints method = Ints(opts);
+
+  int max_size = (dim * (dim + 1)) / 2;
+
+  for(int i = (int) (thread_num * (double) max_size / threads);
+      i < ((thread_num == threads - 1)? max_size:
+	   (int) ((thread_num + 1) * (double) max_size / threads)); i++) {
+    // Calculate the indices.
+    int mu = (int) std::floor((std::sqrt(1 + 8 * i) - 1) / 2.0);
+    int nu = i - (mu * (mu + 1)) / 2;
+
+    // Compute.
+    double sum = 0;
+    for(int j = 0; j < mol->getsize(); j++) {
+      sum += method.coulomb(orbs->at(mu),
+			    orbs->at(nu),
+			    *centers->at(mu),
+			    *centers->at(nu),
+			    mol->getatom(j));
+    }
+    out[mu * dim + nu] = sum;
+    out[nu * dim + mu] = sum;
+  }
+}
+  
 
 template<typename Ints>
 void compchem::IntegralFactory<Ints>::Smatrix(const compchem::Molecule *mol, double *out, int *dim) {
@@ -18,51 +111,50 @@ void compchem::IntegralFactory<Ints>::Smatrix(const compchem::Molecule *mol, dou
   if(mol == nullptr) {
     throw new std::invalid_argument("The molecule input to the integral factory can not be null.");
   }
+  
   int orbs = 0;
+  std::vector<const compchem::GaussianOrbital *> *orbitals =
+    new std::vector<const compchem::GaussianOrbital *>();
+  std::vector<std::array<double, 3> *> *centers =
+    new std::vector<std::array<double, 3> *>();
   for(int i = 0; i < mol->getsize(); i++) {
     orbs += mol->getatom(i).getnorbitals();
+    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
+      orbitals->push_back(static_cast<const compchem::GaussianOrbital *>
+			 (&mol->getatom(i).getorbital(j)));
+      centers->push_back(new std::array<double, 3>(mol->getatom(i).getpos()));
+    }
   }
   *dim = orbs;
 
-  Ints method = Ints();
-  int row = 0;
-  for(int i = 0; i < mol->getsize(); i++) {
-    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
-      int col = 0;
-      // fill in the diagonal.
-      out[row * orbs + row] = method.overlap(
-				static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-				static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-				mol->getatom(i).getpos(),
-				mol->getatom(i).getpos());
-      for(int k = 0; k <= i; k++) {
-	if(k == i) {
-	  for(int l = 0; l < j; l++) {
-	    // Fill in the off-diagonal. Use the symmetry.
-	    out[row * orbs + col] =
-	      method.overlap(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			     static_cast<const compchem::GaussianOrbital *>(&mol->getatom(k).getorbital(l)),
-			     mol->getatom(i).getpos(),
-			     mol->getatom(k).getpos());
-	    out[col * orbs + row] = out[row * orbs + col];
-	    col++;
-	  }
-	} else {
-	  for(int l = 0; l < mol->getatom(k).getnorbitals(); l++) {
-	    // Fill in the off-diagonal. Use the symmetry.
-	    out[row * orbs + col] =
-	      method.overlap(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			     static_cast<const compchem::GaussianOrbital *>(&mol->getatom(k).getorbital(l)),
-			     mol->getatom(i).getpos(),
-			     mol->getatom(k).getpos());
-	    out[col * orbs + row] = out[row * orbs + col];
-	    col++;
-	  }
-	}
-      }
-      row++;
-    }
+  std::vector<std::thread> threads;
+
+  for(int i = 0; i < this->opts.getintoption("threads") - 1; i++) {
+    threads.push_back(std::thread(IntegralFactory<Ints>::s_routine, orbitals,
+				  centers,
+				  out, *dim, i,
+				  this->opts.getintoption("threads"),
+				  std::ref(this->opts)));
   }
+
+  IntegralFactory<Ints>::s_routine(orbitals, centers, out, *dim,
+				   this->opts.getintoption("threads") - 1,
+				   this->opts.getintoption("threads"),
+				   this->opts);
+  
+  for(int i = 0; i < threads.size(); i++) {
+    threads[i].join();
+  }
+
+  for(int i = 0; i < centers->size(); i++) {
+    delete centers->at(i);
+  }
+  orbitals->clear();
+  centers->clear();
+
+  delete orbitals;
+  delete centers;
+  
 }
 	  
 			 
@@ -74,51 +166,49 @@ void compchem::IntegralFactory<Ints>::Tmatrix(const compchem::Molecule *mol, dou
   if(mol == nullptr) {
     throw new std::invalid_argument("The molecule input to the integral factory can not be null.");
   }
+  
   int orbs = 0;
+  std::vector<const compchem::GaussianOrbital *> *orbitals =
+    new std::vector<const compchem::GaussianOrbital *>();
+  std::vector<std::array<double, 3> *> *centers =
+    new std::vector<std::array<double, 3> *>();
   for(int i = 0; i < mol->getsize(); i++) {
     orbs += mol->getatom(i).getnorbitals();
+    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
+      orbitals->push_back(static_cast<const compchem::GaussianOrbital *>
+			 (&mol->getatom(i).getorbital(j)));
+      centers->push_back(new std::array<double, 3>(mol->getatom(i).getpos()));
+    }
   }
   *dim = orbs;
 
-  Ints method = Ints();
-  int row = 0;
-  for(int i = 0; i < mol->getsize(); i++) {
-    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
-      int col = 0;
-      // fill in the diagonal.
-      out[row * orbs + row] =
-	method.laplacian(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			 static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			 mol->getatom(i).getpos(),
-			 mol->getatom(i).getpos());
-      for(int k = 0; k <= i; k++) {
-	if(k == i) {
-	  for(int l = 0; l < j; l++) {
-	    // Fill in the off-diagonal. Use the symmetry.
-	    out[row * orbs + col] =
-	      method.laplacian(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			       static_cast<const compchem::GaussianOrbital *>(&mol->getatom(k).getorbital(l)),
-			       mol->getatom(i).getpos(),
-			       mol->getatom(k).getpos());
-	    out[col * orbs + row] = out[row * orbs + col];
-	    col++;
-	  }
-	} else {
-	  for(int l = 0; l < mol->getatom(k).getnorbitals(); l++) {
-	    // Fill in the off-diagonal. Use the symmetry.
-	    out[row * orbs + col] =
-	      method.laplacian(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			       static_cast<const compchem::GaussianOrbital *>(&mol->getatom(k).getorbital(l)),
-			       mol->getatom(i).getpos(),
-			       mol->getatom(k).getpos());
-	    out[col * orbs + row] = out[row * orbs + col];
-	    col++;
-	  }
-	}
-      }
-      row++;
-    }
+  std::vector<std::thread> threads;
+
+  for(int i = 0; i < this->opts.getintoption("threads") - 1; i++) {
+    threads.push_back(std::thread(IntegralFactory<Ints>::t_routine, orbitals,
+				  centers,
+				  out, *dim, i,
+				  this->opts.getintoption("threads"),
+				  std::ref(this->opts)));
   }
+
+  IntegralFactory<Ints>::t_routine(orbitals, centers, out, *dim,
+				   this->opts.getintoption("threads") - 1,
+				   this->opts.getintoption("threads"),
+				   this->opts);
+  
+  for(int i = 0; i < threads.size(); i++) {
+    threads[i].join();
+  }
+
+  for(int i = 0; i < centers->size(); i++) {
+    delete centers->at(i);
+  }
+  orbitals->clear();
+  centers->clear();
+
+  delete orbitals;
+  delete centers;
 }
 
 template<typename Ints>
@@ -129,64 +219,56 @@ void compchem::IntegralFactory<Ints>::Vmatrix(const compchem::Molecule *mol, dou
   if(mol == nullptr) {
     throw new std::invalid_argument("The molecule input to the integral factory can not be null.");
   }
+  
   int orbs = 0;
+  std::vector<const compchem::GaussianOrbital *> *orbitals =
+    new std::vector<const compchem::GaussianOrbital *>();
+  std::vector<std::array<double, 3> *> *centers =
+    new std::vector<std::array<double, 3> *>();
   for(int i = 0; i < mol->getsize(); i++) {
     orbs += mol->getatom(i).getnorbitals();
+    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
+      orbitals->push_back(static_cast<const compchem::GaussianOrbital *>
+			 (&mol->getatom(i).getorbital(j)));
+      centers->push_back(new std::array<double, 3>(mol->getatom(i).getpos()));
+    }
   }
   *dim = orbs;
 
-  Ints method = Ints();
-  int row = 0;
-  for(int i = 0; i < mol->getsize(); i++) {
-    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
-      int col = 0;
-      // fill in the diagonal.
-      double sum = 0;
-      for(int a = 0; a < mol->getsize(); a++) {
-	sum += method.coulomb(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			      static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-			      mol->getatom(i).getpos(),
-			      mol->getatom(i).getpos(),
-			      mol->getatom(a));
-      }
-	
-      out[row * orbs + row] = sum;
-      for(int k = 0; k <= i; k++) {
-	if(k == i) {
-	  for(int l = 0; l < j; l++) {
-	    // Fill in the off-diagonal. Use the symmetry.
-	    sum = 0;
-	    for(int a = 0; a < mol->getsize(); a++) {
-	      sum += method.coulomb(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-				    static_cast<const compchem::GaussianOrbital *>(&mol->getatom(k).getorbital(l)),
-				    mol->getatom(i).getpos(),
-				    mol->getatom(k).getpos(),
-				    mol->getatom(a));
-	    }
-	    out[col * orbs + row] = sum;
-	    out[row * orbs + col] = sum;
-	    col++;
-	  }
-	} else {
-	  for(int l = 0; l < mol->getatom(k).getnorbitals(); l++) {
-	    // Fill in the off-diagonal. Use the symmetry.
-	    sum = 0;
-	    for(int a = 0; a < mol->getsize(); a++) {
-	      sum += method.coulomb(static_cast<const compchem::GaussianOrbital *>(&mol->getatom(i).getorbital(j)),
-				    static_cast<const compchem::GaussianOrbital *>(&mol->getatom(k).getorbital(l)),
-				    mol->getatom(i).getpos(),
-				    mol->getatom(k).getpos(),
-				    mol->getatom(a));
-	    }
-	    out[col * orbs + row] = sum;
-	    out[row * orbs + col] = sum;
-	    col++;
-	  }
-	}
-      }
-      row++;
-    }
+  for(int i = 0; i < orbs * orbs; i++) {
+    out[i] = 0;
   }
+
+  //std::vector<std::thread> threads;
+  /*
+  for(int i = 0; i < this->opts.getintoption("threads") - 1; i++) {
+    threads.push_back(std::thread(IntegralFactory<Ints>::t_routine, orbitals,
+				  centers,
+				  out, *dim, i,
+				  this->opts.getintoption("threads"),
+				  std::ref(this->opts)));
+  }
+  */
+
+  IntegralFactory<Ints>::v_routine(orbitals, centers, out, *dim,
+				   0,
+				   1,
+				   this->opts, mol);
+
+  /*
+  for(int i = 0; i < threads.size(); i++) {
+    threads[i].join();
+  }
+  */
+
+  for(int i = 0; i < centers->size(); i++) {
+    delete centers->at(i);
+  }
+  orbitals->clear();
+  centers->clear();
+
+  delete orbitals;
+  delete centers;
 }
 
 template<typename Ints>

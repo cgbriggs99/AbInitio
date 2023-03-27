@@ -5,6 +5,7 @@
 #include "${CMAKE_SOURCE_DIR}/tests/test.h"
 #include "${CMAKE_SOURCE_DIR}/src/integrals/integrals.hpp"
 #include "${CMAKE_SOURCE_DIR}/src/input/input.hpp"
+#include "${CMAKE_SOURCE_DIR}/src/opts/default_options.hpp"
 #include <cstdio>
 #include <string>
 #include <errno.h>
@@ -59,7 +60,7 @@ int test_tei_array() {
 
 int test_integrals() {
   int warns = 0, orbs = 0;
-  FILE *geo = fopen("${CMAKE_SOURCE_DIR}/tests/water.xyz", "r");
+  FILE *geo = fopen("${CMAKE_SOURCE_DIR}/tests/water2.xyz", "r");
   // generate the molecule.
   Molecule *mol = &parseXYZ(geo);
   mol->translate_to_com();
@@ -78,22 +79,41 @@ int test_integrals() {
   }
   fclose(basis);
   ASSERT_WARN_MSG(orbs == 7, warns, "Got %d, expected 7.\n", orbs);
-
+  
   double *S = new double[49],
     *T = new double[49],
     *V = new double[49];
   int sdim = 0, tdim = 0, vdim = 0;
+
+  GlobalOptions::getsingleton().setbooloption("analytic boys", true);
+  GlobalOptions::getsingleton().setintoption("boys points", 100);
   
-  IntegralFactory<AnalyticIntegral>::Smatrix(mol, S, &sdim);
-  IntegralFactory<AnalyticIntegral>::Tmatrix(mol, T, &tdim);
-  IntegralFactory<AnalyticIntegral>::Vmatrix(mol, V, &vdim);
-  TEIArray *tei = IntegralFactory<AnalyticIntegral>::TEIints(mol);
+  IntegralFactory<AnalyticIntegral> factory;
+
+  // Check that the Boys function is correct.
+  double x = 5;
+  AnalyticIntegral ints;
+  double boys = ints.boys_square(2, x);
+  double exact = (3 * std::sqrt(x * M_PI) * std::erf(std::sqrt(x)) -
+		  130 / std::exp(5)) / 1000 ,
+    gam = exact * 2 * std::pow(x, 1.5);
+  //ASSERT_WARN_MSG(NEAR(ingamma(1.5, x), gam), warns,
+  //		  "Expected incomplete gamma %lf, got %lf.\n",
+  //		  gam, ingamma(1.5, x));
+  ASSERT_WARN_MSG(NEAR(boys, exact), warns,
+		  "Expected Boys function %lf, got %lf.\n",
+		  exact, boys);
+  
+  factory.Smatrix(mol, S, &sdim);
+  factory.Tmatrix(mol, T, &tdim);
+  factory.Vmatrix(mol, V, &vdim);
+  TEIArray *tei = factory.TEIints(mol);
 
   ASSERT_WARN_MSG(sdim == 7, warns, "Got %d, expected 7.\n", sdim);
   ASSERT_WARN_MSG(tdim == 7, warns, "Got %d, expected 7.\n", tdim);
   ASSERT_WARN_MSG(tdim == 7, warns, "Got %d, expected 7.\n", tdim);
   ASSERT_WARN_MSG(tei->getdim() == 7, warns, "Got %d, expected 7.\n",
-		  tei->getdim());
+  		  tei->getdim());
 
   for(int i = 0; i < 7; i++) {
     ASSERT_WARN_MSG(NEAR(S[i * 7 + i], 1), warns,
@@ -109,7 +129,7 @@ int test_integrals() {
     ASSERT_WARN_MSG(isfinite(V[i]), warns,
 		    "Not finite at %d, %d\n", i / 7, i % 7);
   }
-  
+
   for(int i = 0; i < tei->getsize(); i++) {
     ASSERT_WARN(isfinite(tei->getdata()[i]), warns);
   }

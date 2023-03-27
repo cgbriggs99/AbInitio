@@ -92,6 +92,7 @@ include(CheckLibraryExists)
 include(FindBLAS)
 include(FindLAPACK)
 include(CTest)
+include(FindThreads)
 
 check_library_exists(m sin "" MATH)
 
@@ -123,7 +124,7 @@ endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(abinit SHARED)
-add_dependencies(abinit util basis_sets input)
+add_dependencies(abinit util basis_sets input geometric opts integrals)
 
 #if(BUILD_TESTING)
 #  target_link_libraries(abinit PUBLIC gcov)
@@ -150,6 +151,8 @@ add_compile_options(-Wall -Wextra -Werror)
 #else()
 #  target_link_libraries(abinit PUBLIC extramath ${MATH} ${LAPACK_LIBRARIES})
 #endif()
+
+target_link_libraries(abinit PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 
 
 install(TARGETS abinit LIBRARY)

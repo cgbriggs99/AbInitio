@@ -4,17 +4,18 @@
 #include "../util/atom.hpp"
 #include <array>
 #include <cmath>
+#include <vector>
 #include <map>
 #include "../util/polynomial.hpp"
 #include "integrals.hpp"
 #include <cstdio>
 
-using namespace compchem;
+using namespace compchem;    
 
-static double compute_rm(const std::array<int, 4> &index,
+double AnalyticIntegral::compute_rm(const std::array<int, 4> &index,
 			 std::map<std::array<int, 4>, double> &ints,
 			 double Rx, double Ry, double Rz, double omega,
-			 double theta2, double T) {
+			 double theta2, double T) const {
   if(ints.count(index) == 1) {
     return ints.at(index);
   }
@@ -32,7 +33,7 @@ static double compute_rm(const std::array<int, 4> &index,
 	  return res;
 	} else {
 	  double res = omega * std::pow(2 * theta2, index[3]) *
-	    ingamma(2 * index[3] + 1, T) / std::pow(T, 2 * index[3] + 1);
+	    boys_square(index[3], T);
 	  ints[index] = res;
 	  return res;
 	}
@@ -68,11 +69,11 @@ static double compute_rm(const std::array<int, 4> &index,
   }
 }
 
-static double compute_apquv(const std::array<int, 11> &index,
+double AnalyticIntegral::compute_apquv(const std::array<int, 11> &index,
 			    std::map<std::array<int, 11>, double> &ints,
 			    const std::map<std::array<int, 8>, double> &pquv,
 			    const std::array<double, 3> &c1,
-			    const std::array<double, 3> &c2) {
+			    const std::array<double, 3> &c2) const {
   if(ints.count(index) != 0) {
     return ints.at(index);
   }
@@ -159,11 +160,11 @@ static double compute_apquv(const std::array<int, 11> &index,
   }
 }
 
-static double compute_e0cquv(const std::array<int, 11> &index,
+double AnalyticIntegral::compute_e0cquv(const std::array<int, 11> &index,
 			     std::map<std::array<int, 11>, double> &ints,
 			     const std::map<std::array<int, 8>, double> &e0quv,
 			     const std::array<double, 3> &c3,
-			     const std::array<double, 3> &c4) {
+			     const std::array<double, 3> &c4) const {
   if(ints.count(index) != 0) {
     return ints[index];
   }
@@ -250,13 +251,13 @@ static double compute_e0cquv(const std::array<int, 11> &index,
   }
 }
 
-static double compute_abcd(const std::array<int, 12> &index,
+double AnalyticIntegral::compute_abcd(const std::array<int, 12> &index,
 			   std::map<std::array<int, 12>, double> &ints,
 			   const std::map<std::array<int, 6>, double> &e0f0,
 			   const std::array<double, 3> &c1,
 			   const std::array<double, 3> &c2,
 			   const std::array<double, 3> &c3,
-			   const std::array<double, 3> &c4) {
+			   const std::array<double, 3> &c4) const {
   if(ints.count(index) != 0) {
     return ints.at(index);
   }
@@ -383,7 +384,7 @@ static double compute_abcd(const std::array<int, 12> &index,
   }
 }
 
-static double exc_integral(const int *pows1, const int *pows2, const int *pows3,
+double AnalyticIntegral::exc_integral(const int *pows1, const int *pows2, const int *pows3,
 			   const int *pows4,
 			   const std::array<double, 3> &c1,
 			   const std::array<double, 3> &c2,
@@ -392,7 +393,7 @@ static double exc_integral(const int *pows1, const int *pows2, const int *pows3,
 			   const GaussianOrbital *o1,
 			   const GaussianOrbital *o2,
 			   const GaussianOrbital *o3,
-			   const GaussianOrbital *o4) {
+			   const GaussianOrbital *o4) const {
   std::map<std::array<int, 8>, double> e0quv;
   for(int i = 0; i < o3->getnterms(); i++) {
     for(int j = 0; j < o4->getnterms(); j++) {
@@ -580,7 +581,11 @@ double AnalyticIntegral::exchange(const GaussianOrbital *o1,
     for(int j = 0; j < o2->getharms().getsize(); j++) {
       for(int k = 0; k < o3->getharms().getsize(); k++) {
 	for(int l = 0; l < o4->getharms().getsize(); l++) {
-	  sum += exc_integral(o1->getharms().gettermorder(i),
+	  sum += o1->getharms().getcoef(i) *
+	    o2->getharms().getcoef(j) *
+	    o3->getharms().getcoef(k) *
+	    o4->getharms().getcoef(l) *
+	    exc_integral(o1->getharms().gettermorder(i),
 			  o2->getharms().gettermorder(j),
 			  o3->getharms().gettermorder(k),
 			  o4->getharms().gettermorder(l),

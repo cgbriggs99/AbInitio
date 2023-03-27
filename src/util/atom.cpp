@@ -178,6 +178,10 @@ const BasisOrbital &Atom::getorbital(int index) const {
   return *this->orbitals.at(index);
 }
 
+BasisOrbital &Atom::getorbital(int index) {
+  return *this->orbitals.at(index);
+}
+
 int compchem::getZFromSymb(const std::string &symb) {
   static std::string symbs[] = {
 "H",                                                                                                                                                       "He",

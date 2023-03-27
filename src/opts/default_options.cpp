@@ -5,7 +5,9 @@ using namespace compchem;
 using namespace std;
 
 void DefaultOptionsFactory::initializeoptions(OptionList &opts) {
-  // No default options yet.
-  ;
+
+  opts.setintoption("threads", 4);
+  opts.setbooloption("analytic boys", true);
+  opts.setintoption("boys points", 32);
 
 }
