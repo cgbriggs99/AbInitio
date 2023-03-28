@@ -68,7 +68,7 @@ void compchem::IntegralFactory<Ints>::t_routine(const std::vector<const compchem
     int nu = i - (mu * (mu + 1)) / 2;
 
     // Compute.
-    double res = method.laplacian(orbs->at(mu),
+    double res = method.kinetic(orbs->at(mu),
 				orbs->at(nu),
 				*centers->at(mu),
 				*centers->at(nu));
@@ -98,7 +98,7 @@ void compchem::IntegralFactory<Ints>::v_routine(const std::vector<const compchem
     double sum = 0;
     for(int j = 0; j < mol->getsize(); j++) {
       // Compute.
-      sum += method.coulomb(orbs->at(mu),
+      sum += method.attraction(orbs->at(mu),
 			    orbs->at(nu),
 			    *centers->at(mu),
 			    *centers->at(nu),
@@ -125,7 +125,7 @@ void compchem::IntegralFactory<Ints>::tei_routine(const std::vector<const compch
       i++) {
     int mu, nu, lam, sig;
     out->indextoquad(i, &mu, &nu, &lam, &sig);
-    out->at_direct(i) = method.exchange(orbs->at(mu),
+    out->at_direct(i) = method.repulsion(orbs->at(mu),
 					orbs->at(nu),
 					orbs->at(lam),
 					orbs->at(sig),

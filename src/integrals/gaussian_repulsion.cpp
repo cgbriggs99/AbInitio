@@ -384,7 +384,7 @@ double AnalyticIntegral::compute_abcd(const std::array<int, 12> &index,
   }
 }
 
-double AnalyticIntegral::exc_integral(const int *pows1, const int *pows2, const int *pows3,
+double AnalyticIntegral::rep_integral(const int *pows1, const int *pows2, const int *pows3,
 			   const int *pows4,
 			   const std::array<double, 3> &c1,
 			   const std::array<double, 3> &c2,
@@ -567,7 +567,7 @@ double AnalyticIntegral::exc_integral(const int *pows1, const int *pows2, const 
   return compute_abcd(*&index, *&abcd, *&e0f0, c1, c2, c3, c4);
 }
 
-double AnalyticIntegral::exchange(const GaussianOrbital *o1,
+double AnalyticIntegral::repulsion(const GaussianOrbital *o1,
 				 const GaussianOrbital *o2,
 				 const GaussianOrbital *o3,
 				 const GaussianOrbital *o4,
@@ -585,7 +585,7 @@ double AnalyticIntegral::exchange(const GaussianOrbital *o1,
 	    o2->getharms().getcoef(j) *
 	    o3->getharms().getcoef(k) *
 	    o4->getharms().getcoef(l) *
-	    exc_integral(o1->getharms().gettermorder(i),
+	    rep_integral(o1->getharms().gettermorder(i),
 			  o2->getharms().gettermorder(j),
 			  o3->getharms().gettermorder(k),
 			  o4->getharms().gettermorder(l),

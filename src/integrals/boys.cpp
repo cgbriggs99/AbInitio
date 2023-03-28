@@ -45,7 +45,23 @@ double compchem::AnalyticIntegral::boys_square(int j, double T) const {
   }
 
   if(this->opts.getbooloption("analytic boys")) {
-    return ingamma(j + 0.5, T) / (2 * std::pow(T, j + 0.5));
+    if(T < 1e-3) {
+      double sum = 0, coef = 1, pz = 1;
+      for(int i = 0; i < 30; i++) {
+	sum += coef * pz / (2 * j + 2 * i + 1);
+	pz *= -T;
+	coef /= i + 1;
+      }
+      return sum;
+    }
+    double sum = 0, coef = 1, pz = std::pow(T, j - 1);
+    for(int i = j - 1; i >= 0; i--) {
+      sum += coef * pz;
+      pz /= T;
+      coef /= 0.5 + i;
+    }
+    return (std::tgamma(j + 0.5) * std::erf(std::sqrt(T)) -
+	    std::exp(-T) * std::sqrt(T) * sum) / (2 * std::pow(T, j + 0.5));
   } else {
     return integrate_square(j, T, this->opts.getintoption("boys points"));
   }
