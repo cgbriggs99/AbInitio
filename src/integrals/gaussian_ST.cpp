@@ -12,6 +12,10 @@
 
 using namespace compchem;
 
+AnalyticIntegral::~AnalyticIntegral() {
+  delete &(this->opts);
+}
+
 static double compute_ap(const std::array<int, 6> &index,
 			 std::map<std::array<int, 6>, double> &ints,
 			 double zeta,

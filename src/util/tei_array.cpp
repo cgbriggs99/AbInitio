@@ -32,7 +32,7 @@ double TEIArray::at(int mu, int nu, int lam, int sig) const {
   if(mu < 0 || nu < 0 || lam < 0 || sig < 0 ||
      mu >= this->dim || nu >= this->dim ||
      lam >= this->dim || sig >= this->dim) {
-    throw new std::out_of_range("Array index out of range for two-electron integrals.");
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
   }
   int m, n, l, s, mn, ls, mnls;
   if(mu >= nu) {
@@ -65,7 +65,7 @@ double &TEIArray::at(int mu, int nu, int lam, int sig) {
   if(mu < 0 || nu < 0 || lam < 0 || sig < 0 ||
      mu >= this->dim || nu >= this->dim ||
      lam >= this->dim || sig >= this->dim) {
-    throw new std::out_of_range("Array index out of range for two-electron integrals.");
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
   }
   int m, n, l, s, mn, ls, mnls;
   if(mu >= nu) {
@@ -92,6 +92,22 @@ double &TEIArray::at(int mu, int nu, int lam, int sig) {
   }
   mnls = (mn * (mn + 1)) / 2 + ls;
   return this->data[mnls];
+}
+
+double TEIArray::at_direct(int index) const {
+  if(index < 0 || index > this->getsize()) {
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
+  }
+
+  return this->data[index];
+}
+
+double &TEIArray::at_direct(int index) {
+  if(index < 0 || index > this->getsize()) {
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
+  }
+
+  return this->data[index];
 }
 
 double TEIArray::operator()(int mu, int nu, int lam, int sig) const {

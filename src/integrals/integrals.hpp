@@ -21,9 +21,9 @@ class IntegralMethod {
 protected:
   OptionList &opts;
 public:
-  IntegralMethod(OptionList &opts) : opts(opts) {;}
-  IntegralMethod() : opts(GlobalOptions::getsingleton()) {;}
-  virtual ~IntegralMethod() = default;
+  IntegralMethod(const OptionList &opts) : opts(*new OptionList(opts)) {;}
+  IntegralMethod() : opts(*new OptionList(GlobalOptions::getsingleton())) {;}
+  virtual ~IntegralMethod();
 
   virtual double overlap(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
@@ -50,10 +50,10 @@ class NumericIntegral : public IntegralMethod {
 private :
   int points;
 public :
-  NumericIntegral(int points, OptionList &opts) : points(points),
+  NumericIntegral(int points, const OptionList &opts) : points(points),
 						 IntegralMethod(opts) {;}
   NumericIntegral(int points) : points(points),
-				IntegralMethod(GlobalOptions::getsingleton())
+				IntegralMethod()
   {;}
   virtual ~NumericIntegral() = default;
 
@@ -136,9 +136,9 @@ protected:
 		      const GaussianOrbital *o4) const;
   
 public :
-  AnalyticIntegral(OptionList &opts) : opts(opts) {;}
-  AnalyticIntegral() : opts(GlobalOptions::getsingleton()) {;}
-  virtual ~AnalyticIntegral() = default;
+  AnalyticIntegral(const OptionList &opts) : opts(*new OptionList(opts)) {;}
+  AnalyticIntegral() : opts(*new OptionList(GlobalOptions::getsingleton())) {;}
+  virtual ~AnalyticIntegral();
 
   virtual double overlap(const GaussianOrbital *o1, const GaussianOrbital *o2,
 			 std::array<double, 3> center1,
@@ -186,10 +186,16 @@ protected:
 			int dim, int thread_num, int threads,
 			compchem::OptionList &opts,
 			const compchem::Molecule *mol);
+
+  static void tei_routine(const std::vector<const compchem::GaussianOrbital *> *orbs,
+			const std::vector<std::array<double, 3> *> *centers,
+			TEIArray *out,
+			int dim, int thread_num, int threads,
+			compchem::OptionList &opts);
 public:
-  IntegralFactory() : opts(GlobalOptions::getsingleton()) {;}
-  IntegralFactory(OptionList &opts) : opts(opts) {;}
-  virtual ~IntegralFactory() = default;
+  IntegralFactory() : opts(*new OptionList(GlobalOptions::getsingleton())) {;}
+  IntegralFactory(const OptionList &opts) : opts(*new OptionList(opts)) {;}
+  virtual ~IntegralFactory();
   
   void Smatrix(const Molecule *mol, double *out, int *dim);
   void Tmatrix(const Molecule *mol, double *out, int *dim);

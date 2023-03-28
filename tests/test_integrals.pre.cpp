@@ -85,8 +85,9 @@ int test_integrals() {
     *V = new double[49];
   int sdim = 0, tdim = 0, vdim = 0;
 
-  GlobalOptions::getsingleton().setbooloption("analytic boys", true);
+  GlobalOptions::getsingleton().setbooloption("analytic boys", false);
   GlobalOptions::getsingleton().setintoption("boys points", 100);
+  GlobalOptions::getsingleton().setintoption("threads", 32);
   
   IntegralFactory<AnalyticIntegral> factory;
 

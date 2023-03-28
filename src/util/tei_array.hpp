@@ -16,6 +16,8 @@ public :
 
   double at(int mu, int nu, int lam, int sig) const;
   double &at(int mu, int nu, int lam, int sig);
+  double at_direct(int index) const;
+  double &at_direct(int index);
 
   double operator()(int mu, int nu, int lam, int sig) const;
   double &operator()(int mu, int nu, int lam, int sig);
