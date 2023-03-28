@@ -6,10 +6,12 @@
 
 using namespace compchem;
 
-Molecule::Molecule(const std::vector<Atom *> &atoms) {
+Molecule::Molecule(const std::vector<Atom *> &atoms, int mult) {
   this->atoms = new std::vector<Atom *>(0);
+  this->electrons = 0;
 
   for(Atom *atom : atoms) {
+    this->electrons += atom->getZ() - atom->getcharge();
     Atom *copy = new Atom(*atom);
     this->atoms->push_back(copy);
   }
@@ -17,6 +19,7 @@ Molecule::Molecule(const std::vector<Atom *> &atoms) {
   this->comy = 0;
   this->comz = 0;
   this->calc_com();
+  this->mult = mult;
 }
 
 Molecule::Molecule(const Molecule &copy) {
@@ -28,6 +31,8 @@ Molecule::Molecule(const Molecule &copy) {
   this->comx = copy.comx;
   this->comy = copy.comy;
   this->comz = copy.comz;
+  this->electrons = copy.getelectrons();
+  this->mult = copy.getmult();
 }
 
 Molecule::Molecule() {
@@ -35,6 +40,8 @@ Molecule::Molecule() {
   this->comx = 0;
   this->comy = 0;
   this->comz = 0;
+  this->electrons = 0;
+  this->mult = 1;
 }
 
 Molecule::~Molecule() {
@@ -66,6 +73,7 @@ Atom &Molecule::getatom(int index) {
 }
 
 void Molecule::addatom(Atom &atom) {
+  this->electrons += atom.getZ();
   this->atoms->push_back(&atom);
   this->calc_com();
 }
@@ -111,6 +119,14 @@ double Molecule::getcomy() const {
 
 double Molecule::getcomz() const {
   return this->comz;
+}
+
+int Molecule::getelectrons() const {
+  return this->electrons;
+}
+
+int Molecule::getmult() const {
+  return this->mult;
 }
 
 double compchem::nuclear_repulsion(const compchem::Molecule &mol) {

@@ -75,39 +75,39 @@ string OptionList::to_upper(const char *str) {
   return out;
 }
 
-bool OptionList::isoptionbool(const string &str) {
+bool OptionList::isoptionbool(const string &str) const {
   return this->bool_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptionbool(const char *str) {
+bool OptionList::isoptionbool(const char *str) const {
   return this->bool_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptionint(const string &str) {
+bool OptionList::isoptionint(const string &str) const {
   return this->int_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptionint(const char *str) {
+bool OptionList::isoptionint(const char *str) const {
   return this->int_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptiondouble(const string &str) {
+bool OptionList::isoptiondouble(const string &str) const {
   return this->double_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptiondouble(const char *str) {
+bool OptionList::isoptiondouble(const char *str) const {
   return this->double_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptionstring(const string &str) {
+bool OptionList::isoptionstring(const string &str) const {
   return this->string_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::isoptionstring(const char *str) {
+bool OptionList::isoptionstring(const char *str) const {
   return this->string_opts.count(OptionList::to_upper(str)) != 0;
 }
 
-bool OptionList::getbooloption(const string &str) {
+bool OptionList::getbooloption(const string &str) const {
   try {
     return this->bool_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -118,7 +118,7 @@ bool OptionList::getbooloption(const string &str) {
   }
 }
 
-bool OptionList::getbooloption(const char *str) {
+bool OptionList::getbooloption(const char *str) const {
   try {
     return this->bool_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -129,7 +129,7 @@ bool OptionList::getbooloption(const char *str) {
   }
 }
 
-int OptionList::getintoption(const string &str) {
+int OptionList::getintoption(const string &str) const {
   try {
     return this->int_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -140,7 +140,7 @@ int OptionList::getintoption(const string &str) {
   }
 }
 
-int OptionList::getintoption(const char *str) {
+int OptionList::getintoption(const char *str) const {
   try {
     return this->int_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -151,7 +151,7 @@ int OptionList::getintoption(const char *str) {
   }
 }
 
-double OptionList::getdoubleoption(const string &str) {
+double OptionList::getdoubleoption(const string &str) const {
   try {
     return this->double_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -162,7 +162,7 @@ double OptionList::getdoubleoption(const string &str) {
   }
 }
 
-double OptionList::getdoubleoption(const char *str) {
+double OptionList::getdoubleoption(const char *str) const {
   try {
     return this->double_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -173,7 +173,7 @@ double OptionList::getdoubleoption(const char *str) {
   }
 }
 
-const string &OptionList::getstringoption(const string &str) {
+const string &OptionList::getstringoption(const string &str) const {
   try {
     return this->string_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
@@ -184,7 +184,7 @@ const string &OptionList::getstringoption(const string &str) {
   }
 }
 
-const string &OptionList::getstringoption(const char *str) {
+const string &OptionList::getstringoption(const char *str) const {
   try {
     return this->string_opts.at(OptionList::to_upper(str));
   } catch(std::out_of_range &e) {
