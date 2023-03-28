@@ -12,11 +12,12 @@ namespace compchem {
 
     std::vector<Atom *> *atoms;
     double comx, comy, comz;
+    int electrons, mult;
 
     void calc_com();
 
   public:
-    Molecule(const std::vector<Atom *> &atoms);
+    Molecule(const std::vector<Atom *> &atoms, int mult = 1);
     Molecule(const Molecule &copy);
     Molecule();
 
@@ -37,6 +38,9 @@ namespace compchem {
     double getcomz() const;
 
     void translate_to_com();
+
+    int getelectrons() const;
+    int getmult() const;
   };
 
 

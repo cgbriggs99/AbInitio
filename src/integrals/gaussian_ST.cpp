@@ -1,3 +1,4 @@
+
 #include <extramath.h>
 #include "../basis_sets/basis_set.hpp"
 #include "../util/atom.hpp"
@@ -7,6 +8,7 @@
 #include "../util/polynomial.hpp"
 #include "integrals.hpp"
 #include <cstdio>
+#include <thread>
 
 using namespace compchem;
 
@@ -132,6 +134,69 @@ static double compute_ab(const std::array<int, 6> &index,
   }
 }
 
+static double compute_overlap(const int *pow1, const int *pow2,
+			      const GaussianOrbital *o1,
+			      const GaussianOrbital *o2,
+			      const std::array<double, 3> &center1,
+			      const std::array<double, 3> &center2) {
+  std::map<std::array<int, 3>, double> e0con;
+  for(int i = 0; i < o1->getnterms(); i++) {
+    for(int j = 0; j < o2->getnterms(); j++) {
+      double zeta = o1->getalpha(i) + o2->getalpha(j),
+	Px = (o1->getalpha(i) * center1[0] + o2->getalpha(j) * center2[0]) / zeta,
+	Py = (o1->getalpha(i) * center1[1] + o2->getalpha(j) * center2[1]) / zeta,
+	Pz = (o1->getalpha(i) * center1[2] + o2->getalpha(j) * center2[2]) / zeta,
+	K = o1->getcoef(i) * o1->getnorm(i) * o2->getcoef(j) * o2->getnorm(j) *
+	std::exp(-o1->getalpha(i) * o2->getalpha(j) / zeta *
+		 ((center1[0] - center2[0]) * (center1[0] - center2[0]) +
+		  (center1[1] - center2[1]) * (center1[1] - center2[1]) +
+		  (center1[2] - center2[2]) * (center1[2] - center2[2])));
+      // Compute the uncontracted integrals [e|0].
+      std::map<std::array<int, 6>, double> ap;
+      for(int k = 0; k <= pow1[0] + pow2[0]; k++) {
+	for(int l = 0; l <= pow1[1] + pow2[1]; l++) {
+	  for(int m = 0; m <= pow1[2] + pow2[2]; m++) {
+	    std::array<int, 6> index = {k, l, m, 0, 0, 0};
+	    double res = compute_ap(*&index, *&ap, zeta,
+				    center1[0], center1[1], center1[2],
+				    Px, Py, Pz, K);
+	    // Compute the contracted integrals (e|0).
+	    std::array<int, 3> index2 = {k, l, m};
+	    if(e0con.find(index2) == e0con.end()) {
+	      e0con[index2] = 0;
+	    }
+	    e0con.at(index2) += res;
+	  }
+	}
+      }
+    }
+  }
+  std::map<std::array<int, 6>, double> ab;
+
+  std::array<int, 6> index = {
+    pow1[0], pow1[1], pow1[2],
+    pow2[0], pow2[1], pow2[2]};
+  return compute_ab(*&index, *&ab, *&e0con, center1, center2);
+}
+	
+
+double AnalyticIntegral::overlap(const GaussianOrbital *o1,
+				 const GaussianOrbital *o2,
+				 std::array<double, 3> center1,
+				 std::array<double, 3> center2) const {
+  double sum = 0;
+  for(int i = 0; i < o1->getharms().getsize(); i++) {
+    for(int j = 0; j < o2->getharms().getsize(); j++) {
+      sum += o1->getharms().getcoef(i) * o2->getharms().getcoef(j) *
+	compute_overlap(o1->getharms().gettermorder(i),
+			o2->getharms().gettermorder(j),
+			o1, o2, center1, center2);
+    }
+  }
+  return sum;
+  
+}
+
 static double compute_laplacian(const int *pow1, const int *pow2,
 				const GaussianOrbital *o1,
 				const GaussianOrbital *o2,
@@ -175,16 +240,7 @@ static double compute_laplacian(const int *pow1, const int *pow2,
 	  pow2[0] + 2, pow2[1], pow2[2]},
 	ind4 = {
 	  pow1[0], pow1[1], pow1[2],
-	  pow2[0], pow2[1], pow2[2]},
-	ind5 = {
-	  pow1[0], pow1[1], pow1[2],
-	  pow2[0], pow2[1], pow2[2] - 2},
-	ind6 = {
-	  pow1[0], pow1[1], pow1[2],
-	  pow2[0], pow2[1] - 2, pow2[2]},
-	ind7 = {
-	  pow1[0], pow1[1], pow1[2],
-	  pow2[0] - 2, pow2[1], pow2[2]};
+	  pow2[0], pow2[1], pow2[2]};
       std::map<std::array<int, 6>, double> ab;
       double beta = o2->getalpha(j);
       sum += 4 * beta * beta *
@@ -192,10 +248,7 @@ static double compute_laplacian(const int *pow1, const int *pow2,
 	 compute_ab(*&ind2, *&ab, *&e0, c1, c2) +
 	 compute_ab(*&ind3, *&ab, *&e0, c1, c2)) -
 	2 * beta * (2 * (pow2[0] + pow2[1] + pow2[2]) + 3) *
-	compute_ab(*&ind4, *&ab, *&e0, c1, c2) +
-	pow2[0] * (pow2[0] - 1) * compute_ab(*&ind5, *&ab, *&e0, c1, c2) +
-	pow2[1] * (pow2[1] - 1) * compute_ab(*&ind6, *&ab, *&e0, c1, c2) +
-	pow2[2] * (pow2[2] - 1) * compute_ab(*&ind7, *&ab, *&e0, c1, c2);
+	compute_ab(*&ind4, *&ab, *&e0, c1, c2);
     }
   }
   return -0.5 * sum;

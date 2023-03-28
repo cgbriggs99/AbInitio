@@ -42,6 +42,7 @@ namespace compchem {
     int getnorbitals() const;
     const std::vector<BasisOrbital *> &getorbitals() const;
     const BasisOrbital &getorbital(int index) const;
+    BasisOrbital &getorbital(int index);
 
     void setorbitals(const std::vector<BasisOrbital *> &orbs);
 
