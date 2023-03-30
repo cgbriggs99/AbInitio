@@ -21,3 +21,10 @@ Contains a base class for basis sets.
     .. cpp:function:: virtual BasisOrbital *copy() const = 0
 
         :return: A copy of the orbital.
+
+    .. cpp:function:: virtual double laplacian(double x, double y, double z) const = 0
+
+        :param x,y,z: The coordinates for the evaluation.
+        :return: The Laplacian of the orbital at the point.
+
+        This method should return :math:`\nabla_{\mathbf{r}}^2\psi\left(\mathbf{r}\right)`, not the kinetic energy.

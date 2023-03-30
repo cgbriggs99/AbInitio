@@ -50,7 +50,7 @@ namespace compchem {
     double *coefs, *alphas, *norms;
     int l, ml;
     Polynomial<3> *harms;
-    int size = 0;
+    int size;
     void sort();
   public :
     GaussianOrbital(int l, int ml, const std::vector<double> &coefs, const std::vector<double> &alphas);

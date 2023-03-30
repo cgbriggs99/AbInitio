@@ -8,3 +8,4 @@ Various input-related routines are here.
     :caption: Contents
 
     Molecular Input <input>
+    Basis Set Input <bs_input>
