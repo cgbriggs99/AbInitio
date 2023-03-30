@@ -29,11 +29,11 @@ Represents a Slater-type orbital. These are orbitals that look like this.
 
     .. cpp:member:: Polynomial<3> *harms
 
-        The spherical harmonic part of the orbital.
+        The spherical harmonic part of the orbital. Represents a spherical harmonic in Cartesian form.
 
-    .. cpp:function:: SlaterOrbital(double zeff, int n, int l, int ml)
+    .. cpp:function:: SlaterOrbital(double Zeff, int n, int l, int ml)
 
-        :param zeff: The effective atomic number of the orbital.
+        :param Zeff: The effective atomic number of the orbital.
         :param n: The orbital energy quantum number.
         :param l: The angular momentum quantum number
         :param ml: The magnetic quantum number.
@@ -48,10 +48,17 @@ Represents a Slater-type orbital. These are orbitals that look like this.
 
         The destructor.
 
-    .. cpp:function:: double eval(double x, double y, doubel z) const override
+    .. cpp:function:: double eval(double x, double y, double z) const override
 
         :param x, y, z: The position to evaluate the orbital at.
         :return: The value of the orbital at the given position.
+
+    .. cpp:function:: double laplacian(double x, double y, double z) const override
+
+        :param x, y, z: The position to evaluate the Laplacian at.
+        :return: The Laplacian of the orbital at the given position.
+
+        Computes the Laplacian of the orbital at a point, not the kinetic energy. Implementation of :cpp:func:`compchem::BasisOrbital::laplacian`.
 
     .. cpp:function:: double getZeff() const
 
@@ -77,7 +84,7 @@ Represents a Slater-type orbital. These are orbitals that look like this.
 
         :return: A copy of this orbital.
 
-Non Member Functions
+Non-member Functions
 --------------------
 
 .. cpp:function:: double slater_rule(int n, int l, const GSConfig &conf)

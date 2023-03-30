@@ -12,10 +12,14 @@ This is a library that will handle quantum chemical computations, varying from s
    :maxdepth: 2
    :caption: Contents:
 
-   Utilities <utils/index>
-   Basis Sets <basis_sets/index>
-   Geometric Properties <geometric/index>
    Input <input/index>
+   Options <opts/index>
+   Geometric Properties <geometric/index>
+   Basis Sets <basis_sets/index>
+   Integrals <integrals/index>
+   Wavefunctions <wavefunction/index>
+   Energy Calculations <energy/index>
+   Utilities <utils/index>
 
 
 
