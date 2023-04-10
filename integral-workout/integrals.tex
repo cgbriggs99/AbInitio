@@ -1,82 +1,140 @@
-\documentclass{article}
+\documentclass[twoside,10pt,draft]{article}
 
-\usepackage{amssymb}
-\usepackage{amsmath}
+% Headers for work.
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{cite}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{abstract}
+
+% Math packages.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+% Citations.
+\usepackage{cite}
+
+
+% Setup fancyhdr.
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+
+% Line spacing.
+\singlespacing
 
 \begin{document}
+\setlist[description]{font=\space\normalfont\space}
 
-\section{Hermite Integrals}
+\renewcommand\theequation{\thesection.\arabic{equation}}
 
-For the two-electron integrals, the following integrals becomes useful.
+\title{Various Cases of Two-Electron Integrals}
+\author{Connor Briggs}
+\maketitle
+
+\hrule
+\paragraph*{Abstract} Two-electron integrals are important for quantum chemistry, and in particular for Hartree-Fock methods. Because of this, there are many ways to compute these. Unfortunately, some methods only work when the four orbitals being integrated have different centers. Therefore, different formulae need to be derived for the cases when multiple orbitals share centers.\\
+\hrule
+
+
+\lhead[]{\thepage}
+\chead{Integrals}
+\rhead[\thepage]{}
+
+\section{Hermite Polynomials}
+
+For most of the integrals, the kernels can be reduced to a form involving Hermite polynomials. Hermite polynomials are defined using the following equation~\cite{wolfram-hermite}.
 
 \begin{equation}
-  \int_{-\infty}^\infty e^{-\left(a - t\right)^2} H_{n}\left(\alpha t\right) dt
-  \label{hermint}
+  H_n(x) e^{-x^2} = \frac{d^n}{dx^n} e^{-x^2}
+  \label{herm-def}
 \end{equation}
+This can be rewritten as a sum~\cite{wolfram-hermite},
 
-To solve for equation~\ref{hermint}, find the following simpler integral.
 \begin{equation}
-  \int_{-\infty}^\infty e^{-\left(a - t\right)^2} H_{n}\left(t\right) dt = 2^n \sqrt{\pi} a^n
-  \label{base-hermint}
+  H_n(x) = \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}(-1)^k 2^{n - 2k} x^{n - 2k}
+  \label{herm-sum}
 \end{equation}
+as well as a recurrence relation~\cite{wolfram-hermite}.
 
-Then, use the multiple argument formula for Hermite polynomials to expand.
+\begin{equation}
+  H_{n + 1}(x) = 2xH_{n}(x) - 2nH_{n - 1}(x)
+  \label{herm-recur}
+\end{equation}
+From these, a multiple-argument formula can be derived~\cite{wolfram-hermite}.
+
 \begin{equation}
   H_n(\alpha t) = \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor}\frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k H_{n - 2k}(t)
   \label{herm-maf}
 \end{equation}
 
-Combining equations~\ref{hermint} and~\ref{herm-maf} gives
+\subsection{Hermite Integrals}
+
+For the two-electron integrals, the following integral becomes useful.
+
+\begin{equation}
+  \int_{-\infty}^\infty e^{-\left(a - t\right)^2} H_{n}\left(\alpha t\right) dt
+  \label{hermint}
+\end{equation}
+To solve for equation~\ref{hermint}, note the following, from~\cite{wolfram-hermite}.
+
+\begin{equation}
+  \int_{-\infty}^\infty e^{-\left(a - t\right)^2} H_{n}\left(t\right) dt = 2^n \sqrt{\pi} a^n
+  \label{base-hermint}
+\end{equation}
+Then, use equation~\ref{herm-maf} to expand.
+
 \begin{equation}
   \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \int_{-\infty}^\infty \alpha^n e^{-(a - t)^2} \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k H_{n - 2k}(t) dt
-  \label{herm-comb}
 \end{equation}
+Manipulating this equation gives
 
-Manipulating gives
 \begin{equation}
   \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k \int_{-\infty}^\infty e^{-(a - t)^2} H_{n - 2k}(t) dt
-  \label{herm-comb-2}
 \end{equation}
+Using equation~\ref{base-hermint} gives the following.
 
-Using equation~\ref{base-hermint} gives
 \begin{equation}
   \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k 2^{n - 2k} \sqrt{\pi} a^{n - 2k}
   \label{herm-integrated}
 \end{equation}
-
-The definition of a Hermite polynomial leads to the following sum.
+Then, rewrite equation~\ref{herm-integrated} to look more like eqation~\ref{herm-sum}. We need to assume that $\left|\alpha \right| < 1$.
 \begin{equation}
-  H_n(x) = \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}(-1)^k 2^{n - 2k} x^{n - 2k}
-  \label{herm-sum}
+  \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \sqrt{\pi} \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\frac{1}{\alpha^2} - 1\right)^k (-1)^k 2^{n - k} a^{n - 2k}
+\end{equation}
+\begin{equation}
+  = \sqrt{\pi} \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\frac{\alpha^2}{1 - \alpha^2}\right)^{-k} (-1)^k 2^{n - 2k} a^{n - 2k}
 \end{equation}
 
-Then, rewrite equation~\ref{herm-integrated} to look more like eqation~\ref{herm-sum}. We need to assume that $\left|\alpha \right| < 1$.
-$$\int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \sqrt{\pi} \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\frac{1}{\alpha^2} - 1\right)^k (-1)^k 2^{n - k} a^{n - 2k}$$
-$$ = \sqrt{\pi} \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\frac{\alpha^2}{1 - \alpha^2}\right)^{-k} (-1)^k 2^{n - 2k} a^{n - 2k}$$
 
 \begin{equation}
-  = \sqrt{\pi} \alpha^n \left(\sqrt{\frac{1}{\alpha^2} - 1}\right)^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\sqrt{\frac{\alpha^2}{1 - \alpha^2}}\right)^{n - 2k} (-1)^k 2^{n - 2k} a^{n - 2k}
+  = \sqrt{\pi} \alpha^n \left(\sqrt{\frac{1}{\alpha^2} - 1}\right)^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(\sqrt{\frac{\alpha^2}{1 - \alpha^2}}\right)^{n - 2k} (-1)^k 2^{n - 2k} a^{n - 2k}
   \label{herm-rearranged}
 \end{equation}
-
 Finally, using equation~\ref{herm-sum} gives the final value of
+
 \begin{equation}
   \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \sqrt{\pi}\left(\sqrt{1 - \alpha^2}\right)^n H_n\left(a\sqrt{\frac{\alpha^2}{1 - \alpha^2}}\right)
   \label{herm-int-solved}
 \end{equation}
   
 
-\section{Hermite Recurrence Relation}
+\subsection{Hermite Orbital Recurrence Relation}
 
-Suppose $\psi_{\mathbf{a}} = \left(x - A_x\right)^{a_x}\left(y - A_y\right)^{a_y}\left(z - A_z\right)^{a_z}e^{-\alpha\left(\mathbf{r} - \mathbf{A}\right)^2}$ is a Cartesian orbital. Also, suppose $\overline{\psi_{\mathbf{p}}} = \zeta^{\frac{p}{2}} H_{p_x}\left(\sqrt{\zeta} \left(x - P_x\right)\right)H_{p_y}\left(\sqrt{\zeta} \left(y - P_y\right)\right)H_{p_z}\left(\sqrt{\zeta} \left(x - P_z\right)\right) e^{-\zeta\left(\mathbf{r} - \mathbf{P}\right)^2}$. is a Hermite orbital. The following recurrence relation holds for Hermite polynomials.
-
+Suppose a Cartesian orbital has the following form.
 \begin{equation}
-  H_{n + 1}(x) = 2xH_{n}(x) - 2nH_{n - 1}(x)
-  \label{herm-recur}
+  \psi_{\mathbf{a}} = \left(x - A_x\right)^{a_x}\left(y - A_y\right)^{a_y}\left(z - A_z\right)^{a_z}e^{-\alpha\left(\mathbf{r} - \mathbf{A}\right)^2}
+\end{equation}
+Also suppose a Hermite orbital has the following form.
+\begin{equation}
+  \overline{\psi_{\mathbf{p}}} = \zeta^{\frac{p}{2}} H_{p_x}\left(\sqrt{\zeta} \left(x - P_x\right)\right) H_{p_y}\left(\sqrt{\zeta} \left(y - P_y\right)\right)H_{p_z}\left(\sqrt{\zeta} \left(x - P_z\right)\right) e^{-\zeta\left(\mathbf{r} - \mathbf{P}\right)^2}
 \end{equation}
 
-Using equation~\ref{herm-recur} gives the following recurrence relation for Hermite orbitals. In the following equations, $i$ can be $x, y,$ or $z$.
+Using equation~\ref{herm-recur} gives the following recurrence relation for Hermite orbitals. In all equations after this, $i$ can be $x, y,$ or $z$.
 \begin{equation}
   \overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = 2\zeta\left(i - P_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
   \label{herm-orb-recur}
@@ -86,24 +144,25 @@ If $\mathbf{A} = \mathbf{P}$, then multiplying by $\psi_{\mathbf{a} - \mathbf{1}
   \frac{1}{2\zeta} \psi_{\mathbf{a} - \mathbf{1}_i} \overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = \psi_{\mathbf{a}}\overline{\psi_{\mathbf{p}}} - p_i \psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
   \label{oc-psi-recur}
 \end{equation}
-
-Then, if $\left[a\overline{p}\right|_{u,v} = \frac{(2\beta)^u}{(2\zeta)^v}[a\overline{p}|$, then equation~\ref{oc-psi-recur} gives
+If $\left[a\overline{p}\right|_{u,v} = \frac{(2\beta)^u}{(2\zeta)^v}[a\overline{p}|$, then equation~\ref{oc-psi-recur} gives
 \begin{equation}
   \left[\mathbf{a}\overline{\mathbf{p}}\right|_{u,v} = p_i\left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\left(\mathbf{p} - \mathbf{1}_i\right)}\right|_{u,v+1} + \left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\left(\mathbf{p} + \mathbf{1}_i\right)}\right|_{u,v}
   \label{oc-recur}
 \end{equation}
-
 However, if $\mathbf{P} = \frac{\alpha \mathbf{A} + \beta\mathbf{B}}{\zeta}$, then the recurrence relation in equation~\ref{herm-orb-recur} needs to be rewritten as
-$$\overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = 2\zeta\left(i - \frac{\alpha}{\zeta}A_i - \frac{\beta}{\zeta}A_i\right)\overline{\psi_{\mathbf{p}}} + 2\zeta\left(\frac{\beta}{\zeta}A_i - \frac{\beta}{\zeta}B_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}$$
+\begin{equation}
+  \overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = 2\zeta\left(i - \frac{\alpha}{\zeta}A_i - \frac{\beta}{\zeta}A_i\right)\overline{\psi_{\mathbf{p}}} + 2\zeta\left(\frac{\beta}{\zeta}A_i - \frac{\beta}{\zeta}B_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+\end{equation}
+
 \begin{equation}
   = 2\zeta\left(i - A_i\right)\overline{\psi_{\mathbf{p}}} + 2\beta\left(A_i - B_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
   \label{tc-herm-recur}
 \end{equation}
-
 Then, multiplying equation~\ref{tc-herm-recur} by $\psi_{\mathbf{a} - \mathbf{1}_i} / (2\zeta)$ gives the following.
 
 \begin{equation}
-  \frac{1}{2\zeta}\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = \psi_{\mathbf{a}}\overline{\psi_{\mathbf{p}}} + \frac{2\beta}{2\zeta}\left(A_i - B_i\right)\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p}}} - 2p_i\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+  \frac{1}{2\zeta}\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = \psi_{\mathbf{a}}\overline{\psi_{\mathbf{p}}} + \frac{2\beta}{2\zeta}\left(A_i - B_i\right)\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p}}} \\
+  - 2p_i\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
   \label{tc-herm-orb-recur}
 \end{equation}
 By letting $[a\overline{p}|_{u,v} = \frac{(2\beta)^u}{(2\zeta)^v}[a\overline{p}|$, equation~\ref{tc-herm-orb-recur} can be rearranged to the following.
@@ -116,7 +175,7 @@ By letting $[a\overline{p}|_{u,v} = \frac{(2\beta)^u}{(2\zeta)^v}[a\overline{p}|
 
 \section{Two-electron Integrals}
 \subsection{One Center}
-Finding the integral $\left(aa\middle|aa\right)$. Start by writing the form of one term.
+To find the integral $\left(aa\middle|aa\right)$, start by writing the form of one term.
 
 \begin{multline}
   \left[ab\middle|cd\right] = D_A D_B D_C D_D \iiint\left(x_1 - A_x\right)^{a_x}\left(y_1 - A_y\right)^{a_y} \left(z_1 - A_z\right)^{a_z} e^{-\alpha\left(\mathbf{r}_1 - \mathbf{A}\right)^2} \\
@@ -125,32 +184,30 @@ Finding the integral $\left(aa\middle|aa\right)$. Start by writing the form of o
   \left(x_2 - A_x\right)^{d_x}\left(y_2 - A_y\right)^{d_y} \left(z_2 - A_z\right)^{d_z}  e^{-\delta\left(\mathbf{r}_2 - \mathbf{A}\right)^2} \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} d\mathbf{r_1} d\mathbf{r_2}
   \label{oc-integral}
 \end{multline}
-
 Combine terms. Let $\zeta = \alpha + \beta$, $\eta = \gamma + \delta$, $\mathbf{e} = \mathbf{a} + \mathbf{b}$ and $\mathbf{f} = \mathbf{c} + \mathbf{d}$. Also, recenter on $\mathbf{A}$.
 
 \begin{equation}
   \left[e0\middle|f0\right] = \int\int\int\int\int\int x_1^{e_x}y_1^{e_y} z_1^{e_z} x_2^{f_x} y_2^{f_y}z_2^{f_z} e^{-\zeta r_1^2}e^{-\eta r_2^2}\frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} d\mathbf{r}_1 d\mathbf{r}_2
 \end{equation}
-
-
 Then, use the recurrence relation in equation~\ref{oc-recur} to give a new integral. Note that due to recentering, $\mathbf{P} = \mathbf{0}$.
+
 \begin{multline}
-  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D\int\int\int\int \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) \\
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D\int\int\int\int\int\int \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) \\
   H_{q_x}\left(\sqrt{\eta}x_2\right)H_{q_y}\left(\sqrt{\eta}y_2\right)H_{q_z}\left(\sqrt{\eta}z_2\right) e^{-\zeta r_1^2}e^{-\eta r_2^2} \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} d\mathbf{r}_1 d\mathbf{r}_2
   \label{oc-hermite-integral}
 \end{multline}
-
 Note the following integral.
 \begin{equation}
   \frac{1}{\sqrt{\pi}} \int_{-\infty}^\infty e^{-t^2\left(\mathbf{r}_1 - \mathbf{r}_2\right)^2} dt = \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|}
   \label{jesus-kernel}
 \end{equation}
-
 Using this means equation~\ref{oc-hermite-integral} can become
+
 \begin{multline}
   \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} \int_{-\infty}^\infty dt \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) \\
   H_{q_x}\left(\sqrt{\eta}x_2\right)H_{q_y}\left(\sqrt{\eta}y_2\right)H_{q_z}\left(\sqrt{\eta}z_2\right) e^{-\zeta r_1^2}e^{-\eta r_2^2} e^{-t^2\left(\mathbf{r}_1 - \mathbf{r}_2\right)^2} d\mathbf{r}_1 d\mathbf{r}_2
 \end{multline}
+
 Now, solve for the $\mathbf{r}_2$ part of the integral. To do this, combine the Gaussians that include this term.
 \begin{equation}
   -\eta r_2^2 - t^2 r_2^2 - t^2 r_1^2 + 2t^2 \mathbf{r}_1 \cdot \mathbf{r}_2
@@ -182,40 +239,22 @@ Simplifying a bit.
   \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{q_x}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}x_1\right)H_{q_y}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}} y_1\right)H_{q_z}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}z_1\right)\\
    H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} d\mathbf{r}_1 dt  
 \end{multline}
-
-Now for the second part. Simplify the Gaussians for $\mathbf{r}_1$.
+Next, use equation~\ref{herm-def} to rewrite.
 \begin{equation}
-  -\zeta r_1^2 - \frac{\eta t^2}{\eta + t^2} r_1^2 = -\frac{\eta\zeta + \zeta t^2 + \eta t^2}{\eta + t^2} r_1^2 
+  H_n(x) e^{-x^2}= \frac{d^n}{dx^n} e^{-x^2}
+\end{equation}
+Then, let $\sqrt{a}u = x$.
+\begin{equation}
+  H_n(\sqrt{a}u) e^{-au^2} = \frac{d^n}{dx^n} e^{-au^2} = \left(\frac{d\sqrt{a}u}{du}\right)^n\frac{d^n}{du} e^{-au^2}
 \end{equation}
 
-Then, rewrite.
-\begin{multline}
-  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] =
-  \pi^{\frac{3}{2}} \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}}
-  \eta^{\frac{q}{2}} \int_{-\infty}^\infty \left(\frac{t^2}{\eta +
-      t^2}\right)^{\frac{q}{2}}\frac{1}{\sqrt{\eta + t^2}} \\
-  \int_{-\infty}^\infty \int_{-\infty}^\infty\int_{-\infty}^\infty H_{q_x}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}x_1\right)H_{q_y}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}y_1\right)H_{q_z}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}z_1\right)\\
-  H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) e^{-\frac{\eta t^2 + \zeta t^2 + \eta \zeta}{\eta + t^2}r_1^2} d\mathbf{r}_1 dt  
-\end{multline}
+  
 
-Next, let $\mathbf{r}_1' = \sqrt{\frac{\eta t^2 + \zeta t^2 + \eta \zeta}{\eta + t^2}}\mathbf{r}_1$.
 
-\begin{multline}
-  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] =
-  \pi^{\frac{3}{2}} \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}}
-  \eta^{\frac{q}{2}} \int_{-\infty}^\infty \left(\frac{t^2}{\eta +
-      t^2}\right)^{\frac{q}{2}}\frac{1}{\sqrt{\eta t^2 + \zeta t^2 + \eta \zeta}}\\
-  \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{q_x}\left(\sqrt{\frac{\eta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}}x_1'\right)H_{q_y}\left(\sqrt{\frac{\eta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}}y_1'\right)H_{q_z}\left(\sqrt{\frac{\eta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}}z_1'\right)\\
-  H_{p_x}\left(\sqrt{\zeta}\sqrt{\frac{\eta + t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}}x_1'\right) H_{p_y}\left(\sqrt{\zeta}\sqrt{\frac{\eta + t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}}y_1'\right) H_{p_z}\left(\sqrt{\zeta}\sqrt{\frac{\eta + t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}}z_1'\right) e^{-\left(r_1'\right)^2} d\mathbf{r}_1 dt  
-\end{multline}
 
-For now, focus on the $x$ integral. Use equation~\ref{herm-maf} to expand the integral.
+\bibliography{integrals}
+\bibliographystyle{plain}
 
-\begin{multline}
-  \int_{-\infty}^\infty H_{q_x}\left(\sqrt{\frac{\eta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}} x\right) H_{p_x}\left(\sqrt{\frac{\eta \zeta + \zeta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}} x\right) e^{-x^2} dx = \\
-  \int_{-\infty}^\infty e^{-x^2} \left(\left(\frac{\eta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}\right)^{\frac{q_x}{2}} \sum_{k = 0}^{\left\lfloor\frac{q_x}{2}\right\rfloor}\frac{(q_x)!}{k!(q_x - 2k)!}\left(-\frac{\zeta t^2 + \eta \zeta}{\eta t^2}\right)^k H_{q_x - 2k}(x)\right)\\
-  \left(\left(\frac{\eta\zeta + \zeta t^2}{\eta t^2 + \zeta t^2 + \eta \zeta}\right)^{\frac{p_x}{2}}\sum_{j = 0}^{\left\lfloor\frac{p_x}{2}\right\rfloor}\frac{(p_x)!}{j!(p_x - 2j)!}\left(-\frac{\eta t^2}{\zeta t^2 + \eta \zeta}\right)^j H_{p_x - 2j}(x)\right) dx
-\end{multline}
 
 
 \end{document}
