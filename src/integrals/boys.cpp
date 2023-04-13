@@ -35,6 +35,9 @@ static double extrapolant_square(int i, int k, int j, double T,
   
 
 double compchem::AnalyticIntegral::boys_square(int j, double T) const {
+  if(j < 0) {
+    return 0;
+  }
   // If T = 0, this is just a power function.
   if(T == 0) {
     return 1.0 / (2.0 * j + 1.0);
@@ -45,7 +48,30 @@ double compchem::AnalyticIntegral::boys_square(int j, double T) const {
   }
 
   if(this->opts.getbooloption("analytic boys")) {
-    return ingamma(j + 0.5, T) / (2 * std::pow(T, j + 0.5));
+    if(T < 1) {
+      double sum1 = 0, sum2 = 1, term = 1;
+      for(int i = 0; i < 30 && 
+	    sum2 != sum1; i++) {
+	sum2 = sum1;
+	sum1 += term / (2 * j + 2 * i + 1);
+        term *= -T / (i + 1);
+      }
+      return sum1;
+    } else {
+      double sum = 0, term = 1;
+      // Calculate the Pochhammer symbol.
+      for(int i = 0; i < j - 1; i++) {
+	term *= (0.5 - j + i);
+      }
+      for(int i = 0; i <= j - 1; i++) {
+	sum += term;
+	term *= T / (1.5 + i);
+      }
+      int sign = (j % 2)? 1: -1;
+      return (std::tgamma(j + 0.5) * std::erf(std::sqrt(T)) -
+	      sign * std::exp(-T) * std::sqrt(T) * sum) /
+	(2 * std::pow(T, j + 0.5));
+    }
   } else {
     return integrate_square(j, T, this->opts.getintoption("boys points"));
   }

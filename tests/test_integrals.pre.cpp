@@ -37,6 +37,30 @@ void print_tei(const TEIArray &tei, const string &name,
   }
 }
 
+int test_boys() {
+  FILE *fp = fopen("${CMAKE_SOURCE_DIR}/tests/boys_test.dat", "r");
+
+  int warns = 0;
+  GlobalOptions::getsingleton().setbooloption("analytic boys", true);
+  GlobalOptions::getsingleton().setintoption("boys points", 100);
+  GlobalOptions::getsingleton().setintoption("threads", 32);
+  
+  AnalyticIntegral ints;
+  #undef CONV
+  #define CONV 1e-5
+  while(!feof(fp)) {
+    int j;
+    double T, res;
+    fscanf(fp, "%d\t%lf\t%lf\n", &j, &T, &res);
+    double calc = ints.boys_square(j, T);
+    ASSERT_WARN_MSG(NEAR(res, calc), warns,
+		    "Boys function values are different. Got %lf, expected %lf.\n",
+		    calc, res);
+  }
+  fclose(fp);
+  return warns;
+}
+
 int test_tei_array() {
   TEIArray *tei = new TEIArray(7);
 
@@ -57,6 +81,63 @@ int test_tei_array() {
 
   return warns;
 }
+
+void read_square(FILE *fp, double *out, int rows) {
+  char buf[1024] = {'\0'};
+  int swaps[] = {0, 1, 4, 2, 3, 5, 6};
+
+  while(!feof(fp)) {
+    fgets(buf, 1023, fp);
+
+    // Read data.
+    int mu, nu;
+    double val;
+    sscanf(buf, "%d %d %lf", &mu, &nu, &val);
+
+    // The files are 1-indexed, but we need zero-indexed.
+    mu--;
+    nu--;
+    // The orbital order is different.
+    mu = swaps[mu];
+    nu = swaps[nu];
+    // File uses symmetry.
+    out[mu * rows + nu] = val;
+    out[nu * rows + mu] = val;
+  }
+}
+
+void read_tei(FILE *fp, TEIArray *out) {
+  // Clear the output, since any skipped entries are assumed to be zero.
+  for(int i = 0; i < out->getsize(); i++) {
+    out->at_direct(i) = 0;
+  }
+  
+  char buf[1024] = {'\0'};
+  int swaps[] = {0, 1, 4, 2, 3, 5, 6};
+
+  while(!feof(fp)) {
+    fgets(buf, 1023, fp);
+    
+    // Read data.
+    int mu, nu, lam, sig;
+    double val;
+    sscanf(buf, "%d %d %d %d %lf", &mu, &nu, &lam, &sig, &val);
+
+    // File is 1-indexed.
+    mu--;
+    nu--;
+    lam--;
+    sig--;
+
+    // Orbitals are in a different order.
+    mu = swaps[mu];
+    nu = swaps[nu];
+    lam = swaps[lam];
+    sig = swaps[sig];
+    out->at(mu, nu, lam, sig) = val;
+  }
+}
+
 
 int test_integrals() {
   int warns = 0, orbs = 0;
@@ -87,6 +168,7 @@ int test_integrals() {
 
   GlobalOptions::getsingleton().setbooloption("analytic boys", true);
   GlobalOptions::getsingleton().setintoption("boys points", 100);
+  GlobalOptions::getsingleton().setintoption("threads", 32);
   
   IntegralFactory<AnalyticIntegral> factory;
 
@@ -97,42 +179,73 @@ int test_integrals() {
   double exact = (3 * std::sqrt(x * M_PI) * std::erf(std::sqrt(x)) -
 		  130 / std::exp(5)) / 1000 ,
     gam = exact * 2 * std::pow(x, 1.5);
-  //ASSERT_WARN_MSG(NEAR(ingamma(1.5, x), gam), warns,
-  //		  "Expected incomplete gamma %lf, got %lf.\n",
-  //		  gam, ingamma(1.5, x));
+  
   ASSERT_WARN_MSG(NEAR(boys, exact), warns,
 		  "Expected Boys function %lf, got %lf.\n",
 		  exact, boys);
-  
+
+  // Generate the integrals.
   factory.Smatrix(mol, S, &sdim);
   factory.Tmatrix(mol, T, &tdim);
   factory.Vmatrix(mol, V, &vdim);
   TEIArray *tei = factory.TEIints(mol);
 
+  // Make sure they at least have the right size.
   ASSERT_WARN_MSG(sdim == 7, warns, "Got %d, expected 7.\n", sdim);
   ASSERT_WARN_MSG(tdim == 7, warns, "Got %d, expected 7.\n", tdim);
   ASSERT_WARN_MSG(tdim == 7, warns, "Got %d, expected 7.\n", tdim);
   ASSERT_WARN_MSG(tei->getdim() == 7, warns, "Got %d, expected 7.\n",
   		  tei->getdim());
 
-  for(int i = 0; i < 7; i++) {
-    ASSERT_WARN_MSG(NEAR(S[i * 7 + i], 1), warns,
-		    "Diagonal entries are not normailzed: %d: %lf\n",
-		    i, S[i * 7 + i]);
-  }
 
-  for(int i = 0; i < 49; i++) {
-    ASSERT_WARN_MSG(std::fabs(S[i]) <= 1 + CONV, warns,
-		    "Not correct at %d, %d: %lf\n", i / 7, i % 7, S[i]);
-    ASSERT_WARN_MSG(isfinite(T[i]), warns,
-		    "Not finite at %d, %d\n", i / 7, i % 7);
-    ASSERT_WARN_MSG(isfinite(V[i]), warns,
-		    "Not finite at %d, %d\n", i / 7, i % 7);
+  // Read in the pre-computed arrays.
+  double *S_pre = new double[49],
+    *T_pre = new double[49],
+    *V_pre = new double[49];
+  TEIArray *tei_pre =  new TEIArray(7);
+
+  FILE *sfile = fopen("${CMAKE_SOURCE_DIR}/tests/S.dat", "r");
+  read_square(sfile, S_pre, 7);
+  fclose(sfile);
+
+  FILE *tfile = fopen("${CMAKE_SOURCE_DIR}/tests/T.dat", "r");
+  read_square(tfile, T_pre, 7);
+  fclose(tfile);
+
+  FILE *vfile = fopen("${CMAKE_SOURCE_DIR}/tests/V.dat", "r");
+  read_square(vfile, V_pre, 7);
+  fclose(vfile);
+
+  FILE *tei_file = fopen("${CMAKE_SOURCE_DIR}/tests/ERI.dat", "r");
+  read_tei(tei_file, tei_pre);
+  fclose(tei_file);
+
+  // Compare the real vs the calculated.
+  for(int i = 0; i < 7; i++) {
+    for(int j = 0; j <= i; j++) {
+      ASSERT_WARN_MSG(NEAR(S[i * 7 + j], S_pre[i * 7 + j]), warns,
+		      "Overlap matrix not the same at (%d, %d). Got %lf, expected %lf.\n",
+		      i, j, S[i * 7 + j], S_pre[i * 7 + j]);
+      ASSERT_WARN_MSG(NEAR(T[i * 7 + j], T_pre[i * 7 + j]), warns,
+		      "Kinetic energy matrix not the same at (%d, %d). Got %lf, expected %lf.\n",
+		      i, j, T[i * 7 + j], T_pre[i * 7 + j]);
+      ASSERT_WARN_MSG(NEAR(V[i * 7 + j], V_pre[i * 7 + j]), warns,
+		      "Potential energy matrix not the same at (%d, %d). Got %lf, expected %lf.\n",
+		      i, j, V[i * 7 + j], V_pre[i * 7 + j]);
+    }
   }
 
   for(int i = 0; i < tei->getsize(); i++) {
-    ASSERT_WARN(isfinite(tei->getdata()[i]), warns);
+    int mu, nu, lam, sig;
+    tei->indextoquad(i, &mu, &nu, &lam, &sig);
+    ASSERT_WARN_MSG(NEAR(tei->at(mu, nu, lam, sig), tei_pre->at(mu, nu, lam, sig)),
+		    warns,
+		    "Electron repulsion integrals not the same at (%d %d | %d %d). Got %lf, expected %lf.\n",
+		    mu, nu, lam, sig, tei->at(mu, nu, lam, sig),
+		    tei_pre->at(mu, nu, lam, sig));
   }
+
+  
 
   double *H = new double[49];
 
@@ -154,14 +267,26 @@ int test_integrals() {
   delete[] H;
   delete tei;
   delete mol;
+  delete[] S_pre;
+  delete[] T_pre;
+  delete[] V_pre;
+  delete tei_pre;
+  
 
   return warns;
 }
 
 int main(void) {
-  int warns = 0, errs = 0;
+  int warns = 0, errs = 0, ret;
 
-  int ret = test_tei_array();
+  ret = test_boys();
+  if(ret == -1) {
+    errs++;
+  } else {
+    warns += ret;
+  }
+  
+  ret = test_tei_array();
   if(ret == -1) {
     errs++;
   } else {

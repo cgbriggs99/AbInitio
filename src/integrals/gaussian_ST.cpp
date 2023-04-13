@@ -12,6 +12,10 @@
 
 using namespace compchem;
 
+AnalyticIntegral::~AnalyticIntegral() {
+  delete &(this->opts);
+}
+
 static double compute_ap(const std::array<int, 6> &index,
 			 std::map<std::array<int, 6>, double> &ints,
 			 double zeta,
@@ -197,7 +201,7 @@ double AnalyticIntegral::overlap(const GaussianOrbital *o1,
   
 }
 
-static double compute_laplacian(const int *pow1, const int *pow2,
+static double compute_kinetic(const int *pow1, const int *pow2,
 				const GaussianOrbital *o1,
 				const GaussianOrbital *o2,
 				const std::array<double, 3> &c1,
@@ -240,7 +244,17 @@ static double compute_laplacian(const int *pow1, const int *pow2,
 	  pow2[0] + 2, pow2[1], pow2[2]},
 	ind4 = {
 	  pow1[0], pow1[1], pow1[2],
-	  pow2[0], pow2[1], pow2[2]};
+	  pow2[0], pow2[1], pow2[2]},
+	ind5 = {
+	  pow1[0], pow1[1], pow1[2],
+	  pow2[0], pow2[1], pow2[2] - 2},
+	ind6 = {
+	  pow1[0], pow1[1], pow1[2],
+	  pow2[0], pow2[1] - 2, pow2[2]},
+	ind7 = {
+	  pow1[0], pow1[1], pow1[2],
+	  pow2[0] - 2, pow2[1], pow2[2]};
+	  
       std::map<std::array<int, 6>, double> ab;
       double beta = o2->getalpha(j);
       sum += 4 * beta * beta *
@@ -248,7 +262,10 @@ static double compute_laplacian(const int *pow1, const int *pow2,
 	 compute_ab(*&ind2, *&ab, *&e0, c1, c2) +
 	 compute_ab(*&ind3, *&ab, *&e0, c1, c2)) -
 	2 * beta * (2 * (pow2[0] + pow2[1] + pow2[2]) + 3) *
-	compute_ab(*&ind4, *&ab, *&e0, c1, c2);
+	compute_ab(*&ind4, *&ab, *&e0, c1, c2) +
+	pow2[2] * (pow2[2] - 1) * compute_ab(*&ind5, *&ab, *&e0, c1, c2) +
+	pow2[1] * (pow2[1] - 1) * compute_ab(*&ind6, *&ab, *&e0, c1, c2) +
+	pow2[0] * (pow2[0] - 1) * compute_ab(*&ind7, *&ab, *&e0, c1, c2);
     }
   }
   return -0.5 * sum;
@@ -256,7 +273,7 @@ static double compute_laplacian(const int *pow1, const int *pow2,
 				
       
 	  
-double AnalyticIntegral::laplacian(const GaussianOrbital *o1,
+double AnalyticIntegral::kinetic(const GaussianOrbital *o1,
 				   const GaussianOrbital *o2,
 				   std::array<double, 3> center1,
 				   std::array<double, 3> center2) const {
@@ -264,7 +281,7 @@ double AnalyticIntegral::laplacian(const GaussianOrbital *o1,
   for(int i = 0; i < o1->getharms().getsize(); i++) {
     for(int j = 0; j < o2->getharms().getsize(); j++) {
       sum += o1->getharms().getcoef(i) * o2->getharms().getcoef(j) *
-	compute_laplacian(o1->getharms().gettermorder(i),
+	compute_kinetic(o1->getharms().gettermorder(i),
 			o2->getharms().gettermorder(j),
 			o1, o2, center1, center2);
     }

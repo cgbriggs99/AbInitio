@@ -1,0 +1,276 @@
+\subsection{Four-Centered Integrals}
+
+As a first look at the integrals, consider the full case of four centers. This is the integral that follows.
+\begin{multline}
+  \left(\mathbf{ab}\middle|\mathbf{cd}\right) = \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty G_{\mathbf{a}}\left(\mathbf{r}_1 - \mathbf{A}\right)G_{\mathbf{b}}\left(\mathbf{r}_1 - \mathbf{B}\right)\\
+  G_{\mathbf{c}}\left(\mathbf{r}_2 - \mathbf{C}\right)G_{\mathbf{d}}\left(\mathbf{r}_2 - \mathbf{D}\right)\frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} \dvarb{r}_1 \dvarb{r}_2
+  \label{fc-full-integral}
+\end{multline}
+Using the definition of the Cartesian orbital in equation~\ref{cart-orb}, it is possible to derive the following recurrence relation by multiplying the integral by $\frac{x_1 - A_x}{x_1 - B_x} + \frac{A_x - B_x}{x_1 - B_x} = 1$. This can be done for any coordinate.
+\begin{equation}
+  \left(\mathbf{ab}\middle|\mathbf{cd}\right) = \left(\left(\mathbf{a} + \mathbf{1}_i\right)\left(\mathbf{b} - \mathbf{1}_i\right)\middle|\mathbf{cd}\right) + \left(A_i - B_i\right)\left(\mathbf{a}\left(\mathbf{b} - \mathbf{1}_i\right)\middle|\mathbf{cd}\right)
+  \label{fc-recur-1}
+\end{equation}
+Similarly, by multiplying the integral by $\frac{x_2 - C_x}{x_2 - D_x} + \frac{C_x  - D_x}{x_2 - D_x}$, the other recurrence relation can be derived.
+\begin{equation}
+  \left(\mathbf{ab}\middle|\mathbf{cd}\right) = \left(\mathbf{ab}\middle|\left(\mathbf{c} + \mathbf{1}_i\right)\left(\mathbf{d} - \mathbf{1}_i\right)\right) + \left(C_i - D_i\right)\left(\mathbf{ab}\middle|\mathbf{c}\left(\mathbf{d} - \mathbf{1}_i\right)\right)
+  \label{fc-recur-2}
+\end{equation}
+These recurrence relations also work termwise. Since this integral is over contracted basis functions, is should be rewritten in terms of uncontracted integrals to more easily manipulate the terms.
+\begin{equation}
+  \left(\mathbf{ab}\middle|\mathbf{cd}\right) = \sum_{k_A = 1}^{K_A}\sum_{k_B = 1}^{K_B}\sum_{k_C = 1}^{K_C}\sum_{k_D = 1}^{K_D} D_A D_B D_C D_D \left[\mathbf{ab}\middle|\mathbf{cd}\right]
+\end{equation}
+Note that while the uncontracted integral is not subscripted, it is assumed that its parameters change to the correpsonding values in each of the basis functions that make it up. This uncontracted integral obeys equations~\ref{fc-recur-1} and~\ref{fc-recur-2} as well. The integral of the uncontracted functions has the following form.
+\begin{multline}
+  \left[\mathbf{ab}\middle|\mathbf{cd}\right] = D_A D_B D_C D_D \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty \left(x_1 - A_x\right)^{a_x}\left(y_1 - A_y\right)^{a_y}\left(z_1 - A_z\right)^{a_z}\\
+  \left(x_1 - B_x\right)^{b_x}\left(y_1 - B_y\right)^{b_y}\left(z_1 - B_z\right)^{b_z}\\
+  \left(x_2 - C_x\right)^{c_x}\left(y_2 - C_y\right)^{c_y}\left(z_2 - C_z\right)^{c_z}\\
+  \left(x_2 - D_x\right)^{d_x}\left(y_2 - D_y\right)^{d_y}\left(z_2 - D_z\right)^{d_z}\\
+  e^{-\alpha \left(\mathbf{r}_1 - \mathbf{A}\right)^2} e^{-\beta \left(\mathbf{r}_1 - \mathbf{B}\right)^2} e^{-\gamma \left(\mathbf{r}_2 - \mathbf{C}\right)^2} e^{-\delta \left(\mathbf{r}_2 - \mathbf{D}\right)^2} \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} \dvarb{r}_1 \dvarb{r}_2
+\end{multline}
+To make this easier to solve, combine the exponents.
+\begin{equation}
+  \alpha r_1^2 - 2\alpha \mathbf{r}_1 \cdot \mathbf{A} + \alpha A^2 + \beta r_1^2 - 2\beta \mathbf{r}_1 \cdot \mathbf{B} + \beta B^2
+\end{equation}
+\begin{equation}
+  = \left(\alpha + \beta\right)r_1^2 - 2\mathbf{r_1} \cdot \left(\alpha\mathbf{A} + \beta\mathbf{B}\right) + \alpha A^2 + \beta B^2
+\end{equation}
+Complete the square.
+\begin{equation}
+  = \left(\alpha + \beta\right)r_1^2 - 2\mathbf{r_1} \cdot \left(\alpha\mathbf{A} + \beta\mathbf{B}\right) + \alpha A^2 + \beta B^2 + \frac{\alpha^2 A^2 + \beta^2 B^2 + 2\alpha\beta\mathbf{A} \cdot \mathbf{B}}{\alpha + \beta} - \frac{\alpha^2 A^2 + \beta^2 B^2 + 2\alpha\beta\mathbf{A} \cdot \mathbf{B}}{\alpha + \beta}
+\end{equation}
+\begin{equation}
+  = \left(\alpha + \beta\right)\left(\mathbf{r}_1 - \frac{\alpha\mathbf{A} + \beta\mathbf{B}}{\alpha + \beta}\right)^2 + \frac{\alpha^2 A^2 + \alpha\beta A^2 + \alpha\beta B^2 + \beta^2B^2 - \alpha^2 A^2 - \beta^2 B^2 - 2\alpha\beta\mathbf{A}\cdot\mathbf{B}}{\alpha + \beta}
+\end{equation}
+\begin{equation}
+  = \left(\alpha + \beta\right)\left(\mathbf{r}_1 - \frac{\alpha\mathbf{A} + \beta\mathbf{B}}{\alpha + \beta}\right)^2 + \frac{\alpha\beta}{\alpha + \beta} \left(\mathbf{A} - \mathbf{B}\right)^2
+\end{equation}
+Let $\zeta = \alpha + \beta$ and $\mathbf{P} = \frac{\alpha\mathbf{A} + \beta\mathbf{B}}{\zeta}$. Then the equation becomes the following.
+\begin{equation}
+  = \zeta\left(\mathbf{r}_1 - \mathbf{P}\right)^2 + \frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2
+\end{equation}
+A similar process can be done for the other two Gaussians. Plugging these in to the integral gives a new integral. For these, let $\eta = \gamma + \delta$ and $\mathbf{Q} = \frac{\gamma\mathbf{C} + \delta\mathbf{D}}{\eta}$.
+\begin{multline}
+  \left[\mathbf{ab}\middle|\mathbf{cd}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2} e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2} \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\\
+  \left(x_1 - A_x\right)^{a_x}\left(y_1 - A_y\right)^{a_y}\left(z_1 - A_z\right)^{a_z} \left(x_1 - B_x\right)^{b_x}\left(y_1 - B_y\right)^{b_y}\left(z_1 - B_z\right)^{b_z}\\
+  \left(x_2 - C_x\right)^{c_x}\left(y_2 - C_y\right)^{c_y}\left(z_2 - C_z\right)^{c_z} \left(x_2 - D_x\right)^{d_x}\left(y_2 - D_y\right)^{d_y}\left(z_2 - D_z\right)^{d_z}\\
+  e^{-\zeta\left(\mathbf{r}_1 - \mathbf{P}\right)^2} e^{-\eta\left(\mathbf{r}_2 - \mathbf{Q}\right)^2}\frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} \dvarb{r}_1 \dvarb{r}_2
+\end{multline}
+Using the recurrence relations in equations~\ref{fc-recur-1} and~\ref{fc-recur-2}, it is possible to take these integrals down to the form $\left[\mathbf{e0}\middle|\mathbf{f0}\right]$. Then, using the recurrence relation in equation~\ref{tc-recur}, which can be applied to both sides, gives an integral of the following form.
+\begin{multline}
+  \left[\mathbf{0}\overline{\mathbf{p}}\middle|\mathbf{0}\overline{\mathbf{q}}\right] = \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2} \zeta^{\frac{p}{2}}\eta^{\frac{q}{2}}\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty \\
+  H_{p_x}\left(\left(x_1 - P_x\right)\sqrt{\zeta}\right)H_{p_y}\left(\left(y_1 - P_y\right)\sqrt{\zeta}\right)H_{p_z}\left(\left(z_1 - P_z\right)\sqrt{\zeta}\right)\\
+  H_{q_x}\left(\left(x_2 - Q_x\right)\sqrt{\eta}\right)H_{q_y}\left(\left(y_2 - Q_y\right)\sqrt{\eta}\right)H_{q_z}\left(\left(z_2 - Q_z\right)\sqrt{\eta}\right) \\
+  e^{-\zeta\left(\mathbf{r}_1 - \mathbf{P}\right)^2} e^{-\eta\left(\mathbf{r}_2 - \mathbf{Q}\right)^2} \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} \dvarb{r}_1 \dvarb{r}_2
+\end{multline}
+Note that for the recurrence relation in equation~\ref{tc-recur} to work, the $u,v$ scaled integral needs to be defined as $\left|\mathbf{c}\overline{\mathbf{q}}\right]_{u,v} = \frac{\left(2\delta\right)^u}{\left(2\eta\right)^v}\left|\mathbf{c}\overline{\mathbf{q}}\right]$. Then use the following substitution.
+\begin{equation}
+  \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} = \frac{1}{\sqrt{\pi}}\int_{-\infty}^\infty e^{-t^2\left(\mathbf{r}_1 - \mathbf{r}_2\right)^2} \dvar{t}
+  \label{jesus-kernel}
+\end{equation}
+The integral then becomes the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\frac{\zeta^{\frac{p}{2}}\eta^{\frac{q}{2}}}{\sqrt{\pi}} \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty \int_{-\infty}^\infty\\
+  H_{p_x}\left(\left(x_1 - P_x\right)\sqrt{\zeta}\right)H_{p_y}\left(\left(y_1 - P_y\right)\sqrt{\zeta}\right)H_{p_z}\left(\left(z_1 - P_z\right)\sqrt{\zeta}\right)\\
+  H_{q_x}\left(\left(x_2 - Q_x\right)\sqrt{\eta}\right)H_{q_y}\left(\left(y_2 - Q_y\right)\sqrt{\eta}\right)H_{q_z}\left(\left(z_2 - Q_z\right)\sqrt{\eta}\right) \\
+  e^{-\zeta\left(\mathbf{r}_1 - \mathbf{P}\right)^2} e^{-\eta\left(\mathbf{r}_2 - \mathbf{Q}\right)^2} e^{-t^2 \left(\mathbf{r}_1 - \mathbf{r}_2\right)^2} \dvarb{r}_1 \dvarb{r}_2 \dvar{t}
+\end{multline}
+Let $\mathbf{r}_1' = \mathbf{r}_1 - \mathbf{P}$ and $\mathbf{r}_2' = \mathbf{r}_2 - \mathbf{Q}$. The integral then becomes the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\frac{\zeta^{\frac{p}{2}}\eta^{\frac{q}{2}}}{\sqrt{\pi}} \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty \int_{-\infty}^\infty\\
+  H_{p_x}\left(x_1'\sqrt{\zeta}\right)H_{p_y}\left(y_1'\sqrt{\zeta}\right)H_{p_z}\left(z_1'\sqrt{\zeta}\right) H_{q_x}\left(x_2'\sqrt{\eta}\right)H_{q_y}\left(y_2'\sqrt{\eta}\right)H_{q_z}\left(z_2'\sqrt{\eta}\right) \\
+  e^{-\zeta\left(\mathbf{r}_1'\right)^2} e^{-\eta\left(\mathbf{r}_2'\right)^2} e^{-t^2 \left(\mathbf{r}_1' - \mathbf{r}_2' + \mathbf{P} - \mathbf{Q}\right)^2} \dvarb{r}_1' \dvarb{r}_2' \dvar{t}
+  \label{fc-branch-point}
+\end{multline}
+Let $\mathbf{R} = \mathbf{Q} - \mathbf{P}$ and combine the Gaussians.
+\begin{equation}
+  \zeta \left(\mathbf{r}_1'\right)^2 + \eta \left(\mathbf{r}_2'\right)^2 + t^2 \left(\mathbf{r}_1'\right)^2 + t^2 \left(\mathbf{r}_2'\right)^2 + t^2 R^2 - 2t^2 \mathbf{r}_1' \cdot \mathbf{R} + 2t^2 \mathbf{r}_2' \cdot \mathbf{R} - 2t^2 \mathbf{r}_1' \cdot \mathbf{r}_2'
+\end{equation}
+\begin{equation}
+  = \left(\zeta + t^2\right)\left(\mathbf{r}_1'\right)^2 - 2t^2 \mathbf{r}_1' \cdot \left(\mathbf{R} + \mathbf{r}_2'\right) + t^2 R^2 + \left(\eta + t^2\right)\left(\mathbf{r}_2'\right)^2 + 2t^2 \mathbf{r}_2'\cdot\mathbf{R}
+\end{equation}
+\begin{equation}
+  = \left(\zeta + t^2\right)\left(\mathbf{r}_1' - t^2\frac{\mathbf{R} + \mathbf{r}_2'}{\zeta + t^2}\right)^2 + t^2 R^2 + \left(\eta + t^2\right)\left(\mathbf{r}_2'\right)^2 + 2t^2 \mathbf{r}_2'\cdot\mathbf{R} - t^4\frac{R^2 + 2\mathbf{R}\cdot\mathbf{r}_2' + \left(\mathbf{r}_2'\right)^2}{\zeta + t^2}
+\end{equation}
+\begin{multline}
+  = \left(\zeta + t^2\right)\left(\mathbf{r}_1' - t^2\frac{\mathbf{R} + \mathbf{r}_2'}{\zeta + t^2}\right)^2 \\
+  + \frac{\zeta t^2 R^2 + t^4 R^2 + \eta\zeta\left(\mathbf{r}_2'\right)^2 + \eta t^2 \left(\mathbf{r}_2'\right)^2 + \zeta t^2 \left(\mathbf{r}_2'\right)^2 + t^4 \left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot \mathbf{R} + 2t^4 \mathbf{r}_2'\cdot\mathbf{R}}{\zeta + t^2} \\
+  - \frac{t^4 R^2 + 2t^4 \mathbf{r}_2'\cdot\mathbf{R} + t^4\left(\mathbf{r}_2'\right)^2}{\zeta + t^2}
+\end{multline}
+\begin{equation}
+  = \left(\zeta + t^2\right)\left(\mathbf{r}_1' - t^2\frac{\mathbf{R} + \mathbf{r}_2'}{\zeta + t^2}\right)^2 + \frac{\zeta t^2 R^2 + \eta\zeta \left(\mathbf{r}_2'\right)^2 + \eta t^2 \left(\mathbf{r}_2'\right)^2 + \zeta t^2 \left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R}}{\zeta + t^2}
+\end{equation}
+\begin{equation}
+  = \left(\zeta + t^2\right)\left(\mathbf{r}_1' - t^2\frac{\mathbf{R} + \mathbf{r}_2'}{\zeta + t^2}\right)^2 + \frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)\left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R} + \zeta t^2 R^2}{\zeta + t^2}
+\end{equation}
+This means that the integral is now the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\frac{\zeta^{\frac{p}{2}}\eta^{\frac{q}{2}}}{\sqrt{\pi}} \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\\
+  H_{q_x}\left(x_2'\sqrt{\eta}\right)H_{q_y}\left(y_2'\sqrt{\eta}\right)H_{q_z}\left(z_2'\sqrt{\eta}\right) e^{-\frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)\left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R} + \zeta t^2 R^2}{\zeta + t^2}} \\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty H_{p_x}\left(x_1'\sqrt{\zeta}\right)H_{p_y}\left(y_1'\sqrt{\zeta}\right)H_{p_z}\left(z_1'\sqrt{\zeta}\right) e^{- \left(\zeta + t^2\right)\left(\mathbf{r}_1' - t^2\frac{\mathbf{R} + \mathbf{r}_2'}{\zeta + t^2}\right)^2} \dvarb{r}_1' \dvarb{r}_2' \dvar{t}
+\end{multline}
+Using equation~\ref{herm-int-solved} on the $\mathbf{r}_1'$ component gives the following. Let $\mathbf{u} = \sqrt{\zeta + t^2}\mathbf{r}_1'$, with $\dvarb{r}_1' = \frac{\dvarb{u}}{\sqrt{\zeta + t^2}}$. Note that $1 - \frac{\zeta}{\zeta + t^2} = \frac{t^2}{\zeta + t^2}$ and $\frac{\zeta \left(\zeta + t^2\right)}{t^2 \left(\zeta + t^2\right)} = \frac{\zeta}{t^2}$.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\frac{\zeta^{\frac{p}{2}}\eta^{\frac{q}{2}}}{\sqrt{\pi}} \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\\
+  H_{q_x}\left(x_2'\sqrt{\eta}\right)H_{q_y}\left(y_2'\sqrt{\eta}\right)H_{q_z}\left(z_2'\sqrt{\eta}\right) e^{-\frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)\left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R} + \zeta t^2 R^2}{\zeta + t^2}} \\
+  \frac{\pi^{\frac{3}{2}}}{\left(\zeta + t^2\right)^{\frac{3}{2}}}\left(\frac{t^2}{\zeta + t^2}\right)^{\frac{p}{2}} H_{p_x}\left(t^2 \frac{R_x + x_2'}{\sqrt{\zeta + t^2}}\sqrt{\frac{\zeta}{t^2}}\right)H_{p_y}\left(t^2 \frac{R_y + y_2'}{\sqrt{\zeta + t^2}}\sqrt{\frac{\zeta}{t^2}}\right)H_{p_z}\left(t^2 \frac{R_z + z_2'}{\sqrt{\zeta + t^2}}\sqrt{\frac{\zeta}{t^2}}\right) \dvarb{r}_2' \dvar{t}
+\end{multline}
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\zeta^{\frac{p}{2}}\eta^{\frac{q}{2}}\pi \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty\\
+  H_{q_x}\left(x_2'\sqrt{\eta}\right)H_{q_y}\left(y_2'\sqrt{\eta}\right)H_{q_z}\left(z_2'\sqrt{\eta}\right) e^{-\frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)\left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R} + \zeta t^2 R^2}{\zeta + t^2}} \\
+  \frac{t^p}{\left(\zeta + t^2\right)^{\frac{p + 3}{2}}} H_{p_x}\left(\left(R_x + x_2'\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)H_{p_y}\left(\left(R_y + y_2'\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)H_{p_z}\left(\left(R_z + z_2'\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right) \dvarb{r}_2' \dvar{t}
+\end{multline}
+Now, try to separate the exponent.
+\begin{equation}
+  \frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)\left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R} + \zeta t^2 R^2}{\zeta + t^2} = \frac{\zeta t^2}{\zeta + t^2} \left(\mathbf{r}_2' + \mathbf{R}\right)^2 + \eta \left(\mathbf{r}_2'\right)^2
+\end{equation}
+This means that the integral can be rewritten using equation~\ref{herm-mult-def}.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi (-1)^{p + q} \int_{-\infty}^\infty\frac{1}{\left(\zeta + t^2\right)^{\frac{3}{2}}} \\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty \left(\frac{\partial^p}{\partial x_2'^{p_x} \partial y_2'^{p_y} \partial z_2'^{p_z}} e^{-\frac{\zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2' + \mathbf{R}\right)^2}\right) \left(\frac{\partial^q}{\partial x_2'^{q_x} \partial y_2'^{q_y} \partial z_2'^{q_z}} e^{-\eta \left(\mathbf{r}_2'\right)^2}\right) \dvarb{r}_2' \dvar{t}
+  \label{fc-herm-int-deriv}
+\end{multline}
+Then, solve the following equation using integration by parts.
+\begin{equation}
+  (-1)^{n + m} \int_{-\infty}^\infty \left(\frac{\partial^n}{\partial x^n} e^{-a x^2}\right)\left(\frac{\partial^m}{\partial x^m} e^{-b x^2}\right) \dvar{x}
+\end{equation}
+\begin{equation}
+  = \left.(-1)^{n + m}\left(\frac{\partial^n}{\partial x^n} e^{-a x^2}\right)\left(\frac{\partial^{m + 1}}{\partial x^{m + 1}} e^{-b x^2}\right)\right|_{-\infty}^\infty - (-1)^{n + m} \int_{-\infty}^\infty \left(\frac{\partial^{n - 1}}{\partial x^{n - 1}} e^{-a x^2}\right)\left(\frac{\partial^{m + 1}}{\partial x^{m + 1}} e^{-b x^2}\right) \dvar{x}
+\end{equation}
+\begin{equation}
+  = (-1)^{n - 1 + m}\int_{-\infty}^\infty \left(\frac{\partial^{n - 1}}{\partial x^{n - 1}} e^{-a x^2}\right)\left(\frac{\partial^{m + 1}}{\partial x^{m + 1}} e^{-b x^2}\right) \dvar{x}
+\end{equation}
+This means that ultimately,
+\begin{equation}
+  (-1)^{m + n}\int_{-\infty}^\infty \left(\frac{\partial^n}{\partial x^n} e^{-a x^2}\right)\left(\frac{\partial^m}{\partial x^m} e^{-b x^2}\right) \dvar{x} = (-1)^m \int_{-\infty}^\infty e^{-ax^2} \left(\frac{\partial^{m + n}}{\partial x^{m + n}} e^{-b x^2}\right) \dvar{x}
+\end{equation}
+\begin{equation}
+  a^{\frac{n}{2}}b^{\frac{m}{2}} \int_{-\infty}^\infty \left(H_n\left(\sqrt{a} x\right) e^{-ax^2}\right) \left(H_m\left(\sqrt{b} x\right) e^{-bx^2}\right) \dvar{x} = b^{\frac{m + n}{2}} (-1)^{n} \int_{-\infty}^\infty H_{n + m}\left(\sqrt{b} x\right) e^{-a x^2} e^{-b x^2} \dvar{x}
+  \label{pq-equiv}
+\end{equation}
+Using this makes equation~\ref{fc-herm-int-deriv} into the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi (-1)^{q} \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q + 3}{2}}} \\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty e^{-\frac{\zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2' + \mathbf{R}\right)^2} H_{p_x + q_x}\left(\left(x_2' + R_x\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)H_{p_y + q_y}\left(\left(y_2' + R_y\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)\\
+  H_{p_z + q_z}\left(\left(z_2' + R_z\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)e^{-\eta\left(\mathbf{r}_2'\right)^2} \dvarb{r}_2' \dvar{t}
+\end{multline}
+Now, combine the exponents.
+\begin{equation}
+  \frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)\left(\mathbf{r}_2'\right)^2 + 2\zeta t^2 \mathbf{r}_2'\cdot\mathbf{R} + \zeta t^2 R^2}{\zeta + t^2} = \frac{\eta\zeta + \eta t^2 + \zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2'\right)^2 + 2\frac{\zeta t^2}{\zeta + t^2} \mathbf{r}_2' \cdot \mathbf{R} + \frac{\zeta t^2}{\zeta + t^2} R^2
+\end{equation}
+\begin{equation}
+  = \frac{\eta\zeta + \eta t^2 + \zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2' + \frac{\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2} \mathbf{R}\right)^2 + \frac{\zeta t^2}{\zeta + t^2} R^2 - \frac{\zeta^2 t^4 R^2}{\left(\zeta + t^2\right)\left(\eta\zeta + \eta t^2 + \zeta t^2\right)}
+\end{equation}
+\begin{equation}
+  = \frac{\eta\zeta + \eta t^2 + \zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2' + \frac{\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2} \mathbf{R}\right)^2 + \frac{\eta\zeta^2 t^2 R^2 + \eta\zeta t^4 R^2 + \zeta^2 t^4 R^2 - \zeta^2 t^4 R^2}{\left(\zeta + t^2\right)\left(\eta\zeta + \eta t^2 + \zeta t^2\right)}
+\end{equation}
+\begin{equation}
+  = \frac{\eta\zeta + \eta t^2 + \zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2' + \frac{\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2} \mathbf{R}\right)^2 + \frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}
+\end{equation}
+This means that the integral becomes the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi (-1)^{q} \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q + 3}{2}}} e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty H_{p_x + q_x}\left(\left(x_2' + R_x\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)H_{p_y + q_y}\left(\left(y_2' + R_y\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)\\
+  H_{p_z + q_z}\left(\left(z_2' + R_z\right)\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)e^{-\frac{\eta\zeta + \eta t^2 + \zeta t^2}{\zeta + t^2}\left(\mathbf{r}_2' + \frac{\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2} \mathbf{R}\right)^2} \dvarb{r}_2' \dvar{t}
+\end{multline}
+Let $\mathbf{u} = \sqrt{\frac{\eta\zeta + \eta t^2 + \zeta t^2}{\zeta + t^2}}\mathbf{r}_2'$. The integral becomes the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi (-1)^{q} \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}}\frac{1}{\left(\eta \zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty H_{p_x + q_x}\left(u_x\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}} + R_x\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)H_{p_y + q_y}\left(u_y\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}} + R_y\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right)\\
+  H_{p_z + q_z}\left(u_z\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}} + R_z\sqrt{\frac{\zeta t^2}{\zeta + t^2}}\right) e^{-\left(\mathbf{u} + \frac{\zeta t^2}{\sqrt{\zeta + t^2}}\frac{\mathbf{R}}{\sqrt{\eta\zeta + \eta t^2 + \zeta t^2}}\right)^2} \dvarb{u}\dvar{t}
+\end{multline}
+Let $\mathbf{v} = \mathbf{u} + \mathbf{R} \sqrt{\frac{\eta\zeta + \zeta t^2 + \eta t^2}{\zeta + t^2}}$. The integral then becomes the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi (-1)^{q} \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}}\frac{1}{\left(\eta \zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty H_{p_x + q_x}\left(v_x\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right)H_{p_y + q_y}\left(v_y\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right)H_{p_z + q_z}\left(v_z\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right) \\
+  e^{-\left(\mathbf{v} - \sqrt{\frac{\eta\zeta + \zeta t^2 + \eta t^2}{\zeta + t^2}} \mathbf{R} + \frac{\zeta t^2}{\sqrt{\zeta + t^2}}\frac{\mathbf{R}}{\sqrt{\eta\zeta + \eta t^2 + \zeta t^2}}\right)^2} \dvarb{v} \dvar{t}
+\end{multline}
+The exponent can be rewritten.
+\begin{equation}
+  \sqrt{\frac{\eta\zeta + \zeta t^2 + \eta t^2}{\zeta + t^2}} \mathbf{R} - \frac{\zeta t^2}{\sqrt{\zeta + t^2}}\frac{\mathbf{R}}{\sqrt{\eta\zeta + \eta t^2 + \zeta t^2}} = \frac{\eta\zeta + \zeta t^2 + \eta t^2 - \zeta t^2}{\sqrt{\left(\zeta + t^2\right)\left(\eta\zeta + \eta t^2 + \zeta t^2\right)}}\mathbf{R}
+\end{equation}
+\begin{equation}
+  = \eta \sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\mathbf{R}
+\end{equation}
+Now, use equation~\ref{herm-int-solved} to transform the integral.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi (-1)^{q} \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}}\frac{1}{\left(\eta \zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\\
+  \pi^{\frac{3}{2}} \left(\frac{\eta\zeta + \zeta t^2 + \eta t^2 - \zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{p + q}{2}}H_{p_x + q_x}\left(\sqrt{\frac{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)\left(\zeta t^2\right)}{\left(\eta\zeta + \eta t^2 + \zeta t^2 - \zeta t^2\right)\left(\eta\zeta + \eta t^2 + \zeta t^2\right)}}\eta\sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}R_x\right)\\
+  H_{p_y + q_y}\left(\sqrt{\frac{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)\left(\zeta t^2\right)}{\left(\eta\zeta + \eta t^2 + \zeta t^2 - \zeta t^2\right)\left(\eta\zeta + \eta t^2 + \zeta t^2\right)}}\eta\sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}R_y\right)\\
+  H_{p_z + q_z}\left(\sqrt{\frac{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)\left(\zeta t^2\right)}{\left(\eta\zeta + \eta t^2 + \zeta t^2 - \zeta t^2\right)\left(\eta\zeta + \eta t^2 + \zeta t^2\right)}}\eta\sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}R_z\right) \dvar{t}
+\end{multline}
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}} (-1)^{q} \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}}\frac{1}{\left(\eta \zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\\
+    \left(\frac{\eta\zeta + \eta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{p + q}{2}}H_{p_x + q_x}\left(\eta R_x\sqrt{\frac{\zeta t^2}{\eta\zeta + \eta t^2}}\sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right)\\
+  H_{p_y + q_y}\left(\eta R_y\sqrt{\frac{\zeta t^2}{\eta\zeta + \eta t^2}}\sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right)H_{p_z + q_z}\left(\eta R_z\sqrt{\frac{\zeta t^2}{\eta\zeta + \eta t^2}}\sqrt{\frac{\zeta + t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right) \dvar{t}
+\end{multline}
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}} (-1)^{q} \int_{-\infty}^\infty \frac{\left(\eta\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{p + q}{2}}}\frac{1}{\left(\eta \zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} \\
+  e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}} H_{p_x + q_x}\left(R_x\sqrt{\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right)\\
+  H_{p_y + q_y}\left(R_y\sqrt{\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right)H_{p_z + q_z}\left(R_z\sqrt{\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right) \dvar{t}
+\end{multline}
+Note that the integrand is even with respect to $t$, so the integral can be rewritten to take this into account.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}} (-1)^{q} 2\int_{0}^\infty \frac{\left(\eta\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{p + q}{2}}}\frac{1}{\left(\eta \zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} \\
+  e^{-\frac{\eta\zeta t^2 R^2}{\eta\zeta + \eta t^2 + \zeta t^2}} H_{p_x + q_x}\left(R_x\sqrt{\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right)\\
+  H_{p_y + q_y}\left(R_y\sqrt{\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right)H_{p_z + q_z}\left(R_z\sqrt{\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}}\right) \dvar{t}
+\end{multline}
+Let $u^2 = \frac{\eta + \zeta}{\eta\zeta}\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}$. The integral will now go from $0$ to $\lim_{t\rightarrow \infty} \frac{\eta + \zeta}{\eta\zeta}\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2} = 1$. Now, find the derivative of $u$.
+\begin{equation}
+  2u\frac{\dvar{u}}{\dvar{t}} = \frac{\eta + \zeta}{\eta\zeta} \frac{2\eta\zeta t \left(\eta\zeta + \eta t^2 + \zeta t^2\right) - \eta\zeta t^2 \left(2\eta t + 2\zeta t\right)}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^2}
+\end{equation}
+\begin{equation}
+  = \frac{\eta + \zeta}{\eta\zeta} \frac{2\eta^2\zeta^2 t + 2\eta^2 \zeta t^3 + 2\eta \zeta^2 t^3 - 2\eta^2\zeta t^3 - 2\eta \zeta^2 t^3}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^2}
+\end{equation}
+\begin{equation}
+  = 2\frac{\eta + \zeta}{\eta\zeta} \frac{\eta^2\zeta^2 t}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^2}
+\end{equation}
+\begin{equation}
+  = 2u \sqrt{\frac{\eta + \zeta}{\eta\zeta}} \frac{\eta^{\frac{3}{2}}\zeta^{\frac{3}{2}}}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}
+\end{equation}
+\begin{equation}
+  \dvar{t} = \dvar{u}\frac{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}{\eta\zeta} \sqrt{\frac{1}{\eta + \zeta}}
+\end{equation}
+The integral is then transformed into the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}} (-1)^{q} 2\int_0^1 \frac{1}{\eta\zeta\sqrt{\eta + \zeta}}\left(\frac{\eta\zeta}{\eta + \zeta}\right)^{\frac{p + q}{2}} u^{p + q} e^{-\frac{\eta\zeta}{\eta + \zeta}u^2 R^2} \\
+  H_{p_x + q_x}\left(R_x\sqrt{\frac{\eta\zeta}{\eta + \zeta}}u\right)H_{p_y + q_y}\left(R_y\sqrt{\frac{\eta\zeta}{\eta + \zeta}}u\right)H_{p_z + q_z}\left(R_z\sqrt{\frac{\eta\zeta}{\eta + \zeta}}u\right) \dvar{u}
+\end{multline}
+Now, let $\overline{\mathbf{r}} = \overline{\mathbf{p} + \mathbf{q}}$ and $\vartheta^2 = \frac{\eta\zeta}{\eta + \zeta}$, and use the notation $\left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^q \left[\overline{\mathbf{p} + \mathbf{q}}\right]$.
+\begin{multline}
+  \left[\overline{\mathbf{r}}\right] = 2D_A D_B D_C D_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\frac{\pi^{\frac{5}{2}}}{\eta\zeta\sqrt{\eta + \zeta}} \int_0^1 \left(\vartheta u\right)^r e^{-\vartheta^2 u^2 R^2} \\
+  H_{r_x}\left(R_x\vartheta u\right) H_{r_y}\left(R_y\vartheta u\right) H_{r_z}\left(R_z\vartheta u\right) \dvar{u}
+\end{multline}
+Let $K_P = \frac{\sqrt{2} \pi^{\frac{5}{4}} e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}}{\zeta}$, $K_Q = \frac{\sqrt{2} \pi^{\frac{5}{4}} e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}}{\eta}$, $D_P = D_A D_B$, $D_Q = D_C D_D$, and $\omega = \frac{K_PD_P K_Q D_Q}{\sqrt{\eta + \zeta}}$. Then use equation~\ref{herm-recur} to transform the integral.
+\begin{equation}
+  \left[\overline{\mathbf{r}}\right] = \omega \int_0^1 \left(\vartheta u\right)^r e^{-\vartheta^2 u^2 R^2} \left(2R_x\vartheta u H_{r_x - 1}\left(R_x\vartheta u\right) - 2\left(r_x - 1\right) H_{r_x - 2}\left(R_x \vartheta u\right)\right) H_{r_y}\left(R_y \vartheta u\right) H_{r_z}\left(R_z \vartheta u\right) \dvar{u}
+\end{equation}
+\begin{multline}
+  \left[\overline{\mathbf{r}}\right] = 2\omega R_x \int_0^1 \left(\vartheta u\right)^{r + 1} e^{-\vartheta^2 u^2 R^2} H_{r_x - 1}\left(R_x \vartheta u\right) H_{r_y}\left(R_y \vartheta u\right) H_{r_z}\left(R_z \vartheta u\right) \dvar{u} \\
+  - 2\omega \left(r_x - 1\right) \int_0^1 \left(\vartheta u\right)^{r} e^{-\vartheta^2 u^2 R^2} H_{r_x - 2}\left(R_x \vartheta u\right) H_{r_y}\left(R_y \vartheta u\right) H_{r_z}\left(R_z \vartheta u\right) \dvar{u}
+\end{multline}
+\begin{multline}
+  \left[\overline{\mathbf{r}}\right] = 2\omega R_x \int_0^1 \left(\vartheta u\right)^{r - 1 + 2} e^{-\vartheta^2 u^2 R^2} H_{r_x - 1}\left(R_x \vartheta u\right) H_{r_y}\left(R_y \vartheta u\right) H_{r_z}\left(R_z \vartheta u\right) \dvar{u} \\
+  - 2\omega \left(r_x - 1\right) \int_0^1 \left(\vartheta u\right)^{r - 2 + 2} e^{-\vartheta^2 u^2 R^2} H_{r_x - 2}\left(R_x \vartheta u\right) H_{r_y}\left(R_y \vartheta u\right) H_{r_z}\left(R_z \vartheta u\right) \dvar{u}
+  \label{fc-recur-int}
+\end{multline}
+Define a new integral.
+\begin{equation}
+  \left[\overline{\mathbf{r}}\right]^{(m)} = \omega 2^m \int_0^1 \left(\vartheta u\right)^{r + 2m} e^{-\vartheta^2 u^2 R^2} H_{r_x}\left(R_x \vartheta u\right) H_{r_y}\left(R_y \vartheta u\right) H_{r_z}\left(R_z \vartheta u\right) \dvar{u}
+\end{equation}
+Then using this integral, equation~\ref{fc-recur-int} gives the following recurrence relation.
+\begin{equation}
+  \left[\overline{\mathbf{r}}\right]^{(m)} = R_i\left[\overline{\mathbf{r} - \mathbf{1}_i}\right]^{(m + 1)} - \left(r_i - 1\right)\left[\overline{\mathbf{r} - \mathbf{2}_i}\right]^{(m + 1)}
+  \label{fc-recur-not-int}
+\end{equation}
+This means that eventually, all of these integrals can be expressed in the form of the following.
+\begin{equation}
+  \left[\overline{\mathbf{0}}\right]^{(m)} = \omega \left(2\vartheta^2\right)^{m} \int_0^1 u^{2m} e^{-\vartheta^2 u^2 R^2} \dvar{u}
+\end{equation}
+
+\subsection{When Centers Match}
+
+Consider equation~\ref{fc-branch-point} for the case of $\mathbf{P} = \mathbf{Q}$. 
+
+
+  

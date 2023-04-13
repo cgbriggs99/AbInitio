@@ -32,7 +32,7 @@ double TEIArray::at(int mu, int nu, int lam, int sig) const {
   if(mu < 0 || nu < 0 || lam < 0 || sig < 0 ||
      mu >= this->dim || nu >= this->dim ||
      lam >= this->dim || sig >= this->dim) {
-    throw new std::out_of_range("Array index out of range for two-electron integrals.");
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
   }
   int m, n, l, s, mn, ls, mnls;
   if(mu >= nu) {
@@ -65,7 +65,7 @@ double &TEIArray::at(int mu, int nu, int lam, int sig) {
   if(mu < 0 || nu < 0 || lam < 0 || sig < 0 ||
      mu >= this->dim || nu >= this->dim ||
      lam >= this->dim || sig >= this->dim) {
-    throw new std::out_of_range("Array index out of range for two-electron integrals.");
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
   }
   int m, n, l, s, mn, ls, mnls;
   if(mu >= nu) {
@@ -92,6 +92,22 @@ double &TEIArray::at(int mu, int nu, int lam, int sig) {
   }
   mnls = (mn * (mn + 1)) / 2 + ls;
   return this->data[mnls];
+}
+
+double TEIArray::at_direct(int index) const {
+  if(index < 0 || index > this->getsize()) {
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
+  }
+
+  return this->data[index];
+}
+
+double &TEIArray::at_direct(int index) {
+  if(index < 0 || index > this->getsize()) {
+    throw *new std::out_of_range("Array index out of range for two-electron integrals.");
+  }
+
+  return this->data[index];
 }
 
 double TEIArray::operator()(int mu, int nu, int lam, int sig) const {
@@ -230,3 +246,17 @@ void TEIArray::indextoquad(int index, int *mu, int *nu, int *lam, int *sig) cons
   *sig = ls - Tlam;
 }
   
+int compchem::biggest_triind_leq(int val) {
+  if(val < 0) {
+    throw *new std::domain_error("Can not find largest triangular number less than or equal to a negative value!");
+  }
+  return (int) std::floor((std::sqrt(1.0 + 8.0 * val) - 1.0) / 2.0);
+}
+
+int compchem::triangular_num(int val) {
+  return (val * (val + 1)) / 2;
+}
+
+int compchem::biggest_trinum_leq(int val) {
+  return triangular_num(biggest_triind_leq(val));
+}

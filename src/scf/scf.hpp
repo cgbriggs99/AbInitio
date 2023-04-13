@@ -12,8 +12,8 @@ namespace compchem {
 class SCFWfn : public Wavefunction {
 protected:
   int dim;
-  const double *S, *T, *V;
-  const TEIArray *tei;
+  double *S, *T, *V;
+  TEIArray *tei;
 
   double *Ca, *Cb, *Da, *Db, *Fa, *Fb;
   double energy;
@@ -21,9 +21,9 @@ protected:
   int orbs;
 public:
   
-  SCFWfn(int electrons, const double *S, const double *T,
-	 const double *V,
-	 const TEIArray *tei, int orbs, double *Ca = nullptr,
+  SCFWfn(int electrons, int orbs, double *S = nullptr, double *T = nullptr,
+	 double *V = nullptr,
+	 TEIArray *tei = nullptr, double *Ca = nullptr,
 	 double *Cb = nullptr,
 	 double *Da = nullptr,
 	 double *Db = nullptr,
@@ -48,7 +48,13 @@ public:
   virtual const double *getkinetic(int *dim = nullptr) const override;
   virtual const double *getpotential(int *dim = nullptr) const override;
 
+  virtual void setoverlap(double *data);
+  virtual void setkinetic(double *data);
+  virtual void setpotential(double *data);
+
   virtual const TEIArray *gettei() const;
+  virtual void settei(TEIArray *data);
+  
   virtual const double *getcoefa(int *dim = nullptr) const;
   virtual const double *getcoefb(int *dim = nullptr) const;
   virtual const double *getdensa(int *dim = nullptr) const;

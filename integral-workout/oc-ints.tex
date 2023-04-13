@@ -1,0 +1,114 @@
+ \subsection{One Center}
+To find the integral $\left(aa\middle|aa\right)$, start by writing the form of one term.
+\begin{multline}
+  \left[ab\middle|cd\right] = D_A D_B D_C D_D \iiint\left(x_1 - A_x\right)^{a_x}\left(y_1 - A_y\right)^{a_y} \left(z_1 - A_z\right)^{a_z} e^{-\alpha\left(\mathbf{r}_1 - \mathbf{A}\right)^2} \\
+  \left(x_1 - A_x\right)^{b_x}\left(y_1 - A_y\right)^{b_y} \left(z_1 - A_z\right)^{b_z}  e^{-\beta\left(\mathbf{r}_1 - \mathbf{A}\right)^2} \\
+  \left(x_2 - A_x\right)^{c_x}\left(y_2 - A_y\right)^{c_y} \left(z_2 - A_z\right)^{c_z} e^{-\gamma\left(\mathbf{r}_2 - \mathbf{A}\right)^2} \\
+  \left(x_2 - A_x\right)^{d_x}\left(y_2 - A_y\right)^{d_y} \left(z_2 - A_z\right)^{d_z}  e^{-\delta\left(\mathbf{r}_2 - \mathbf{A}\right)^2} \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} d\mathbf{r_1} d\mathbf{r_2}
+  \label{oc-integral}
+\end{multline}
+Combine terms. Let $\zeta = \alpha + \beta$, $\eta = \gamma + \delta$, $\mathbf{e} = \mathbf{a} + \mathbf{b}$ and $\mathbf{f} = \mathbf{c} + \mathbf{d}$. Also, recenter on $\mathbf{A}$.
+\begin{equation}
+  \left[e0\middle|f0\right] = \int\int\int\int\int\int x_1^{e_x}y_1^{e_y} z_1^{e_z} x_2^{f_x} y_2^{f_y}z_2^{f_z} e^{-\zeta r_1^2}e^{-\eta r_2^2}\frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} d\mathbf{r}_1 d\mathbf{r}_2
+\end{equation}
+Then, use the recurrence relation in equation~\ref{oc-recur} to give a new integral. Note that due to recentering, $\mathbf{P} = \mathbf{0}$.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_A D_B D_C D_D\int\int\int\int\int\int \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) \\
+  H_{q_x}\left(\sqrt{\eta}x_2\right)H_{q_y}\left(\sqrt{\eta}y_2\right)H_{q_z}\left(\sqrt{\eta}z_2\right) e^{-\zeta r_1^2}e^{-\eta r_2^2} \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|} d\mathbf{r}_1 d\mathbf{r}_2
+  \label{oc-hermite-integral}
+\end{multline}
+Note the following integral.
+\begin{equation}
+  \frac{1}{\sqrt{\pi}} \int_{-\infty}^\infty e^{-t^2\left(\mathbf{r}_1 - \mathbf{r}_2\right)^2} dt = \frac{1}{\left|\mathbf{r}_1 - \mathbf{r}_2\right|}
+  \label{jesus-kernel}
+\end{equation}
+Using this means equation~\ref{oc-hermite-integral} can become
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} \int_{-\infty}^\infty dt \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) \\
+  H_{q_x}\left(\sqrt{\eta}x_2\right)H_{q_y}\left(\sqrt{\eta}y_2\right)H_{q_z}\left(\sqrt{\eta}z_2\right) e^{-\zeta r_1^2}e^{-\eta r_2^2} e^{-t^2\left(\mathbf{r}_1 - \mathbf{r}_2\right)^2} d\mathbf{r}_1 d\mathbf{r}_2
+\end{multline}
+Now, solve for the $\mathbf{r}_2$ part of the integral. To do this, combine the Gaussians that include this term.
+\begin{equation}
+  -\eta r_2^2 - t^2 r_2^2 - t^2 r_1^2 + 2t^2 \mathbf{r}_1 \cdot \mathbf{r}_2
+\end{equation}
+Complete the square.
+\begin{equation}
+  -\left(\eta + t^2\right)\left(\mathbf{r}_2 - \frac{t^2}{\eta + t^2}\mathbf{r_1}\right)^2 + \frac{t^4}{\eta + t^2}r_1^2 - t^2r_1^2
+\end{equation}
+This gives a new integral.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} \int_{-\infty}^\infty dt \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} \\
+  \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{q_x}\left(\sqrt{\eta}x_2\right)H_{q_y}\left(\sqrt{\eta}y_2\right)H_{q_z}\left(\sqrt{\eta}z_2\right) e^{-\left(\eta + t^2\right)\left(\mathbf{r}_2 - \frac{t^2}{\eta + t^2}\mathbf{r}_1\right)^2} d\mathbf{r}_2 d\mathbf{r}_1
+\end{multline}
+Next, use equation~\ref{herm-int-solved} to integrate with respect to $\mathbf{r}_2$. First, let $\mathbf{r}_2' = \sqrt{\eta + t^2}\mathbf{r}_2$, so $d\mathbf{r}_2 = \frac{d\mathbf{r}_2'}{\left(\eta + t^2\right)^{\frac{3}{2}}}$.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} \int_{-\infty}^\infty \frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}} dt \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} \\
+  \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{q_x}\left(\sqrt{\frac{\eta}{\eta + t^2}}x_2'\right)H_{q_y}\left(\sqrt{\frac{\eta}{\eta + t^2}}y_2'\right)H_{q_z}\left(\sqrt{\frac{\eta}{\eta + t^2}}z_2'\right) e^{-\left(\mathbf{r}_2' - \frac{t^2}{\sqrt{\eta + t^2}}\mathbf{r}_1\right)^2} d\mathbf{r}_2 d\mathbf{r}_1
+\end{multline}
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = \pi^{\frac{3}{2}} \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} \int_{-\infty}^\infty \left(\frac{t^2}{\eta + t^2}\right)^{\frac{q}{2}} \frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}} H_{q_x}\left(\sqrt{\frac{\eta}{t^2}}\frac{t^2}{\sqrt{\eta + t^2}} x_1\right) H_{q_y}\left(\sqrt{\frac{\eta}{t^2}}\frac{t^2}{\sqrt{\eta + t^2}} y_1\right)\\
+  H_{q_z}\left(\sqrt{\frac{\eta}{t^2}}\frac{t^2}{\sqrt{\eta + t^2}} z_1\right)\int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} d\mathbf{r}_1 dt  
+\end{multline}
+Simplifying a bit.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = \pi^{\frac{3}{2}} \frac{1}{\sqrt{\pi}} \zeta^{\frac{p}{2}} \eta^{\frac{q}{2}} \int_{-\infty}^\infty \left(\frac{t^2}{\eta + t^2}\right)^{\frac{q}{2}}\frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}}\\
+  \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{q_x}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}x_1\right)H_{q_y}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}} y_1\right)H_{q_z}\left(\sqrt{\frac{\eta t^2}{\eta + t^2}}z_1\right)\\
+   H_{p_x}\left(\sqrt{\zeta} x_1\right) H_{p_y}\left(\sqrt{\zeta} y_1\right) H_{p_z}\left(\sqrt{\zeta} z_1\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} d\mathbf{r}_1 dt  
+\end{multline}
+Next, use equation~\ref{herm-mult-def}.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{p + q} \pi^{\frac{5}{2}} \int_{-\infty}^\infty \frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}} \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \left(\frac{\partial^{p}}{\partial x_1^{p_x}\partial y_1^{p_y}\partial z_1^{p_z}}e^{-\zeta r_1^2}\right)\\
+  \left(\frac{\partial^{q}}{\partial x_1^{q_x} \partial y_1^{q_y} \partial z_1^{q_z}} e^{-\frac{\eta t^2}{\eta + t^2} r_1^2}\right) d\mathbf{r}_1 dt
+  \label{oc-int-diff}
+\end{multline}
+Using integration by parts and focusing on the $x$ part gives the following.
+\begin{multline}
+  \int_{-\infty}^\infty \left(\frac{\partial^{p_x}}{\partial x_1^{p_x}} e^{-\zeta x_1^2}\right)\left(\frac{\partial^{q_x}}{\partial x_1^{q_x}} e^{-\frac{\eta t^2}{\eta + t^2} x_1^2}\right) dx_1 = \left.\left(\frac{\partial^{p_x + 1}}{\partial x_1^{p_x + 1}} e^{-\zeta x_1^2}\right)\left(\frac{\partial^{q_x}}{\partial x_1^{q_x}}e^{-\frac{\eta t^2}{\eta + t^2} x_1^2}\right)\right|_{-\infty}^\infty\\
+  - \int_{-\infty}^\infty  \left(\frac{\partial^{p_x + 1}}{\partial x_1^{p_x + 1}} e^{-\zeta x_1^2}\right)\left(\frac{\partial^{q_x - 1}}{\partial x_1^{q_x - 1}} e^{-\frac{\eta t^2}{\eta + t^2} x_1^2}\right) dx_1
+\end{multline}
+The first part goes to zero, so this becomes
+\begin{equation}
+  \int_{-\infty}^\infty \left(\frac{\partial^{p_x}}{\partial x_1^{p_x}} e^{-\zeta x_1^2}\right)\left(\frac{\partial^{q_x}}{\partial x_1^{q_x}} e^{-\frac{\eta t^2}{\eta + t^2} x_1^2}\right) dx_1 =  - \int_{-\infty}^\infty  \left(\frac{\partial^{p_x + 1}}{\partial x_1^{p_x + 1}} e^{-\zeta x_1^2}\right)\left(\frac{\partial^{q_x - 1}}{\partial x_1^{q_x - 1}} e^{-\frac{\eta t^2}{\eta + t^2} x_1^2}\right) dx_1
+\end{equation}
+This means that the integral in equation~\ref{oc-int-diff} can be rewritten as the following.
+\begin{equation}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{p} \pi^{\frac{5}{2}} \int_{-\infty}^\infty \frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}} \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty e^{-\frac{\eta t^2}{\eta + t^2} r_1^2} \left(\frac{\partial^{p + q}}{\partial x_1^{p_x + q_x} \partial y_1^{p_y + q_y} \partial z_1^{p_z + q_z}} e^{-\zeta r_1^2}\right) d\mathbf{r}_1 dt
+\end{equation}
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{-q} \pi^{\frac{5}{2}} \zeta^{\frac{p + q}{2}} \int_{-\infty}^\infty \frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}} \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty H_{p_x + q_x}\left(x_1\sqrt{\zeta}\right)H_{p_y + q_y}\left(y_1\sqrt{\zeta}\right)\\
+  H_{p_z + q_z}\left(z_1\sqrt{\zeta}\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} d\mathbf{r}_1 dt
+\end{multline}
+Since the kernel to this integral is even with respect to $t$, it can be rewritten as the following.
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{-q} \pi^{\frac{5}{2}} \zeta^{\frac{p + q}{2}} 2\int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{0}^\infty \frac{1}{\left(\eta + t^2\right)^{\frac{3}{2}}} H_{p_x + q_x}\left(x_1\sqrt{\zeta}\right)H_{p_y + q_y}\left(y_1\sqrt{\zeta}\right)\\
+  H_{p_z + q_z}\left(z_1\sqrt{\zeta}\right) e^{-\zeta r_1^2}e^{-\frac{\eta t^2}{\eta + t^2}r_1^2} dt d\mathbf{r}_1
+\end{multline}
+Let $\mathbf{u} = \sqrt{\frac{\eta\zeta + \zeta t^2 + \eta t^2}{\eta + t^2}}\mathbf{r}_1$. Then, $d\mathbf{r}_1 = d\mathbf{u}\left(\frac{\eta + t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{3}{2}}$.\
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{-q} \pi^{\frac{5}{2}} \zeta^{\frac{p + q}{2}} 2\int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{0}^\infty \frac{1}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{3}{2}}} H_{p_x + q_x}\left(u_x\sqrt{\frac{\eta\zeta + \zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right)\\
+  H_{p_y + q_y}\left(u_y\sqrt{\frac{\eta\zeta + \zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right) H_{p_z + q_z}\left(u_z\sqrt{\frac{\eta\zeta + \zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right) e^{-u^2} dt d\mathbf{u}
+\end{multline}
+Next, using equation~\ref{herm-int-solved} and a formula for the value of a Hermite polynomial at zero gives the following.
+\begin{equation}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{-q} \pi^{\frac{5}{2}} \zeta^{\frac{p + q}{2}} 2\int_{0}^\infty \frac{1}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{3}{2}}} \pi^{3}\left(\eta t^2\right)^{\frac{p + q}{2}}2^{p + q} \frac{1}{\Gamma\left(\frac{1 - p_x - q_x}{2}\right)\Gamma\left(\frac{1 - p_y - q_y}{2}\right)\Gamma\left(\frac{1 - p_z - q_z}{2}\right)}dt
+\end{equation}
+Let $u = \sqrt{\frac{\eta t^2 + \zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}$. Then
+\begin{equation}
+  \left(\eta + \zeta\right)\left(u^2 - 1\right) t^2 + \eta\zeta u^2 = 0
+\end{equation}
+\begin{equation}
+  t = \sqrt{\frac{\eta\zeta u^2}{\left(\eta + \zeta\right)\left(1 - u^2\right)}}
+\end{equation}
+\begin{equation}
+  \frac{du}{dt} = \frac{\sqrt{\eta\zeta + \zeta t^2 + \eta t^2}\left(\left(2\eta t + 2\zeta t\right)\left(\eta\zeta + \zeta t^2 + \eta t^2\right) - \left(\eta t^2 + \zeta t^2\right)\left(2\zeta t + 2\eta t\right)\right)}{2\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^2\sqrt{\eta t^2 + \zeta t^2}}
+\end{equation}
+\begin{equation}
+  \frac{du}{dt} = \frac{\sqrt{\eta\zeta + \zeta t^2 + \eta t^2}\left(\eta^2\zeta t^3 + \eta\zeta^2 t^3\right)}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^2\sqrt{\eta t^2 + \zeta t^2}} = \left(\eta\zeta t\right)\frac{\left(\eta t^2 + \zeta t^2\right)^{\frac{1}{2}}}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{3}{2}}}
+\end{equation}
+\begin{equation}
+  dt = du \frac{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{3}{2}}}{\eta\zeta\sqrt{\eta + \zeta}\frac{\eta\zeta u^2}{\left(\eta + \zeta\right)\left(1 - u^2\right)}}
+\end{equation}
+The integral then becomes the following.
+\begin{equation}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^{-q} \frac{\pi^{\frac{11}{2}} \left(\zeta\eta\right)^{\frac{p + q}{2}} 2^{1 + p + q}}{\Gamma\left(\frac{1 - p_x - q_x}{2}\right)\Gamma\left(\frac{1 - p_y - q_y}{2}\right)\Gamma\left(\frac{1 - p_z - q_z}{2}\right)}\frac{1}{\eta\zeta\sqrt{\eta + \zeta}}\int_0^1 \left(\frac{\eta\zeta u^2}{\left(\eta + \zeta\right)\left(1 - u^2\right)}\right)^{\frac{p + q}{2} - 1} du
+\end{equation}

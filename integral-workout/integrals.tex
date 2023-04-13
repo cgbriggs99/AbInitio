@@ -1,0 +1,83 @@
+\documentclass[twoside,10pt,draft]{article}
+
+% Headers for work.
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{cite}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{abstract}
+
+% Math packages.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+% Citations.
+\usepackage{cite}
+
+
+% Setup fancyhdr.
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+
+% Line spacing.
+\singlespacing
+
+\begin{document}
+\setlist[description]{font=\space\normalfont\space}
+
+\renewcommand\theequation{\thesection.\arabic{equation}}
+\newcommand{\dvar}[1]{\ensuremath{\mathrm{d} #1}}
+\newcommand{\dvarb}[1]{\ensuremath{\mathrm{d}\mathbf{#1}}}
+
+\title{Various Cases of Two-Electron Integrals}
+\author{Connor Briggs}
+\maketitle
+
+\hrule
+\paragraph*{Abstract} Two-electron integrals are important for quantum chemistry, and in particular for Hartree-Fock methods. Because of this, there are many ways to compute these. Unfortunately, some methods only work when the four orbitals being integrated have different centers. Therefore, different formulae need to be derived for the cases when multiple orbitals share centers.\\
+\hrule
+
+
+\lhead[]{\thepage}
+\chead{Integrals}
+\rhead[\thepage]{}
+
+\section{Introduction}
+
+\subsection{Notation}
+
+In the equations below, the following notations are used. $\mathbf{r}$ represents a position vector. Its components are $\mathbf{r} = (x, y, z)$, and its magnitude may be represented normally as $\left|\left|\mathbf{r}\right|\right|$ or $\left|\mathbf{r}\right|$. The square of its magnitude may be represented as $\mathbf{r}^2$ or simply $r^2$. Any subscript on the $r$ will be transferred to its components, so $\mathbf{r}_1 = \left(x_1, y_1, z_1\right)$. Also, the term $\dvarb{r} = \dvar{x}\dvar{y}\dvar{z}$. Letters $a, b, c, d$ will represents Cartesian orbitals, while letters $p, q, r, s$ will represent Hermite orbitals. To avoid confusion, Hermite orbital indices will also be shown with an overbar when in vector form. Capital letters like $\mathbf{A}$ represent orbital centers and have components $\mathbf{A} = \left(A_x, A_y, A_z\right)$. Lower case letters represent angular momentum components. When bold, they represent a vector, such as  $\mathbf{a} = \left(a_x, a_y, a_z\right)$, but when Roman they represent the sum of these components, $a = a_x + a_y + a_z$. When in equations, the letters $a, A, \alpha$ go together; $b, B, \beta$ go together; $c, C \gamma$ go together; and $d, D, \delta$ go together. The vector $\mathbf{1}_i$ represents a unit vector along either the $x$, $y$, or $z$ axis, where $i = x, y, z$.
+
+\section{Hermite Polynomials}
+
+\input{hermite}
+
+\section{Two-electron Integrals}
+
+For the derivations that follow, it is useful to write the forms of the orbitals being used. A Gaussian orbital centered around the origin has the form
+
+\begin{equation}
+  G_{\mathbf{a}}(\mathbf{r}) = \sum_{k = 1}^K D_k x^{a_x} y^{a_y} z^{a_z} e^{-\alpha_k r^2}
+  \label{cart-orb}
+\end{equation}
+
+A Hermite orbital has a different form.
+\begin{equation}
+  G_{\overline{\mathbf{p}}}(\mathbf{r}) = \sum_{k = 1}^K D_k \alpha_k^{\frac{p}{2}} H_{p_x}\left(x\sqrt{\alpha_k}\right)H_{p_y}\left(y\sqrt{\alpha_k}\right)H_{p_z}\left(z\sqrt{\alpha_k}\right) e^{-\alpha_k r^2}
+  \label{herm-orb}
+\end{equation}
+
+\input{fc-ints}
+
+%\input{oc-ints}
+
+\bibliography{integrals}
+\bibliographystyle{plain}
+
+
+\end{document}

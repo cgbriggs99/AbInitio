@@ -11,13 +11,13 @@
 
 using namespace compchem;
 
-double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
+double AnalyticIntegral::os_attr(const std::array<int, 7> &index,
 				 std::map<std::array<int, 7>, double> &ints,
 				 const std::array<double, 3> &c1,
 				 const std::array<double, 3> &c2,
 				 const std::array<double, 3> &ca,
-				 double Rx, double Ry, double Rz,
 				 double Px, double Py, double Pz,
+				 double Rx, double Ry, double Rz,
 				 double zeta) const {
   if(ints.count(index) != 0) {
     return ints[index];
@@ -56,19 +56,19 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 		index[0], index[1], index[2],
 		index[3], index[4], index[5] - 2,
 		index[6] + 1};
-	      double res = (Pz - c2[2]) * os_coul(ind1, ints, c1, c2, ca,
+	      double res = (Pz - c2[2]) * os_attr(ind1, ints, c1, c2, ca,
 						  Px, Py, Pz,
 						  Rx, Ry, Rz,
 						  zeta) +
-		(index[5] - 1) * os_coul(ind2, ints, c1, c2, ca,
+		(index[5] - 1) * os_attr(ind2, ints, c1, c2, ca,
 					 Px, Py, Pz,
 					 Rx, Ry, Rz,
 					 zeta) / (2 * zeta) -
-		(Pz - ca[2]) * os_coul(ind3, ints, c1, c2, ca,
+		(Pz - ca[2]) * os_attr(ind3, ints, c1, c2, ca,
 				       Px, Py, Pz,
 				       Rx, Ry, Rz,
 				       zeta) -
-		(index[5] - 1) * os_coul(ind4, ints, c1, c2, ca,
+		(index[5] - 1) * os_attr(ind4, ints, c1, c2, ca,
 					 Px, Py, Pz,
 					 Rx, Ry, Rz,
 					 zeta) / (2 * zeta);
@@ -92,19 +92,19 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 		index[0], index[1], index[2],
 		index[3], index[4] - 2, index[5],
 		index[6] + 1};
-	    double res = (Py - c2[1]) * os_coul(ind1, ints, c1, c2, ca,
+	    double res = (Py - c2[1]) * os_attr(ind1, ints, c1, c2, ca,
 						Px, Py, Pz,
 						Rx, Ry, Rz,
 						zeta) +
-	      (index[4] - 1) * os_coul(ind2, ints, c1, c2, ca,
+	      (index[4] - 1) * os_attr(ind2, ints, c1, c2, ca,
 				       Px, Py, Pz,
 				       Rx, Ry, Rz,
 				       zeta) / (2 * zeta) -
-	      (Py - ca[1]) * os_coul(ind3, ints, c1, c2, ca,
+	      (Py - ca[1]) * os_attr(ind3, ints, c1, c2, ca,
 				     Px, Py, Pz,
 				     Rx, Ry, Rz,
 				     zeta) -
-	      (index[4] - 1) * os_coul(ind4, ints, c1, c2, ca,
+	      (index[4] - 1) * os_attr(ind4, ints, c1, c2, ca,
 				       Px, Py, Pz,
 				       Rx, Ry, Rz,
 				       zeta) / (2 * zeta);
@@ -128,19 +128,19 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 	      index[0], index[1], index[2],
 	      index[3] - 2, index[4], index[5],
 	      index[6] + 1};
-	  double res = (Px - c2[0]) * os_coul(ind1, ints, c1, c2, ca,
+	  double res = (Px - c2[0]) * os_attr(ind1, ints, c1, c2, ca,
 					      Px, Py, Pz,
 					      Rx, Ry, Rz,
 					      zeta) +
-	    (index[3] - 1) * os_coul(ind2, ints, c1, c2, ca,
+	    (index[3] - 1) * os_attr(ind2, ints, c1, c2, ca,
 				     Px, Py, Pz,
 				     Rx, Ry, Rz,
 				     zeta) / (2 * zeta) -
-	    (Px - ca[0]) * os_coul(ind3, ints, c1, c2, ca,
+	    (Px - ca[0]) * os_attr(ind3, ints, c1, c2, ca,
 				   Px, Py, Pz,
 				   Rx, Ry, Rz,
 				   zeta) -
-	    (index[3] - 1) * os_coul(ind4, ints, c1, c2, ca,
+	    (index[3] - 1) * os_attr(ind4, ints, c1, c2, ca,
 				     Px, Py, Pz,
 				     Rx, Ry, Rz,
 				     zeta) / (2 * zeta);
@@ -172,27 +172,27 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 	    index[0], index[1], index[2] - 1,
 	    index[3], index[4], index[5] - 1,
 	    index[6] + 1};
-	double res = (Pz - c1[2]) * os_coul(ind1, ints, c1, c2, ca,
+	double res = (Pz - c1[2]) * os_attr(ind1, ints, c1, c2, ca,
 					    Px, Py, Pz,
 					    Rx, Ry, Rz,
 					    zeta) +
-	  (index[2] - 1) * os_coul(ind2, ints, c1, c2, ca,
+	  (index[2] - 1) * os_attr(ind2, ints, c1, c2, ca,
 				   Px, Py, Pz,
 				   Rx, Ry, Rz,
 				   zeta) / (2 * zeta) + 
-	  index[5] * os_coul(ind3, ints, c1, c2, ca,
+	  index[5] * os_attr(ind3, ints, c1, c2, ca,
 			     Px, Py, Pz,
 			     Rx, Ry, Rz,
 			     zeta) / (2 * zeta) -
-	  (Pz - ca[2]) * os_coul(ind4, ints, c1, c2, ca,
+	  (Pz - ca[2]) * os_attr(ind4, ints, c1, c2, ca,
 				 Px, Py, Pz,
 				 Rx, Ry, Rz,
 				 zeta) -
-	  (index[2] - 1) * os_coul(ind5, ints, c1, c2, ca,
+	  (index[2] - 1) * os_attr(ind5, ints, c1, c2, ca,
 				   Px, Py, Pz,
 				   Rx, Ry, Rz,
 				   zeta) / (2 * zeta) -
-	  index[5] * os_coul(ind6, ints, c1, c2, ca,
+	  index[5] * os_attr(ind6, ints, c1, c2, ca,
 			     Px, Py, Pz,
 			     Rx, Ry, Rz,
 			     zeta) / (2 * zeta);
@@ -224,27 +224,27 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 	  index[0], index[1] - 1, index[2],
 	  index[3], index[4] - 1, index[5],
 	  index[6] + 1};
-      double res = (Py - c1[1]) * os_coul(ind1, ints, c1, c2, ca,
+      double res = (Py - c1[1]) * os_attr(ind1, ints, c1, c2, ca,
 					  Px, Py, Pz,
 					  Rx, Ry, Rz,
 					  zeta) +
-	(index[1] - 1) * os_coul(ind2, ints, c1, c2, ca,
+	(index[1] - 1) * os_attr(ind2, ints, c1, c2, ca,
 				 Px, Py, Pz,
 				 Rx, Ry, Rz,
 				 zeta) / (2 * zeta) + 
-	index[4] * os_coul(ind3, ints, c1, c2, ca,
+	index[4] * os_attr(ind3, ints, c1, c2, ca,
 			   Px, Py, Pz,
 			   Rx, Ry, Rz,
 			   zeta) / (2 * zeta) -
-	(Py - ca[1]) * os_coul(ind4, ints, c1, c2, ca,
+	(Py - ca[1]) * os_attr(ind4, ints, c1, c2, ca,
 			       Px, Py, Pz,
 			       Rx, Ry, Rz,
 			       zeta) -
-	(index[1] - 1) * os_coul(ind5, ints, c1, c2, ca,
+	(index[1] - 1) * os_attr(ind5, ints, c1, c2, ca,
 				 Px, Py, Pz,
 				 Rx, Ry, Rz,
 				 zeta) / (2 * zeta) -
-	index[4] * os_coul(ind6, ints, c1, c2, ca,
+	index[4] * os_attr(ind6, ints, c1, c2, ca,
 			   Px, Py, Pz,
 			   Rx, Ry, Rz,
 			   zeta) / (2 * zeta);
@@ -276,27 +276,27 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 	index[0] - 1, index[1], index[2],
 	index[3] - 1, index[4], index[5],
 	index[6] + 1};
-    double res = (Px - c1[0]) * os_coul(ind1, ints, c1, c2, ca,
+    double res = (Px - c1[0]) * os_attr(ind1, ints, c1, c2, ca,
 					Px, Py, Pz,
 					Rx, Ry, Rz,
 					zeta) +
-      (index[0] - 1) * os_coul(ind2, ints, c1, c2, ca,
+      (index[0] - 1) * os_attr(ind2, ints, c1, c2, ca,
 			       Px, Py, Pz,
 			       Rx, Ry, Rz,
 			       zeta) / (2 * zeta) + 
-      index[3] * os_coul(ind3, ints, c1, c2, ca,
+      index[3] * os_attr(ind3, ints, c1, c2, ca,
 			 Px, Py, Pz,
 			 Rx, Ry, Rz,
 			 zeta) / (2 * zeta) -
-      (Px - ca[0]) * os_coul(ind4, ints, c1, c2, ca,
+      (Px - ca[0]) * os_attr(ind4, ints, c1, c2, ca,
 			     Px, Py, Pz,
 			     Rx, Ry, Rz,
 			     zeta) -
-      (index[0] - 1) * os_coul(ind5, ints, c1, c2, ca,
+      (index[0] - 1) * os_attr(ind5, ints, c1, c2, ca,
 			       Px, Py, Pz,
 			       Rx, Ry, Rz,
 			       zeta) / (2 * zeta) -
-      index[3] * os_coul(ind6, ints, c1, c2, ca,
+      index[3] * os_attr(ind6, ints, c1, c2, ca,
 			 Px, Py, Pz,
 			 Rx, Ry, Rz,
 			 zeta) / (2 * zeta);
@@ -306,7 +306,7 @@ double AnalyticIntegral::os_coul(const std::array<int, 7> &index,
 }
     
 
-double AnalyticIntegral::coul_integral(const int *pows1,
+double AnalyticIntegral::attr_integral(const int *pows1,
 				       const int *pows2,
 				       const std::array<double, 3> &c1,
 				       const std::array<double, 3> &c2,
@@ -338,8 +338,8 @@ double AnalyticIntegral::coul_integral(const int *pows1,
 	pows1[0], pows1[1], pows1[2],
 	pows2[0], pows2[1], pows2[2],
 	0};
-      sum += omega * os_coul(index, os_ints, c1, c2, atom.getpos(),
-			     Rx, Ry, Rz, Px, Py, Pz, zeta);
+      sum += omega * os_attr(index, os_ints, c1, c2, atom.getpos(),
+			     Px, Py, Pz, Rx, Ry, Rz, zeta);
     }
   }
   return sum;
@@ -347,7 +347,7 @@ double AnalyticIntegral::coul_integral(const int *pows1,
   
 			    
 
-double AnalyticIntegral::coulomb(const GaussianOrbital *o1,
+double AnalyticIntegral::attraction(const GaussianOrbital *o1,
 				 const GaussianOrbital *o2,
 				 std::array<double, 3> c1,
 				 std::array<double, 3> c2,
@@ -356,7 +356,7 @@ double AnalyticIntegral::coulomb(const GaussianOrbital *o1,
   for(int i = 0; i < o1->getharms().getsize(); i++) {
     for(int j = 0; j < o2->getharms().getsize(); j++) {
       sum += o1->getharms().getcoef(i) * o2->getharms().getcoef(j) *
-	coul_integral(o1->getharms().gettermorder(i),
+	attr_integral(o1->getharms().gettermorder(i),
 		      o2->getharms().gettermorder(j),
 		      c1, c2, o1, o2, atom);
     }

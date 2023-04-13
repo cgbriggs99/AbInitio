@@ -16,6 +16,8 @@ public :
 
   double at(int mu, int nu, int lam, int sig) const;
   double &at(int mu, int nu, int lam, int sig);
+  double at_direct(int index) const;
+  double &at_direct(int index);
 
   double operator()(int mu, int nu, int lam, int sig) const;
   double &operator()(int mu, int nu, int lam, int sig);
@@ -27,7 +29,13 @@ public :
 
   void indextoquad(int index, int *mu, int *nu, int *lam, int *sig) const;
 };
+  
+int biggest_trinum_leq(int val);
 
+int biggest_triind_leq(int val);
+
+int triangular_num(int index);
+  
 }
 
 

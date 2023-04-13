@@ -1,0 +1,113 @@
+For most of the integrals, the kernels can be reduced to a form involving Hermite polynomials. Hermite polynomials are defined using the following equation~\cite{wolfram-hermite}.
+
+\begin{equation}
+  H_n(x) e^{-x^2} = (-1)^n\frac{d^n}{dx^n} e^{-x^2}
+  \label{herm-def}
+\end{equation}
+This definition can be used to show the following.
+\begin{equation}
+  a^{\frac{n}{2}} H_n\left(x\sqrt{a}\right) e^{-ax^2} = (-1)^n \frac{d^n}{dx^n} e^{-ax^2}
+  \label{herm-mult-def}
+\end{equation}
+This can be rewritten as a sum~\cite{wolfram-hermite},
+\begin{equation}
+  H_n(x) = \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}(-1)^k 2^{n - 2k} x^{n - 2k}
+  \label{herm-sum}
+\end{equation}
+as well as a recurrence relation~\cite{wolfram-hermite}.
+\begin{equation}
+  H_{n + 1}(x) = 2xH_{n}(x) - 2nH_{n - 1}(x)
+  \label{herm-recur}
+\end{equation}
+From these, a multiple-argument formula can be derived~\cite{wolfram-hermite}.
+\begin{equation}
+  H_n(\alpha t) = \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor}\frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k H_{n - 2k}(t)
+  \label{herm-maf}
+\end{equation}
+
+\subsection{Hermite Integrals}
+
+For the two-electron integrals, the following integral becomes useful.
+\begin{equation}
+  \int_{-\infty}^\infty e^{-\left(a - t\right)^2} H_{n}\left(\alpha t\right) dt
+  \label{hermint}
+\end{equation}
+To solve for equation~\ref{hermint}, note the following, from~\cite{wolfram-hermite}.
+\begin{equation}
+  \int_{-\infty}^\infty e^{-\left(a - t\right)^2} H_{n}\left(t\right) dt = 2^n \sqrt{\pi} a^n
+  \label{base-hermint}
+\end{equation}
+Then, use equation~\ref{herm-maf} to expand.
+\begin{equation}
+  \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \int_{-\infty}^\infty \alpha^n e^{-(a - t)^2} \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k H_{n - 2k}(t) dt
+\end{equation}
+Manipulating this equation gives
+\begin{equation}
+  \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k \int_{-\infty}^\infty e^{-(a - t)^2} H_{n - 2k}(t) dt
+\end{equation}
+Using equation~\ref{base-hermint} gives the following.
+\begin{equation}
+  \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(1 - \frac{1}{\alpha^2}\right)^k 2^{n - 2k} \sqrt{\pi} a^{n - 2k}
+  \label{herm-integrated}
+\end{equation}
+Then, rewrite equation~\ref{herm-integrated} to look more like eqation~\ref{herm-sum}. We need to assume that $\left|\alpha \right| < 1$.
+\begin{equation}
+  \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \sqrt{\pi} \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\frac{1}{\alpha^2} - 1\right)^k (-1)^k 2^{n - k} a^{n - 2k}
+\end{equation}
+\begin{equation}
+  = \sqrt{\pi} \alpha^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!} \left(\frac{\alpha^2}{1 - \alpha^2}\right)^{-k} (-1)^k 2^{n - 2k} a^{n - 2k}
+\end{equation}
+\begin{equation}
+  = \sqrt{\pi} \alpha^n \left(\sqrt{\frac{1}{\alpha^2} - 1}\right)^n \sum_{k = 0}^{\left\lfloor\frac{n}{2}\right\rfloor} \frac{n!}{k!(n - 2k)!}\left(\sqrt{\frac{\alpha^2}{1 - \alpha^2}}\right)^{n - 2k} (-1)^k 2^{n - 2k} a^{n - 2k}
+  \label{herm-rearranged}
+\end{equation}
+Finally, using equation~\ref{herm-sum} gives the final value of
+\begin{equation}
+  \int_{-\infty}^\infty e^{-(a - t)^2} H_n(\alpha t) dt = \sqrt{\pi}\left(\sqrt{1 - \alpha^2}\right)^n H_n\left(a\sqrt{\frac{\alpha^2}{1 - \alpha^2}}\right)
+  \label{herm-int-solved}
+\end{equation}
+  
+\subsection{Hermite Orbital Recurrence Relation}
+
+Suppose a Cartesian orbital has the following form.
+\begin{equation}
+  \psi_{\mathbf{a}} = \left(x - A_x\right)^{a_x}\left(y - A_y\right)^{a_y}\left(z - A_z\right)^{a_z}e^{-\alpha\left(\mathbf{r} - \mathbf{A}\right)^2}
+\end{equation}
+Also suppose a Hermite orbital has the following form.
+\begin{equation}
+  \overline{\psi_{\mathbf{p}}} = \zeta^{\frac{p}{2}} H_{p_x}\left(\sqrt{\zeta} \left(x - P_x\right)\right) H_{p_y}\left(\sqrt{\zeta} \left(y - P_y\right)\right)H_{p_z}\left(\sqrt{\zeta} \left(x - P_z\right)\right) e^{-\zeta\left(\mathbf{r} - \mathbf{P}\right)^2}
+\end{equation}
+Using equation~\ref{herm-recur} gives the following recurrence relation for Hermite orbitals. In all equations after this, $i$ can be $x, y,$ or $z$.
+\begin{equation}
+  \overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = 2\zeta\left(i - P_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+  \label{herm-orb-recur}
+\end{equation}
+If $\mathbf{A} = \mathbf{P}$, then multiplying by $\psi_{\mathbf{a} - \mathbf{1}_i} / (2\zeta)$ gives the following.
+\begin{equation}
+  \frac{1}{2\zeta} \psi_{\mathbf{a} - \mathbf{1}_i} \overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = \psi_{\mathbf{a}}\overline{\psi_{\mathbf{p}}} - p_i \psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+  \label{oc-psi-recur}
+\end{equation}
+If $\left[a\overline{p}\right|_{u,v} = \frac{(2\beta)^u}{(2\zeta)^v}[a\overline{p}|$, then equation~\ref{oc-psi-recur} gives
+\begin{equation}
+  \left[\mathbf{a}\overline{\mathbf{p}}\right|_{u,v} = p_i\left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\left(\mathbf{p} - \mathbf{1}_i\right)}\right|_{u,v} + \left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\left(\mathbf{p} + \mathbf{1}_i\right)}\right|_{u,v + 1}
+  \label{oc-recur}
+\end{equation}
+However, if $\mathbf{P} = \frac{\alpha \mathbf{A} + \beta\mathbf{B}}{\zeta}$, then the recurrence relation in equation~\ref{herm-orb-recur} needs to be rewritten as
+\begin{equation}
+  \overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = 2\zeta\left(i - \frac{\alpha}{\zeta}A_i - \frac{\beta}{\zeta}A_i\right)\overline{\psi_{\mathbf{p}}} + 2\zeta\left(\frac{\beta}{\zeta}A_i - \frac{\beta}{\zeta}B_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+\end{equation}
+\begin{equation}
+  = 2\zeta\left(i - A_i\right)\overline{\psi_{\mathbf{p}}} + 2\beta\left(A_i - B_i\right)\overline{\psi_{\mathbf{p}}} - 2\zeta p_i\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+  \label{tc-herm-recur}
+\end{equation}
+Then, multiplying equation~\ref{tc-herm-recur} by $\psi_{\mathbf{a} - \mathbf{1}_i} / (2\zeta)$ gives the following.
+\begin{equation}
+  \frac{1}{2\zeta}\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} + \mathbf{1}_i}} = \psi_{\mathbf{a}}\overline{\psi_{\mathbf{p}}} + \frac{2\beta}{2\zeta}\left(A_i - B_i\right)\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p}}} \\
+  - p_i\psi_{\mathbf{a} - \mathbf{1}_i}\overline{\psi_{\mathbf{p} - \mathbf{1}_i}}
+  \label{tc-herm-orb-recur}
+\end{equation}
+By letting $[a\overline{p}|_{u,v} = \frac{(2\beta)^u}{(2\zeta)^v}[a\overline{p}|$, equation~\ref{tc-herm-orb-recur} can be rearranged to the following.
+\begin{equation}
+  \left[\mathbf{a}\overline{\mathbf{p}}\right|_{u,v} = \left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\left(\mathbf{p} + \mathbf{1}_i\right)}\right|_{u,v+1} - \left(A_i - B_i\right)\left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\mathbf{p}}\right|_{u+1,v+1} + p_i\left[\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\left(\mathbf{p} - \mathbf{1}_i\right)}\right|_{u,v}
+  \label{tc-recur}
+\end{equation}

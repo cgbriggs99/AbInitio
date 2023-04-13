@@ -21,24 +21,24 @@ class IntegralMethod {
 protected:
   OptionList &opts;
 public:
-  IntegralMethod(OptionList &opts) : opts(opts) {;}
-  IntegralMethod() : opts(GlobalOptions::getsingleton()) {;}
-  virtual ~IntegralMethod() = default;
+  IntegralMethod(const OptionList &opts) : opts(*new OptionList(opts)) {;}
+  IntegralMethod() : opts(*new OptionList(GlobalOptions::getsingleton())) {;}
+  virtual ~IntegralMethod();
 
   virtual double overlap(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const = 0;
   
-  virtual double laplacian(const BasisOrbital *o1, const BasisOrbital *o2,
+  virtual double kinetic(const BasisOrbital *o1, const BasisOrbital *o2,
 			   std::array<double, 3> center1,
 			   std::array<double, 3> center2) const = 0;
   
-  virtual double coulomb(const BasisOrbital *o1, const BasisOrbital *o2,
+  virtual double attraction(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2,
 			 const Atom &atom) const = 0;
   
-  virtual double exchange(const BasisOrbital *o1, const BasisOrbital *o2,
+  virtual double repulsion(const BasisOrbital *o1, const BasisOrbital *o2,
 			  const BasisOrbital *o3, const BasisOrbital *o4,
 			  std::array<double, 3> c1,
 			  std::array<double, 3> c2, std::array<double, 3> c3,
@@ -50,10 +50,10 @@ class NumericIntegral : public IntegralMethod {
 private :
   int points;
 public :
-  NumericIntegral(int points, OptionList &opts) : points(points),
+  NumericIntegral(int points, const OptionList &opts) : points(points),
 						 IntegralMethod(opts) {;}
   NumericIntegral(int points) : points(points),
-				IntegralMethod(GlobalOptions::getsingleton())
+				IntegralMethod()
   {;}
   virtual ~NumericIntegral() = default;
 
@@ -61,16 +61,16 @@ public :
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const override;
 
-  virtual double laplacian(const BasisOrbital *o1, const BasisOrbital *o2,
+  virtual double kinetic(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const override;
 
-  virtual double coulomb(const BasisOrbital *o1, const BasisOrbital *o2,
+  virtual double attraction(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2,
 			 const Atom &atom) const override;
   
-  virtual double exchange(const BasisOrbital *o1, const BasisOrbital *o2,
+  virtual double repulsion(const BasisOrbital *o1, const BasisOrbital *o2,
 			  const BasisOrbital *o3, const BasisOrbital *o4,
 			  std::array<double, 3> c1,
 			  std::array<double, 3> c2, std::array<double, 3> c3,
@@ -82,7 +82,7 @@ class AnalyticIntegral {
 protected:
   OptionList &opts;
 
-  double os_coul(const std::array<int, 7> &index,
+  double os_attr(const std::array<int, 7> &index,
 		 std::map<std::array<int, 7>, double> &ints,
 		 const std::array<double, 3> &c1,
 		 const std::array<double, 3> &c2,
@@ -91,7 +91,7 @@ protected:
 		 double Px, double Py, double Pz,
 		 double zeta) const;
 
-  double coul_integral(const int *pows1,
+  double attr_integral(const int *pows1,
 		       const int *pows2,
 		       const std::array<double, 3> &c1,
 		       const std::array<double, 3> &c2,
@@ -99,32 +99,7 @@ protected:
 		       const GaussianOrbital *o2,
 		       const Atom &atom) const;
 
-  double compute_rm(const std::array<int, 4> &index,
-	     std::map<std::array<int, 4>, double> &ints,
-	     double Rx, double Ry, double Rz, double omega,
-	     double theta2, double T) const;
-
-  double compute_apquv(const std::array<int, 11> &index,
-		       std::map<std::array<int, 11>, double> &ints,
-		       const std::map<std::array<int, 8>, double> &pquv,
-		       const std::array<double, 3> &c1,
-		       const std::array<double, 3> &c2) const;
-
-  double compute_e0cquv(const std::array<int, 11> &index,
-			std::map<std::array<int, 11>, double> &ints,
-			const std::map<std::array<int, 8>, double> &e0quv,
-			const std::array<double, 3> &c3,
-			const std::array<double, 3> &c4) const;
-
-  double compute_abcd(const std::array<int, 12> &index,
-		      std::map<std::array<int, 12>, double> &ints,
-		      const std::map<std::array<int, 6>, double> &e0f0,
-		      const std::array<double, 3> &c1,
-		      const std::array<double, 3> &c2,
-		      const std::array<double, 3> &c3,
-		      const std::array<double, 3> &c4) const;
-
-  double exc_integral(const int *pows1, const int *pows2, const int *pows3,
+  double rep_integral(const int *pows1, const int *pows2, const int *pows3,
 		      const int *pows4,
 		      const std::array<double, 3> &c1,
 		      const std::array<double, 3> &c2,
@@ -136,28 +111,28 @@ protected:
 		      const GaussianOrbital *o4) const;
   
 public :
-  AnalyticIntegral(OptionList &opts) : opts(opts) {;}
-  AnalyticIntegral() : opts(GlobalOptions::getsingleton()) {;}
-  virtual ~AnalyticIntegral() = default;
+  AnalyticIntegral(const OptionList &opts) : opts(*new OptionList(opts)) {;}
+  AnalyticIntegral() : opts(*new OptionList(GlobalOptions::getsingleton())) {;}
+  virtual ~AnalyticIntegral();
 
   virtual double overlap(const GaussianOrbital *o1, const GaussianOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const;
 
-  virtual double laplacian(const GaussianOrbital *o1, const GaussianOrbital *o2,
+  virtual double kinetic(const GaussianOrbital *o1, const GaussianOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const;
 
-  virtual double coulomb(const GaussianOrbital *o1, const GaussianOrbital *o2,
-			 std::array<double, 3> center1,
-			 std::array<double, 3> center2,
-			 const Atom &atom) const;
+  virtual double attraction(const GaussianOrbital *o1, const GaussianOrbital *o2,
+			    std::array<double, 3> center1,
+			    std::array<double, 3> center2,
+			    const Atom &atom) const;
   
-  virtual double exchange(const GaussianOrbital *o1, const GaussianOrbital *o2,
-			  const GaussianOrbital *o3, const GaussianOrbital *o4,
-			  std::array<double, 3> c1,
-			  std::array<double, 3> c2, std::array<double, 3> c3,
-			  std::array<double, 3> c4) const;
+  virtual double repulsion(const GaussianOrbital *o1, const GaussianOrbital *o2,
+			   const GaussianOrbital *o3, const GaussianOrbital *o4,
+			   std::array<double, 3> c1,
+			   std::array<double, 3> c2, std::array<double, 3> c3,
+			   std::array<double, 3> c4) const;
 
   // Gaussian kernel for the Boys integral. For coulomb.
   double boys_square(int j, double T) const;
@@ -186,10 +161,16 @@ protected:
 			int dim, int thread_num, int threads,
 			compchem::OptionList &opts,
 			const compchem::Molecule *mol);
+
+  static void tei_routine(const std::vector<const compchem::GaussianOrbital *> *orbs,
+			const std::vector<std::array<double, 3> *> *centers,
+			TEIArray *out,
+			int dim, int thread_num, int threads,
+			compchem::OptionList &opts);
 public:
-  IntegralFactory() : opts(GlobalOptions::getsingleton()) {;}
-  IntegralFactory(OptionList &opts) : opts(opts) {;}
-  virtual ~IntegralFactory() = default;
+  IntegralFactory() : opts(*new OptionList(GlobalOptions::getsingleton())) {;}
+  IntegralFactory(const OptionList &opts) : opts(*new OptionList(opts)) {;}
+  virtual ~IntegralFactory();
   
   void Smatrix(const Molecule *mol, double *out, int *dim);
   void Tmatrix(const Molecule *mol, double *out, int *dim);
