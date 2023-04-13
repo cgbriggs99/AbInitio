@@ -7,13 +7,13 @@ namespace compchem {
 
 class RHFWfn : public SCFWfn {
 public :
-  RHFWfn(int electrons, const double *S, const double *T,
-	 const double *V,
-	 const TEIArray *tei, int orbs, double *C = nullptr,
+  RHFWfn(int electrons, int orbs, double *S = nullptr, double *T = nullptr,
+	 double *V = nullptr,
+	 TEIArray *tei = nullptr, double *C = nullptr,
 	 double *D = nullptr,
 	 double *F = nullptr,
 	 double *es = nullptr,
-	 int multiplicity = 1) : SCFWfn(electrons, S, T, V, tei, orbs,
+	 int multiplicity = 1) : SCFWfn(electrons, orbs, S, T, V, tei,
 					C, nullptr,
 					D, nullptr,
 					F, nullptr,

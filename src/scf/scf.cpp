@@ -3,6 +3,22 @@
 using namespace compchem;
 
 SCFWfn::~SCFWfn() {
+  if(S != nullptr) {
+    delete[] S;
+  }
+
+  if(T != nullptr) {
+    delete[] T;
+  }
+
+  if(V != nullptr) {
+    delete[] V;
+  }
+
+  if(tei != nullptr) {
+    delete tei;
+  }
+  
   if(Ca != nullptr) {
     delete[] Ca;
   }
@@ -50,6 +66,39 @@ const double *SCFWfn::getpotential(int *dim) const {
 const TEIArray *SCFWfn::gettei() const {
   return this->tei;
 }
+
+void SCFWfn::setoverlap(double *data) {
+  if(this->S != nullptr) {
+    delete[] this->S;
+  }
+
+  this->S = data;
+}
+
+void SCFWfn::setkinetic(double *data) {
+  if(this->T != nullptr) {
+    delete[] this->T;
+  }
+
+  this->T = data;
+}
+
+void SCFWfn::setpotential(double *data) {
+  if(this->V != nullptr) {
+    delete[] this->V;
+  }
+
+  this->V = data;
+}
+
+void SCFWfn::settei(TEIArray *data) {
+  if(this->tei != nullptr) {
+    delete this->tei;
+  }
+
+  this->tei = data;
+}
+
 
 const double *SCFWfn::getcoefa(int *dim) const {
   if(dim != nullptr) {

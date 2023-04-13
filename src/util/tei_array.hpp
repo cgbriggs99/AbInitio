@@ -29,7 +29,13 @@ public :
 
   void indextoquad(int index, int *mu, int *nu, int *lam, int *sig) const;
 };
+  
+int biggest_trinum_leq(int val);
 
+int biggest_triind_leq(int val);
+
+int triangular_num(int index);
+  
 }
 
 

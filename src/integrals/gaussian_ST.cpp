@@ -244,7 +244,17 @@ static double compute_kinetic(const int *pow1, const int *pow2,
 	  pow2[0] + 2, pow2[1], pow2[2]},
 	ind4 = {
 	  pow1[0], pow1[1], pow1[2],
-	  pow2[0], pow2[1], pow2[2]};
+	  pow2[0], pow2[1], pow2[2]},
+	ind5 = {
+	  pow1[0], pow1[1], pow1[2],
+	  pow2[0], pow2[1], pow2[2] - 2},
+	ind6 = {
+	  pow1[0], pow1[1], pow1[2],
+	  pow2[0], pow2[1] - 2, pow2[2]},
+	ind7 = {
+	  pow1[0], pow1[1], pow1[2],
+	  pow2[0] - 2, pow2[1], pow2[2]};
+	  
       std::map<std::array<int, 6>, double> ab;
       double beta = o2->getalpha(j);
       sum += 4 * beta * beta *
@@ -252,7 +262,10 @@ static double compute_kinetic(const int *pow1, const int *pow2,
 	 compute_ab(*&ind2, *&ab, *&e0, c1, c2) +
 	 compute_ab(*&ind3, *&ab, *&e0, c1, c2)) -
 	2 * beta * (2 * (pow2[0] + pow2[1] + pow2[2]) + 3) *
-	compute_ab(*&ind4, *&ab, *&e0, c1, c2);
+	compute_ab(*&ind4, *&ab, *&e0, c1, c2) +
+	pow2[2] * (pow2[2] - 1) * compute_ab(*&ind5, *&ab, *&e0, c1, c2) +
+	pow2[1] * (pow2[1] - 1) * compute_ab(*&ind6, *&ab, *&e0, c1, c2) +
+	pow2[0] * (pow2[0] - 1) * compute_ab(*&ind7, *&ab, *&e0, c1, c2);
     }
   }
   return -0.5 * sum;

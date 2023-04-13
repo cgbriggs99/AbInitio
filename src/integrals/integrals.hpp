@@ -99,31 +99,6 @@ protected:
 		       const GaussianOrbital *o2,
 		       const Atom &atom) const;
 
-  double compute_rm(const std::array<int, 4> &index,
-	     std::map<std::array<int, 4>, double> &ints,
-	     double Rx, double Ry, double Rz, double omega,
-	     double theta2, double T) const;
-
-  double compute_apquv(const std::array<int, 11> &index,
-		       std::map<std::array<int, 11>, double> &ints,
-		       const std::map<std::array<int, 8>, double> &pquv,
-		       const std::array<double, 3> &c1,
-		       const std::array<double, 3> &c2) const;
-
-  double compute_e0cquv(const std::array<int, 11> &index,
-			std::map<std::array<int, 11>, double> &ints,
-			const std::map<std::array<int, 8>, double> &e0quv,
-			const std::array<double, 3> &c3,
-			const std::array<double, 3> &c4) const;
-
-  double compute_abcd(const std::array<int, 12> &index,
-		      std::map<std::array<int, 12>, double> &ints,
-		      const std::map<std::array<int, 6>, double> &e0f0,
-		      const std::array<double, 3> &c1,
-		      const std::array<double, 3> &c2,
-		      const std::array<double, 3> &c3,
-		      const std::array<double, 3> &c4) const;
-
   double rep_integral(const int *pows1, const int *pows2, const int *pows3,
 		      const int *pows4,
 		      const std::array<double, 3> &c1,

@@ -49,8 +49,8 @@ int test_rhf(void) {
 
   ASSERT_FATAL(mol->getelectrons() == 10);
 
-  RHFWfn *wfn = new RHFWfn(mol->getelectrons(),
-			   S, T, V, tei, orbs);
+  RHFWfn *wfn = new RHFWfn(mol->getelectrons(), orbs,
+			   S, T, V, tei);
 
   RHF rhf = RHF();
 
@@ -61,10 +61,6 @@ int test_rhf(void) {
 		  energy);
 
   delete wfn;
-  delete tei;
-  delete[] S;
-  delete[] T;
-  delete[] V;
   delete mol;
 
   return warns;

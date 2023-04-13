@@ -246,3 +246,17 @@ void TEIArray::indextoquad(int index, int *mu, int *nu, int *lam, int *sig) cons
   *sig = ls - Tlam;
 }
   
+int compchem::biggest_triind_leq(int val) {
+  if(val < 0) {
+    throw *new std::domain_error("Can not find largest triangular number less than or equal to a negative value!");
+  }
+  return (int) std::floor((std::sqrt(1.0 + 8.0 * val) - 1.0) / 2.0);
+}
+
+int compchem::triangular_num(int val) {
+  return (val * (val + 1)) / 2;
+}
+
+int compchem::biggest_trinum_leq(int val) {
+  return triangular_num(biggest_triind_leq(val));
+}
