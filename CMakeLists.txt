@@ -104,7 +104,7 @@ endif()
 
 if(BUILD_TESTING)
   
-  add_compile_options(--coverage -Og -g3 -ggdb -lgcov -pg)
+  add_compile_options(--coverage -Og -g3 -ggdb -lgcov -pg -DNDEBUG=1)
   add_subdirectory(tests)
 
 else()
