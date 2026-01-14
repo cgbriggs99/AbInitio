@@ -270,7 +270,86 @@ This means that eventually, all of these integrals can be expressed in the form 
 
 \subsection{When Centers Match}
 
-Consider equation~\ref{fc-branch-point} for the case of $\mathbf{P} = \mathbf{Q}$. 
+Consider equation~\ref{fc-branch-point} for the case of $\mathbf{P} = \mathbf{Q}$. We know that $\mathbf{R} = \mathbf{Q} - \mathbf{P} = \mathbf{0}$. This lets us simplify the equations. If we use this, we can skip all the way down to equation 3.64, and plug in the known value of $\mathbf{R}$.
 
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi(-1)^q\int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}} e^{0}\\
+  \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty H_{p_x + q_x}\left(u_x\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right)H_{p_y + q_y}\left(u_y\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right)\\
+  H_{p_z + q_z}\left(u_z\sqrt{\frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}}\right)e^{-u^2}\dvar{\mathbf{u}}\dvar{t}
+\end{multline}
 
-  
+Now, we can use equation 2.14 to integrate. Note that in this case, $a = 0$.
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^q\int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}\\
+  \left(1 - \frac{\zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{p + q}{2}}H_{p_x + q_x}(0)H_{p_y + q_y}(0)H_{p_z + q_z}(0)\dvar{t}
+\end{multline}
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^q\int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}\\
+  \left(\frac{\eta\zeta + \zeta t^2 + \eta t^2 - \zeta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{p + q}{2}}H_{p_x + q_x}(0)H_{p_y + q_y}(0)H_{p_z + q_z}(0)\dvar{t}
+\end{multline}
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^q\int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}\\
+  \left(\frac{\eta\zeta + \eta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{p + q}{2}}H_{p_x + q_x}(0)H_{p_y + q_y}(0)H_{p_z + q_z}(0)\dvar{t}
+\end{multline}
+
+If any of $p_x + q_x$, $p_y + q_y$, or $p_z + q_z$ are odd, then this integral becomes zero, because the respective Hermite polynomial goes to zero. When they are all even, then we get the following from~\cite{wolfram-hermite}.
+
+\begin{equation}
+  H_n(0) = \frac{2^n\sqrt{\pi}}{\Gamma\left(\frac{1 - n}{2}\right)}
+\end{equation}
+
+\begin{equation}
+  H_n(0) = \frac{2^n\sqrt{\pi}}{\frac{(-1)^{\frac{n}{2}}2^{n - 1}\sqrt{\pi}\left(\frac{n}{2} - 1\right)!}{\left(n - 1\right)!}}
+\end{equation}
+
+\begin{equation}
+  H_n(0) = \frac{(-1)^{\frac{n}{2}}2(n - 1)!}{\left(\frac{n}{2} - 1\right)!}
+\end{equation}
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = 8D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \int_{-\infty}^\infty \frac{\left(\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\zeta + t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}\left(\frac{\eta\zeta + \eta t^2}{\eta\zeta + \zeta t^2 + \eta t^2}\right)^{\frac{p + q}{2}}\dvar{t}
+\end{multline}
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = 8D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \int_{-\infty}^\infty \frac{\left(\eta\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}\dvar{t}
+\end{multline}
+
+Use the fact that all $t$ are squared to simplify the bounds of the integral.
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = 16D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \int_0^\infty \frac{\left(\eta\zeta t^2\right)^{\frac{p + q}{2}}}{\left(\eta\zeta + \zeta t^2 + \eta t^2\right)^{\frac{p + q}{2}}} \frac{1}{\left(\eta\zeta + \eta t^2 + \zeta t^2\right)^{\frac{3}{2}}}\dvar{t}
+\end{multline}
+
+Let $u^2 = \frac{\eta + \zeta}{\eta\zeta}\frac{\eta\zeta t^2}{\eta\zeta + \eta t^2 + \zeta t^2}$. We can then use equation 3.76 to perform the substitution.
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = 16D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\eta\zeta\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \left(\frac{\eta\zeta}{\eta + \zeta}\right)^{\frac{p + q}{2}}\sqrt{\frac{1}{\eta + \zeta}}\int_0^1 u^{p + q}\dvar{u}
+\end{multline}
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = 16D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\eta\zeta\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \left(\frac{\eta\zeta}{\eta + \zeta}\right)^{\frac{p + q}{2}}\sqrt{\frac{1}{\eta + \zeta}}\left.\frac{u^{p + q + 1}}{p + q + 1}\right|_0^1
+\end{multline}
+
+\begin{multline}
+  \left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = 16D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\eta\zeta\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \left(\frac{\eta\zeta}{\eta + \zeta}\right)^{\frac{p + q}{2}}\sqrt{\frac{1}{\eta + \zeta}}\frac{1}{p + q + 1}
+\end{multline}
+
+Now, to make things consistent, let $\overline{\mathbf{r}} = \overline{\mathbf{p} + \mathbf{q}}$ and let $\left[\overline{\mathbf{p}}\middle|\overline{\mathbf{q}}\right] = (-1)^q\left[\overline{\mathbf{p} + \mathbf{q}}\right]$. 
+
+\begin{multline}
+  \left[\overline{\mathbf{r}}\right] = 16D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{p + 3q - 2q}{2}}\frac{(p_x + q_x - 1)!(p_y + q_y - 1)!(p_z + q_z - 1)!}{\eta\zeta\left(\frac{p_x + q_x}{2} - 1\right)!\left(\frac{p_y + q_y}{2} - 1\right)!\left(\frac{p_z + q_z}{2} - 1\right)!}\\
+  \left(\frac{\eta\zeta}{\eta + \zeta}\right)^{\frac{p + q}{2}}\sqrt{\frac{1}{\eta + \zeta}}\frac{1}{p + q + 1}
+\end{multline}
+
+\begin{equation}
+  \left[\overline{\mathbf{r}}\right] = 16D_AD_BD_CD_D e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}e^{-\frac{\gamma\delta}{\eta}\left(\mathbf{C} - \mathbf{D}\right)^2}\pi^{\frac{5}{2}}(-1)^{\frac{r}{2}}\frac{(r_x - 1)!(r_y - 1)!(r_z - 1)!}{\left(\frac{r_x}{2} - 1\right)!\left(\frac{r_y}{2} - 1\right)!\left(\frac{r_z}{2} - 1\right)!}\frac{\left(\eta\zeta\right)^{\frac{r}{2} - 1}}{\left(\eta + \zeta\right)^{\frac{r + 1}{2}}}\frac{1}{r + 1}
+\end{equation}
