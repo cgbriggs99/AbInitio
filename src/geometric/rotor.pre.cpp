@@ -42,23 +42,7 @@ rotor_t compchem::comprotor(const Molecule &mol, std::array<double, 3> *out) {
   }
 
   LAPACKE_dgeev(LAPACK_COL_MAJOR, 'N', 'N', 3, moment, 3, real, imag, nullptr, 1, nullptr, 1);
-
-  // Sort the eigenvalues.
-  if(real[0] > real[1]) {
-    double swap = real[0];
-    real[0] = real[1];
-    real[1] = swap;
-  }
-  if(real[1] > real[2]){
-    double swap = real[1];
-    real[1] = real[2];
-    real[2] = swap;
-  }
-  if(real[0] > real[1]) {
-    double swap = real[0];
-    real[0] = real[1];
-    real[1] = swap;
-  }
+  
   // Convert to joules.
   (*out)[0] = PLANCK_SI / (8 * M_PI * M_PI * LIGHT_SI * AU_TO_KG *
 			 BOHR_TO_M * BOHR_TO_M * real[0]);

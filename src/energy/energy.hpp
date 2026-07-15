@@ -23,6 +23,9 @@ public:
 
   virtual double energy(const Molecule *molecule,
 			const Wavefunction *wfn_in) const = 0;
+
+  virtual std::array<double, 3> dipole(const Molecule *molecule,
+				       const Wavefunction *wfn_in) const = 0;
 };
 
 }

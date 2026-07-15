@@ -45,6 +45,8 @@ namespace compchem {
 
 
   double nuclear_repulsion(const Molecule &mol);
+
+  std::array<double, 3> nuclear_dipole(const Molecule &mol);
 }
 
 #endif

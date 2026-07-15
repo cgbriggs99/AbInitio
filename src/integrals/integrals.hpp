@@ -32,6 +32,11 @@ public:
   virtual double kinetic(const BasisOrbital *o1, const BasisOrbital *o2,
 			   std::array<double, 3> center1,
 			   std::array<double, 3> center2) const = 0;
+
+  virtual double polynomial(const BasisOrbital *o1, const BasisOrbital *o2,
+			    std::array<double, 3> center1,
+			    std::array<double, 3> center2,
+			    const Polynomial<3> &poly) const = 0;
   
   virtual double attraction(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
@@ -64,6 +69,11 @@ public :
   virtual double kinetic(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const override;
+
+  virtual double polynomial(const BasisOrbital *o1, const BasisOrbital *o2,
+			    std::array<double, 3> center1,
+			    std::array<double, 3> center2,
+			    const Polynomial<3> &poly) const override;
 
   virtual double attraction(const BasisOrbital *o1, const BasisOrbital *o2,
 			 std::array<double, 3> center1,
@@ -123,6 +133,11 @@ public :
 			 std::array<double, 3> center1,
 			 std::array<double, 3> center2) const;
 
+  virtual double polynomial(const GaussianOrbital *o1, const GaussianOrbital *o2,
+			    std::array<double, 3> center1,
+			    std::array<double, 3> center2,
+			    const Polynomial<3> &poly) const;
+
   virtual double attraction(const GaussianOrbital *o1, const GaussianOrbital *o2,
 			    std::array<double, 3> center1,
 			    std::array<double, 3> center2,
@@ -176,6 +191,8 @@ public:
   void Tmatrix(const Molecule *mol, double *out, int *dim);
   void Vmatrix(const Molecule *mol, double *out, int *dim);
   TEIArray *TEIints(const Molecule *mol);
+
+  void dipole(const Molecule *mol, double *mux, double *muy, double *muz, int *dim);
 };
 
 }

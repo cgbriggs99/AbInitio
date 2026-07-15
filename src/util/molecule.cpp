@@ -142,3 +142,20 @@ double compchem::nuclear_repulsion(const compchem::Molecule &mol) {
   }
   return sum;
 }
+
+std::array<double, 3> compchem::nuclear_dipole(const compchem::Molecule &mol) {
+  std::array<double, 3> out{0, 0, 0};
+
+  for(int i = 0; i < mol.getsize(); i++) {
+    const compchem::Atom &a1 = mol.getatom(i);
+    double x = a1.getx() - mol.getcomx(),
+      y = a1.gety() - mol.getcomy(),
+      z = a1.getz() - mol.getcomz();
+
+    out[0] += a1.getZ() * x;
+    out[1] += a1.getZ() * y;
+    out[2] += a1.getZ() * z;
+  }
+  return out;
+}
+    

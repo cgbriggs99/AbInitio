@@ -22,6 +22,10 @@ public:
   virtual const double *getkinetic(int *dim = nullptr) const = 0;
   virtual const double *getpotential(int *dim = nullptr) const = 0;
 
+  virtual const double *getmux(int *dim = nullptr) const = 0;
+  virtual const double *getmuy(int *dim = nullptr) const = 0;
+  virtual const double *getmuz(int *dim = nullptr) const = 0;
+
   virtual const double *getfock(int *dim) const = 0;
 
   virtual int getnorbs() const = 0;

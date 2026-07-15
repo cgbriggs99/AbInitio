@@ -1,4 +1,4 @@
-#include "${CMAKE_SOURCE_DIR}/src/scf/rhf.hpp"
+#include "${CMAKE_SOURCE_DIR}/src/scf/uhf.hpp"
 #include <cmath>
 #include <${LAPACKE_HEADER}>
 #include <${CBLAS_HEADER}>
@@ -9,135 +9,94 @@
 using namespace compchem;
 using namespace std;
 
-const double *RHFWfn::getcoefa(int *dim) const {
+const double *UHFWfn::getcoefa(int *dim) const {
   if(dim != nullptr) {
     *dim = this->dim;
   }
   return this->Ca;
 }
 
-const double *RHFWfn::getcoefb(int *dim) const {
+const double *UHFWfn::getcoefb(int *dim) const {
   if(dim != nullptr) {
     *dim = this->dim;
   }
-  return this->Ca;
+  return this->Cb;
 }
 
-const double *RHFWfn::getcoef(int *dim) const {
-  if(dim != nullptr) {
-    *dim = this->dim;
-  }
-  return this->Ca;
-}
-
-const double *RHFWfn::getdensa(int *dim) const {
+const double *UHFWfn::getdensa(int *dim) const {
   if(dim != nullptr) {
     *dim = this->dim;
   }
   return this->Da;
 }
 
-const double *RHFWfn::getdensb(int *dim) const {
+const double *UHFWfn::getdensb(int *dim) const {
   if(dim != nullptr) {
     *dim = this->dim;
   }
-  return this->Da;
+  return this->Db;
 }
 
-const double *RHFWfn::getdens(int *dim) const {
-  if(dim != nullptr) {
-    *dim = this->dim;
-  }
-  return this->Da;
-}
-
-const double *RHFWfn::getfocka(int *dim) const {
+const double *UHFWfn::getfocka(int *dim) const {
   if(dim != nullptr) {
     *dim = this->dim;
   }
   return this->Fa;
 }
 
-const double *RHFWfn::getfockb(int *dim) const {
+const double *UHFWfn::getfockb(int *dim) const {
   if(dim != nullptr) {
     *dim = this->dim;
   }
-  return this->Fa;
+  return this->Fb;
 }
 
-const double *RHFWfn::getfock(int *dim) const {
-  if(dim != nullptr) {
-    *dim = this->dim;
-  }
-  return this->Fa;
-}
-
-void RHFWfn::setcoefa(double *arr) {
+void UHFWfn::setcoefa(double *arr) {
   if(this->Ca != nullptr) {
     delete[] this->Ca;
   }
   this->Ca = arr;
 }
 
-void RHFWfn::setcoefb(double *arr) {
-  if(this->Ca != nullptr) {
-    delete[] this->Ca;
+void UHFWfn::setcoefb(double *arr) {
+  if(this->Cb != nullptr) {
+    delete[] this->Cb;
   }
-  this->Ca = arr;
+  this->Cb = arr;
 }
 
-void RHFWfn::setdensa(double *arr) {
+void UHFWfn::setdensa(double *arr) {
   if(this->Da != nullptr) {
     delete[] this->Da;
   }
   this->Da = arr;
 }
 
-void RHFWfn::setdensb(double *arr) {
-  if(this->Da != nullptr) {
-    delete[] this->Da;
+void UHFWfn::setdensb(double *arr) {
+  if(this->Db != nullptr) {
+    delete[] this->Db;
   }
-  this->Da = arr;
+  this->Db = arr;
 }
 
-void RHFWfn::setfocka(double *arr) {
+void UHFWfn::setfocka(double *arr) {
   if(this->Fa != nullptr) {
     delete[] this->Fa;
   }
   this->Fa = arr;
 }
 
-void RHFWfn::setfockb(double *arr) {
-  if(this->Fa != nullptr) {
-    delete[] this->Fa;
+void UHFWfn::setfockb(double *arr) {
+  if(this->Fb != nullptr) {
+    delete[] this->Fb;
   }
-  this->Fa = arr;
+  this->Fb = arr;
 }
 
-void RHFWfn::setcoef(double *arr) {
-  if(this->Ca != nullptr) {
-    delete[] this->Ca;
-  }
-  this->Ca = arr;
-}
-
-void RHFWfn::setdens(double *arr) {
-  if(this->Da != nullptr) {
-    delete[] this->Da;
-  }
-  this->Da = arr;
-}
-
-void RHFWfn::setfock(double *arr) {
-  if(this->Fa != nullptr) {
-    delete[] this->Fa;
-  }
-  this->Fa = arr;
-}
-
-double RHF::energy(const Molecule *molecule,
+double UHF::energy(const Molecule *molecule,
 		      const Wavefunction *wfn_in,
-		   RHFWfn *out, std::vector<int> occupied) const {
+		   UHFWfn *out, std::vector<int> occupieda,
+		   std::vector<int> occupiedb) const {
 
   const SCFWfn *wfn;
 
@@ -146,13 +105,16 @@ double RHF::energy(const Molecule *molecule,
   } catch(std::exception &e) {
     throw(e);
   }
-  
-  if(wfn->getelectrons() % 2 == 1 || wfn->getmultiplicity() != 1) {
-    throw(*new std::invalid_argument("RHF can only handle singlet molecules."));
-  }
 
-  if(occupied.size() != 0 && occupied.size() != wfn->getelectrons() / 2) {
-    throw(*new std::invalid_argument("Occupation must have the same number of entries as half the number of electrons."));
+  if(occupieda.size() != 0 && occupieda.size() != (wfn->getelectrons() +
+						   wfn->getmultiplicity() - 1)
+     / 2) {
+    throw(*new std::invalid_argument("Alpha occupation must have the same number of entries as spin-up electrons"));
+  }
+  if(occupiedb.size() != 0 && occupiedb.size() != (wfn->getelectrons() -
+						   wfn->getmultiplicity() + 1)
+     / 2) {
+    throw(*new std::invalid_argument("Beta occupation must have the same number of entries as spin-up electrons"));
   }
 
   double enuc = nuclear_repulsion(*molecule);
@@ -163,14 +125,20 @@ double RHF::energy(const Molecule *molecule,
   double *eigvecs = new double[wfn->getnorbs() * wfn->getnorbs()];
   int orbs = wfn->getnorbs(), elecs = wfn->getelectrons();
   int dim;
-  int occ = wfn->getelectrons() / 2;
+  int occa = (wfn->getelectrons() + wfn->getmultiplicity() - 1) / 2;
+  int occb = (wfn->getelectrons() - wfn->getmultiplicity() + 1) / 2;
   double e0 = 0, e1 = 0;
 
   // Set up new matrices.
-  double *D0 = new double[orbs * orbs], *D1 = new double[orbs * orbs];
-  double *H = new double[orbs * orbs];
-  double *C = new double[orbs * orbs];
-  double *F = new double[orbs * orbs];
+  double *Da0 = new double[orbs * orbs], *Da1 = new double[orbs * orbs];
+  double *Ha = new double[orbs * orbs];
+  double *Ca = new double[orbs * orbs];
+  double *Fa = new double[orbs * orbs];
+
+  double *Db0 = new double[orbs * orbs], *Db1 = new double[orbs * orbs];
+  double *Hb = new double[orbs * orbs];
+  double *Cb = new double[orbs * orbs];
+  double *Fb = new double[orbs * orbs];
 
   // Create the hamiltonian and initial Fock matrix.
   const double *T = wfn->getkinetic();
@@ -178,8 +146,10 @@ double RHF::energy(const Molecule *molecule,
   const TEIArray *tei = wfn->gettei();
 
   for(int i = 0; i < orbs * orbs; i++) {
-    H[i] = T[i] + V[i];
-    F[i] = T[i] + V[i];
+    Ha[i] = T[i] + V[i];
+    Fa[i] = T[i] + V[i];
+    Hb[i] = T[i] + V[i];
+    Fb[i] = T[i] + V[i];
   }
 
 #ifdef NDEBUG
@@ -245,15 +215,15 @@ double RHF::energy(const Molecule *molecule,
 
   do {
     
-    // Find the coefficients and energies.
+    // Find the alpha coefficients and energies.
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, orbs, orbs, orbs,
-		1, F, orbs, Shalf, orbs, 0, work1, orbs);
+		1, Fa, orbs, Shalf, orbs, 0, work1, orbs);
     cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, orbs, orbs, orbs,
 		1, Shalf, orbs, work1, orbs, 0, work2, orbs);
 
 #ifdef NDEBUG
     if(cycles == 0) {
-      fprintf(stderr, "F' matrix.\n");
+      fprintf(stderr, "Fa' matrix.\n");
       for(int i = 0; i < orbs; i++) {
 	fprintf(stderr, "[ ");
 	for(int j = 0; j < orbs; j++) {
@@ -270,7 +240,7 @@ double RHF::energy(const Molecule *molecule,
 
 #ifdef NDEBUG
     if(cycles == 0) {
-      fprintf(stderr, "C' matrix presort.\n");
+      fprintf(stderr, "Ca' matrix presort.\n");
       for(int i = 0; i < orbs; i++) {
 	fprintf(stderr, "[ ");
 	for(int j = 0; j < orbs; j++) {
@@ -311,15 +281,15 @@ double RHF::energy(const Molecule *molecule,
 
     memcpy(work1, eigvecs, orbs * orbs * sizeof(double));
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, orbs, orbs, orbs,
-		1, Shalf, orbs, eigvecs, orbs, 0, C, orbs);
+		1, Shalf, orbs, eigvecs, orbs, 0, Ca, orbs);
 
 #ifdef NDEBUG
     if(cycles == 0) {
-      fprintf(stderr, "C matrix.\n");
+      fprintf(stderr, "Ca matrix.\n");
       for(int i = 0; i < orbs; i++) {
 	fprintf(stderr, "[ ");
 	for(int j = 0; j < orbs; j++) {
-	  fprintf(stderr, "%lf ", C[i * orbs + j]);
+	  fprintf(stderr, "%lf ", Ca[i * orbs + j]);
 	}
 	fprintf(stderr, "]\n");
       }
@@ -329,28 +299,136 @@ double RHF::energy(const Molecule *molecule,
     // Compute the densities.
     for(int mu = 0; mu < orbs; mu++) {
       for(int nu = 0; nu <= mu; nu++) {
-	D0[mu * orbs + nu] = D1[mu * orbs + nu];
-	D1[mu * orbs + nu] = 0;
-	for(int m = 0; m < occ; m++) {
-	  if(occupied.size() == 0) {
-	    D1[mu * orbs + nu] += C[mu * orbs + m] * C[nu * orbs + m];
-	  } else {
-	    D1[mu * orbs + nu] += C[mu * orbs + occupied[m]] *
-	      C[nu * orbs + occupied[m]];
-	  }
+	Da0[mu * orbs + nu] = Da1[mu * orbs + nu];
+	Da1[mu * orbs + nu] = 0;
+        if(occupieda.size() == 0) {
+	  Da1[mu * orbs + nu] += Ca[mu * orbs + m] * Ca[nu * orbs + m];
+	} else {
+	  Da1[mu * orbs + nu] += Ca[mu * orbs + occupieda[m]] *
+	    Ca[nu * orbs + occupieda[m]];
 	}
-	D0[nu * orbs + mu] = D0[mu * orbs + nu];
-	D1[nu * orbs + mu] = D1[mu * orbs + nu];
+	Da0[nu * orbs + mu] = Da0[mu * orbs + nu];
+	Da1[nu * orbs + mu] = Da1[mu * orbs + nu];
       }
     }
 
 #ifdef NDEBUG
     if(cycles == 0) {
-      fprintf(stderr, "Initial Density matrix.\n");
+      fprintf(stderr, "Initial Alpha Density matrix.\n");
       for(int i = 0; i < orbs; i++) {
 	fprintf(stderr, "[ ");
 	for(int j = 0; j < orbs; j++) {
-	  fprintf(stderr, "%lf ", D1[i * orbs + j]);
+	  fprintf(stderr, "%lf ", Da1[i * orbs + j]);
+	}
+	fprintf(stderr, "]\n");
+      }
+    }
+#endif
+
+    // Find the beta coefficients and energies.
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, orbs, orbs, orbs,
+		1, Fb, orbs, Shalf, orbs, 0, work1, orbs);
+    cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, orbs, orbs, orbs,
+		1, Shalf, orbs, work1, orbs, 0, work2, orbs);
+
+#ifdef NDEBUG
+    if(cycles == 0) {
+      fprintf(stderr, "Fb' matrix.\n");
+      for(int i = 0; i < orbs; i++) {
+	fprintf(stderr, "[ ");
+	for(int j = 0; j < orbs; j++) {
+	  fprintf(stderr, "%lf ", work2[i * orbs + j]);
+	}
+	fprintf(stderr, "]\n");
+      }
+    }
+#endif
+    
+    LAPACKE_dgeev(LAPACK_ROW_MAJOR, 'N', 'V', orbs,
+		  work2, orbs, eigreal, eigimag, nullptr, orbs,
+		  eigvecs, orbs);
+
+#ifdef NDEBUG
+    if(cycles == 0) {
+      fprintf(stderr, "Cb' matrix presort.\n");
+      for(int i = 0; i < orbs; i++) {
+	fprintf(stderr, "[ ");
+	for(int j = 0; j < orbs; j++) {
+	  fprintf(stderr, "%lf ", eigvecs[i * orbs + j]);
+	}
+	fprintf(stderr, "]\n");
+      }
+      fprintf(stderr, "Energies presort.\n");
+      for(int i = 0; i < orbs; i++) {
+	fprintf(stderr, "%lf ", eigreal[i]);
+      }
+      fprintf(stderr, "\n");
+    }
+#endif
+    // Sort the vectors.
+    for(int i = 0; i < orbs; i++) {
+      // Find the smallest not yet found.
+      double min = eigreal[i];
+      int minj = i;
+      for(int j = i; j < orbs; j++) {
+	if(eigreal[j] < min) {
+	  minj = j;
+	  min = eigreal[j];
+	}
+      }
+      // Swap.
+      double temp = eigreal[i];
+      eigreal[i] = eigreal[minj];
+      eigreal[minj] = temp;
+      
+      // Set the vector.
+      for(int j = 0; j < orbs; j++) {
+	temp = eigvecs[j * orbs + i];
+	eigvecs[j * orbs + i] = eigvecs[j * orbs + minj];
+	eigvecs[j * orbs + minj] = temp;
+      }
+    }
+
+    memcpy(work1, eigvecs, orbs * orbs * sizeof(double));
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, orbs, orbs, orbs,
+		1, Shalf, orbs, eigvecs, orbs, 0, Cb, orbs);
+
+#ifdef NDEBUG
+    if(cycles == 0) {
+      fprintf(stderr, "Cb matrix.\n");
+      for(int i = 0; i < orbs; i++) {
+	fprintf(stderr, "[ ");
+	for(int j = 0; j < orbs; j++) {
+	  fprintf(stderr, "%lf ", Cb[i * orbs + j]);
+	}
+	fprintf(stderr, "]\n");
+      }
+    }
+#endif
+
+    // Compute the densities.
+    for(int mu = 0; mu < orbs; mu++) {
+      for(int nu = 0; nu <= mu; nu++) {
+	Db0[mu * orbs + nu] = Db1[mu * orbs + nu];
+	Db1[mu * orbs + nu] = 0;
+        if(occupiedb.size() == 0) {
+	  Db1[mu * orbs + nu] += Cb[mu * orbs + m] * Cb[nu * orbs + m];
+	} else {
+	  Db1[mu * orbs + nu] += Cb[mu * orbs + occupiedb[m]] *
+	    Cb[nu * orbs + occupiedb[m]];
+	}
+	Db0[nu * orbs + mu] = Db0[mu * orbs + nu];
+	Db1[nu * orbs + mu] = Db1[mu * orbs + nu];
+      }
+    }
+
+#ifdef NDEBUG
+    if(cycles == 0) {
+      fprintf(stderr, "Initial Beta Density matrix.\n");
+      for(int i = 0; i < orbs; i++) {
+	fprintf(stderr, "[ ");
+	for(int j = 0; j < orbs; j++) {
+	  fprintf(stderr, "%lf ", Db1[i * orbs + j]);
 	}
 	fprintf(stderr, "]\n");
       }
@@ -362,18 +440,24 @@ double RHF::energy(const Molecule *molecule,
     e1 = enuc;
     for(int mu = 0; mu < orbs; mu++) {
       for(int nu = 0; nu < orbs; nu++) {
-	e1 += D1[mu * orbs + nu] * (H[mu * orbs + nu] + F[mu * orbs + nu]);
+	e1 += Da1[mu * orbs + nu] * (Ha[mu * orbs + nu] + Fa[mu * orbs + nu]);
+	e1 += Db1[mu * orbs + nu] * (Hb[mu * orbs + nu] + Fb[mu * orbs + nu]);
       }
     }
 
     // Compute the new Fock matrix.
     for(int mu = 0; mu < orbs; mu++) {
       for(int nu = 0; nu < orbs; nu++) {
-	F[mu * orbs + nu] = H[mu * orbs + nu];
+	Fa[mu * orbs + nu] = Ha[mu * orbs + nu];
+	Fa[mu * orbs + nu] = Ha[mu * orbs + nu];
 	for(int lam = 0; lam < orbs; lam++) {
 	  for(int sig = 0; sig < orbs; sig++) {
-	    F[mu * orbs + nu] += D1[lam * orbs + sig] *
-	      (2 * tei->at(mu, nu, lam, sig) - tei->at(mu, lam, nu, sig));
+	    Fa[mu * orbs + nu] += (Da1[lam * orbs + sig] + Db1[lam * orbs + sig]) *
+	      tei->at(mu, nu, lam, sig) -
+	      Da1[lam * orbs + sig] * tei->at(mu, lam, nu, sig);
+	    Fb[mu * orbs + nu] += (Da1[lam * orbs + sig] + Db1[lam * orbs + sig]) *
+	      tei->at(mu, nu, lam, sig) -
+	      Db1[lam * orbs + sig] * tei->at(mu, lam, nu, sig);
 	  }
 	}
       }
@@ -455,49 +539,7 @@ double RHF::energy(const Molecule *molecule,
   return e1;
 }
   
-double RHF::energy(const Molecule *mol,
+double UHF::energy(const Molecule *mol,
 		      const Wavefunction *wfn_in) const {
   return this->energy(mol, wfn_in, nullptr);
-}
-
-std::array<double, 3> RHF::dipole(const Molecule *molecule,
-				  const Wavefunction *wfn_in) const {
-  const SCFWfn *wfn;
-
-  try {
-    wfn = static_cast<const SCFWfn *>(wfn_in);
-  } catch(std::exception &e) {
-    throw(e);
-  }
-
-  int orbs = wfn->getnorbs(), elecs = wfn->getelectrons();
-
-  const double *mux = wfn->getmux();
-  const double *muy = wfn->getmuy();
-  const double *muz = wfn->getmuz();
-  const double *dens = wfn->getdensa();
-
-  std::array<double, 3> out = nuclear_dipole(*molecule);
-
-  double dx = 0, dy = 0, dz = 0;
-
-#pragma omp parallel for
-  for(int i = 0; i < orbs; i++) {
-    for(int j = 0; j <= i; j++) {
-      dx += mux[i * orbs + j] * dens[i * orbs + j];
-      dy += muy[i * orbs + j] * dens[i * orbs + j];
-      dz += muz[i * orbs + j] * dens[i * orbs + j];
-
-      if(i != j) {
-	dx += mux[i * orbs + j] * dens[i * orbs + j];
-	dy += muy[i * orbs + j] * dens[i * orbs + j];
-	dz += muz[i * orbs + j] * dens[i * orbs + j];
-      }
-    }
-  }
-  out[0] -= dx;
-  out[1] -= dy;
-  out[2] -= dz;
-
-  return out;
 }

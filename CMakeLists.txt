@@ -95,6 +95,7 @@ include(FindBLAS)
 include(FindLAPACK)
 include(CTest)
 include(FindThreads)
+include(FindOpenMP)
 
 check_library_exists(m sin "" MATH)
 
@@ -104,7 +105,7 @@ endif()
 
 if(BUILD_TESTING)
   
-  add_compile_options(--coverage -Og -g3 -ggdb -lgcov -pg -DNDEBUG=1)
+  add_compile_options(-Og -g3 -ggdb -DNDEBUG=1)
   add_subdirectory(tests)
 
 else()
@@ -126,7 +127,7 @@ endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(abinit SHARED)
-add_dependencies(abinit util basis_sets input geometric opts integrals)
+add_dependencies(abinit util basis_sets input geometric opts integrals OpenMP::OpenMP_CXX)
 
 #if(BUILD_TESTING)
 #  target_link_libraries(abinit PUBLIC gcov)

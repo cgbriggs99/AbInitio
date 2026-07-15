@@ -1,29 +1,24 @@
-#ifndef RHF_HPP
-#define RHF_HPP
+#ifndef UHF_HPP
+#define UHF_HPP
 
 #include "scf.hpp"
 
 namespace compchem {
 
-class RHFWfn : public SCFWfn {
-protected:
-  std::vector<int> __occ;
+class UHFWfn : public SCFWfn {
 public :
-  RHFWfn(int electrons, int orbs, double *S = nullptr, double *T = nullptr,
+  UHFWfn(int electrons, int orbs, double *S = nullptr, double *T = nullptr,
 	 double *V = nullptr,
-	 TEIArray *tei = nullptr, double *mux = nullptr,
-	 double *muy = nullptr,
-	 double *muz = nullptr,
-	 double *C = nullptr,
+	 TEIArray *tei = nullptr, double *C = nullptr,
 	 double *D = nullptr,
 	 double *F = nullptr,
-	 double *es = nullptr) :
-    SCFWfn(electrons, orbs, S, T, V, tei,
-	   C, nullptr,
-	   D, nullptr,
-	   F, nullptr,
-	   es, mux, muy, muz, 1){;}
-  virtual ~RHFWfn() = default;
+	 double *es = nullptr,
+	 int multiplicity = 1) : SCFWfn(electrons, orbs, S, T, V, tei,
+					C, nullptr,
+					D, nullptr,
+					F, nullptr,
+					es, multiplicity) {;}
+  virtual ~UHFWfn() = default;
 
   virtual const double *getcoefa(int *dim = nullptr) const override;
   virtual const double *getcoefb(int *dim = nullptr) const override;
@@ -31,10 +26,6 @@ public :
   virtual const double *getdensb(int *dim = nullptr) const override;
   virtual const double *getfocka(int *dim = nullptr) const override;
   virtual const double *getfockb(int *dim = nullptr) const override;
-
-  virtual const double *getcoef(int *dim = nullptr) const;
-  virtual const double *getdens(int *dim = nullptr) const;
-  virtual const double *getfock(int *dim = nullptr) const;
 
   virtual void setcoefa(double *arr) override;
   virtual void setcoefb(double *arr) override;
@@ -48,23 +39,20 @@ public :
   virtual void setfock(double *arr);
 };
 
-class RHF : public SCF {
+class UHF : public SCF {
 public:
-  RHF() : SCF() {;}
-  RHF(OptionList &opts) : SCF(opts) {;}
+  UHF() : SCF() {;}
+  UHF(OptionList &opts) : SCF(opts) {;}
 
-  virtual ~RHF() = default;
+  virtual ~UHF() = default;
 
   virtual double energy(const Molecule *molecule,
 			const Wavefunction *wfn_in) const override;
   virtual double energy(const Molecule *molecule,
 			const Wavefunction *wfn_in,
-		        RHFWfn *wfn_out,
-			std::vector<int> occ = std::vector<int>{}) const;
-
-  virtual std::array<double, 3> dipole(const Molecule *molecule,
-			const Wavefunction *wfn_in) const override;
-			
+		        UHFWfn *wfn_out,
+			std::vector<int> occupieda = std::vector<int>{},
+			std::vector<int> occupiedb = std::vector<int>{}) const;
 };
 
 }

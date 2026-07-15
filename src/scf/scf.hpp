@@ -15,7 +15,7 @@ protected:
   double *S, *T, *V;
   TEIArray *tei;
 
-  double *Ca, *Cb, *Da, *Db, *Fa, *Fb;
+  double *Ca, *Cb, *Da, *Db, *Fa, *Fb, *mux, *muy, *muz;
   double energy;
   double *es;
   int orbs;
@@ -30,6 +30,9 @@ public:
 	 double *Fa = nullptr,
 	 double *Fb = nullptr,
 	 double *es = nullptr,
+	 double *mux = nullptr,
+	 double *muy = nullptr,
+	 double *muz = nullptr,
 	 int multiplicity = 1) : S(S), T(T), V(V),
 				 tei(tei),
 				 Ca(Ca),
@@ -40,6 +43,9 @@ public:
 				 Fb(Fb),
 				 energy(0),
 				 es(es),
+				 mux(mux),
+				 muy(muy),
+				 muz(muz),
 				 Wavefunction(electrons, multiplicity),
 				 orbs(orbs) {;}
   virtual ~SCFWfn();
@@ -47,6 +53,9 @@ public:
   virtual const double *getoverlap(int *dim = nullptr) const override;
   virtual const double *getkinetic(int *dim = nullptr) const override;
   virtual const double *getpotential(int *dim = nullptr) const override;
+  virtual const double *getmux(int *dim = nullptr) const override;
+  virtual const double *getmuy(int *dim = nullptr) const override;
+  virtual const double *getmuz(int *dim = nullptr) const override;
 
   virtual void setoverlap(double *data);
   virtual void setkinetic(double *data);
@@ -71,6 +80,7 @@ public:
   
   virtual double getenergy() const;
   virtual const double *getenergies(int *dim) const;
+  
   virtual int getnorbs() const override;
 
   virtual void setenergies(double *arr);

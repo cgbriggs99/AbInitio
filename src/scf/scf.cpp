@@ -37,6 +37,15 @@ SCFWfn::~SCFWfn() {
   if(Fb != nullptr) {
     delete[] Fb;
   }
+  if(mux != nullptr) {
+    delete[] mux;
+  }
+  if(muy != nullptr) {
+    delete[] muy;
+  }
+  if(muz != nullptr) {
+    delete[] muz;
+  }
   if(es != nullptr) {
     delete[] es;
   }
@@ -61,6 +70,27 @@ const double *SCFWfn::getpotential(int *dim) const {
     *dim = this->dim;
   }
   return this->V;
+}
+
+const double *SCFWfn::getmux(int *dim) const {
+  if(dim != nullptr) {
+    *dim = this->dim;
+  }
+  return mux;
+}
+
+const double *SCFWfn::getmuy(int *dim) const {
+  if(dim != nullptr) {
+    *dim = this->dim;
+  }
+  return muy;
+}
+
+const double *SCFWfn::getmuz(int *dim) const {
+  if(dim != nullptr) {
+    *dim = this->dim;
+  }
+  return muz;
 }
 
 const TEIArray *SCFWfn::gettei() const {

@@ -1,0 +1,269 @@
+\documentclass[12pt]{article}
+
+% Headers for work.
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{cite}
+\usepackage{subcaption}
+
+% Math packages.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{mydefs}
+
+\usepackage{listings}
+
+% Line spacing.
+\singlespacing
+
+\begin{document}
+% Set the description environment for problems out of order.
+\setlist[description]{font=\space\normalfont\space}
+
+\section*{Spherical and solid harmonics}
+
+First, define the solid harmonics.
+
+$$r^l Y_{lm}(\mathbf{r}) = \sqrt{\frac{2l + 1}{2\pi}} \overline{\Pi}_l^m(\mathbf{r}) A_m(\mathbf{r}); m > 0$$
+$$r^l Y_{lm}(\mathbf{r}) = \sqrt{\frac{2l + 1}{2\pi}} \overline{\Pi}_l^{|m|}(\mathbf{r}) B_{|m|}(\mathbf{r}); m < 0$$
+$$r^l Y_{l0}(\mathbf{r}) = \sqrt{\frac{2l + 1}{4\pi}} \overline{\Pi}_l^0(\mathbf{r})$$
+
+$$A_m(\mathbf{r}) = \sum_{p = 0}^m {m \choose p} x^p y^{m - p} \cos\left((m - p)\frac{\pi}{2}\right)$$
+$$B_m(\mathbf{r}) = \sum_{p = 0}^m {m \choose p} x^p y^{m - p} \sin\left((m - p)\frac{\pi}{2}\right)$$
+$$\overline{\Pi}_l^m(\mathbf{r}) = 2^{-l} \sqrt{\frac{(l - m)!}{(l + m)!}} \sum_{k = 0}^{\left\lfloor\frac{l - m}{2}\right\rfloor}(-1)^k {l \choose k} {2l - 2k \choose l} \frac{(l - 2k)!}{(l - 2k - m)!} r^{2k} z^{l - 2k - m}$$
+
+Note that
+$$\int_{-\infty}^\infty t^{2k} e^{-at^2} dt = \int_{-\infty}^0 t^{2k} e^{-at^2} dt + \int_0^\infty t^{2k} e^{-at^2} dt = 2\int_0^\infty t^{2k} e^{-at^2} dt$$
+Use a substitution.
+$$u = at^2; t = \sqrt{\frac{u}{a}}$$
+$$\frac{du}{dt} = 2at$$
+$$dt = \frac{du}{2at} = \frac{du}{2\sqrt{au}}$$
+$$\int_{-\infty}^\infty t^{2k}e^{-at^2} dt = \frac{1}{a^{k + \frac{1}{2}}} \int_0^\infty u^{k-\frac{1}{2}} e^{-u} du = \frac{\Gamma\left(k + \frac{1}{2}\right)}{a^{k + \frac{1}{2}}}$$
+
+Then, note that
+$$\iiint_{-\infty}^\infty x^{2i}y^{2j}z^{2k} e^{-2\alpha r^2} dxdydz = \frac{\Gamma\left(i + \frac{1}{2}\right)\Gamma\left(j + \frac{1}{2}\right)\Gamma\left(k + \frac{1}{2}\right)}{(2\alpha)^{i + j + k + \frac{3}{2}}}$$
+$$ = \frac{2^{-2i - 2j - 2k} \pi^{\frac{3}{2}} (2i)!(2j)!(2k)!}{(i)!(j)!(k)! 2^{i + j + k + \frac{3}{2}} \alpha^{i + j + k + \frac{3}{2}}}$$
+$$ = \left(\frac{\pi}{2\alpha}\right)^{\frac{3}{2}} \left(\frac{(2i)!(2j)!(2k)!}{(i)!(j)!(k)! (8\alpha)^{i + j + k}}\right)$$
+
+Normalize the integral.
+$$\frac{1}{N^2} = \iiint_{-\infty}^\infty r^{2l} \left|Y_{lm}(\mathbf{r})\right|^2 e^{-2\alpha r^2} dxdydz$$
+For positive $m$:
+$$ = \frac{1}{2}\iiint_{-\infty}^\infty r^{2l} \left|Y_l^m(\mathbf{r})- (-1)^m Y_l^{-m}(\mathbf{r})\right|^2 e^{-2\alpha r^2} dxdydz$$
+Convert to polar.
+
+\begin{multline*}
+  = \frac{1}{2} \int_0^\infty e^{-2\alpha r^2} r^{2l + 2} dr \int_0^\pi\int_0^{2\pi} \sin\theta \left(Y_l^m(\theta,\phi)^*Y_l^m(\theta,\phi) - (-1)^m Y_l^m(\theta,\phi)^* Y_{l}^{-m}(\theta,\phi) - \right.\\
+  \left.(-1)^m Y_l^{-m}(\theta,\phi)^* Y_l^m(\theta,\phi) + Y_l^{-m}(\theta,\phi)^* Y_l^{-m}(\theta,\phi)\right) d\phi d\theta
+\end{multline*}
+
+$$  = \frac{\Gamma\left(l + \frac{3}{2}\right)}{2\left(2\alpha\right)^{l + \frac{3}{2}}} \left(1 - 0 - 0 + 1\right) = \frac{\Gamma\left(l + \frac{3}{2}\right)}{(2\alpha)^{l + \frac{3}{2}}}$$
+$$ = \frac{2^{1 - 2l - 3}\sqrt{\pi} (2l + 3 - 1)!}{(2\alpha)^{l + \frac{3}{2}} (l + 1)!} = \frac{2\sqrt{\pi} (2l + 2)!}{2^{2l + 3} 2^{l + \frac{3}{2}} \alpha^{l + \frac{3}{2}} (l + 1)!}$$
+$$ = \frac{2\sqrt{\pi}(2l + 2)!}{(8\alpha)^{l + \frac{3}{2}} (l + 1)!}$$
+$$ = \frac{2\sqrt{\pi}}{\sqrt{512}\alpha^{\frac{3}{2}}}\frac{(2l + 2)!}{(8\alpha)^l (l + 1)!}$$
+$$ = \left(\frac{\pi}{128\alpha^3}\right)^{\frac{1}{2}} \frac{(2l + 1)!}{(8\alpha)^l (l + 1)!}$$
+This means that
+$$N = \left(\frac{128\alpha^3}{\pi}\right)^{\frac{1}{4}} \sqrt{\frac{(8\alpha)^l (l + 1)!}{(2l + 2)!}} = 2\left(\frac{8\alpha^3}{\pi}\right)^{\frac{1}{4}} \sqrt{\frac{(8\alpha)^l (l + 1)!}{(2l + 2)!}}$$
+This result is the same for negative $m$. For $m = 0$,
+
+$$\frac{1}{N^2} = \iiint_{-\infty}^\infty r^{2l} \left|Y_{l0}(\mathbf{r})\right|^2 e^{-2\alpha r^2} dxdydz$$
+Convert to polar.
+$$= \int_0^\infty r^{2l + 2} e^{-2\alpha r^2} dr \int_0^\pi \int_0^{2\pi} \left|Y_{l0}(\mathbf{r})\right|^2 \sin\theta d\phi d\theta$$
+$$ = \frac{\Gamma\left(l + \frac{3}{2}\right)}{(2\alpha)^{l + \frac{3}{2}}} \int_0^\pi \int_0^{2\pi} Y_l^0(\theta,\phi)^*Y_l^0(\theta, \phi)\sin\theta d\phi d\theta$$
+$$ = \frac{\Gamma\left(l + \frac{3}{2}\right)}{(2\alpha)^{l + \frac{3}{2}}}$$
+This is the same as for positive $m$.
+Note that at $l = 0$, this becomes
+$$N = 2\left(\frac{8\alpha^3}{\pi}\right)^{\frac{1}{4}} \sqrt{\frac{1}{2}}$$
+When this is multiplied by the normalization constant for the spherical harmonics, this gives
+$$NY_0^0(\mathbf{r}) e^{-\alpha r^2} = 2\left(\frac{8\alpha^3}{\pi}\right)^{\frac{1}{4}} \sqrt{\frac{1}{2}} \sqrt{\frac{1}{4\pi}} e^{-\alpha r^2}= \left(\frac{2\alpha}{\pi}\right)^{\frac{3}{4}} e^{-\alpha r^2}$$
+which is what is expected normally.
+
+
+Next, do the same for Slater orbitals.
+
+$$\int_0^\infty x^n e^{-ax} dx = \frac{n!}{a^{n + 1}}$$
+$$\frac{1}{N^2} = \int_0^\infty \left(r^{n - 1} e^{-\zeta r}\right)^2 r^2 dr = \int_0^\infty r^{2n} e^{-2\zeta r} dr$$
+$$ = \frac{(2n)!}{(2\zeta)^{2n + 1}}$$
+$$N = (2\zeta)^n \sqrt{\frac{2\zeta}{(2n)!}}$$
+
+\section*{Polynomials and Gaussians}
+
+Set up the integral.
+
+$$\iiint_{-\infty}^\infty x^i y^j z^k e^{-ar^2} dxdydz$$
+$$= \int_{-\infty}^\infty x^ie^{-ax^2} dx \int_{-\infty}^\infty y^j e^{-ay^2} dy \int_{-\infty}^\infty z^k e^{-az^2} dz$$
+
+If $i$ is odd, then the integral is zero. Otherwise
+
+$$= \frac{\Gamma\left(\frac{i + 1}{2}\right)\Gamma\left(\frac{j + 1}{2}\right)\Gamma\left(\frac{k + 1}{2}\right)}{a^{\frac{i + j + k + 3}{2}}}$$
+
+$$\nabla^2(fg) = \frac{\partial^2}{\partial x^2} fg + \frac{\partial^2}{\partial y^2} fg + \frac{\partial^2}{\partial z^2} fg$$
+$$ = f_{xx}g + 2f_xg_x + fg_{xx} + f_{yy}g + 2f_yg_y + fg_{yy} + f_{zz}g + 2f_zg_z + fg_{zz}$$
+$$ = \left(\nabla^2 f\right)g + f\left(\nabla^2 g\right) + 2\left(\nabla f\right)\cdot\left(\nabla g\right)$$
+
+$$\nabla^2 e^{-\zeta r} = \nabla\cdot \left(\frac{-\zeta x e^{-\zeta r}}{r}, \frac{-\zeta y e^{-\zeta r}}{r}, \frac{-\zeta z e^{-\zeta r}}{r}\right)$$
+$$= \frac{-3\zeta r e^{-\zeta r} + \zeta^2 r^3 e^{-\zeta r} + \frac{\zeta e^{-\zeta r}}{2} \frac{r^2}{r}}{r^2}$$
+$$ = \frac{-\frac{5}{2}\zeta e^{-\zeta r} + \zeta^2 r^2 e^{-\zeta r}}{r}$$
+
+\section*{Integrals}
+Some important integrals and their results.
+
+$$\int_0^\infty t^{z-1}e^{-t} dt = \Gamma(z)$$
+
+$$\int_z^\infty t^{a-1} e^{-t} dt = \Gamma(a, z)$$
+
+$$\frac{1}{\Gamma(a)}\int_0^\infty e^{-zt}t^{a - 1}(t + 1)^{-a + b - 1} dt = U(a, b, z)$$
+
+$$\int_0^\infty t^{z - 1} e^{-t^2-at} dt = \frac{1}{2}\left(\Gamma\left(\frac{z}{2}\right)\, _1F_1\left(\frac{z}{2}; \frac{1}{2}; \frac{a^2}{4}\right) - a\Gamma\left(\frac{z + 1}{2}\right)\,_1F_1\left(\frac{z + 1}{2}; \frac{3}{2}; \frac{a^2}{4}\right)\right)$$
+
+Define the functions.
+
+$$g_{l,m}(\alpha, \mathbf{r}) = 2\left(\frac{8\alpha^3}{\pi}\right)^{1/4} \sqrt{\frac{2(8\alpha)^l(l + 1)!}{(2l + 2)!}} r^l Y_{l,m}(\mathbf{r}) e^{-\alpha r^2}$$
+
+$$s_{n,l,m}(\zeta, \mathbf{r}) = (2\zeta)^n \sqrt{\frac{2\zeta}{(2n)!}} r^{n-1}Y_{l,m}(\mathbf{r}) e^{-\zeta r}$$
+
+Then define the integrals.
+$$G_{l,m}(\alpha_1, \alpha_2) = \int_0^\infty \int_0^\pi\int_0^{2\pi} g_{l,m}(\alpha_1, \mathbf{r})^* g_{l,m}(\alpha_2, \mathbf{r}) r^2 \sin\theta d\phi d\theta dr$$
+
+$$= 8\left(\frac{64\alpha_1^3\alpha_2^3}{\pi^2}\right)^{1/4}\frac{(l + 1)!}{(2l + 2)!}\sqrt{\left(64\alpha_1\alpha_2\right)^l}\int_0^\infty \int_0^\pi \int_0^{2\pi} r^{2l + 2} Y_{l,m}(\mathbf{r})^*Y_{l,m}(\mathbf{r}) e^{-(\alpha_1 + \alpha_2) r^2} \sin\theta d\phi d\theta dr$$
+
+$$= 8\left(\frac{64\alpha_1^3\alpha_2^3}{\pi^2}\right)^{1/4}\frac{(l + 1)!}{(2l + 2)!}\sqrt{\left(64\alpha_1\alpha_2\right)^l}\int_0^\infty r^{2l + 2} e^{-(\alpha_1 + \alpha_2)r^2} dr \int_0^\pi \int_0^{2\pi} Y_{l,m}(\mathbf{r})^*Y_{l,m}(\mathbf{r}) \sin\theta d\phi d\theta$$
+
+$$u = (\alpha_1 + \alpha_2)r^2, r = \sqrt{\frac{u}{\alpha_1 + \alpha_2}}, \frac{du}{dr} = 2(\alpha_1 + \alpha_2)r, dr = \frac{du}{2(\alpha_1 + \alpha_2)r}$$
+
+$$ = 8\left(\frac{64\alpha_1^3\alpha_2^3}{\pi^2}\right)^{1/4}\frac{(l + 1)!}{(2l + 2)!}\sqrt{\left(64\alpha_1\alpha_2\right)^l} \frac{1}{2\left(\alpha_1 + \alpha_2\right)^{l + 3/2}} \int_0^\infty u^{l + 1/2} e^{-u} du$$
+
+$$G_{l,m}(\alpha_1, \alpha_2) = 8\left(\frac{64\alpha_1^3\alpha_2^3}{\pi^2}\right)^{1/4}\frac{(l + 1)!}{(2l + 2)!}\sqrt{\left(64\alpha_1\alpha_2\right)^l} \frac{\Gamma\left(l  + \frac{3}{2}\right)}{2\left(\alpha_1 + \alpha_2\right)^{l + 3/2}}$$
+$$ = 8\left(\frac{64\alpha_1^3\alpha_2^3}{\pi^2}\right)^{1/4}\frac{(l + 1)!}{(2l + 2)!}\sqrt{\left(64\alpha_1\alpha_2\right)^l} \frac{2^{-2-2l}\sqrt{\pi}(2l + 2)!}{2\left(\alpha_1+\alpha_2\right)^{l + 3/2}(l + 1)!}$$
+$$ = \left(4\alpha_1\alpha_2\right)^{3/4}8^l \frac{\left(\alpha_1\alpha_2\right)^{l/2}}{4^l \left(\alpha_1 + \alpha_2\right)^{l + 3/2}}$$
+$$= \frac{2^{l +3/2} \left(\alpha_1\alpha_2\right)^{\frac{2l + 3}{4}}}{\left(\alpha_1 + \alpha_2\right)^{\frac{2l + 3}{2}}}$$
+
+This means that
+$$G_{l,m}(\alpha,\alpha) = \frac{2^{l + 3/2} \alpha^{\frac{2l + 3}{2}}}{2^{l + 3/2} \alpha^{\frac{2l + 3}{2}}} = 1$$
+
+\begin{multline*}
+  S_{n,l,m}(\alpha, \zeta) = 2\left(\frac{8\alpha^3}{\pi}\right)^{1/4} \sqrt{\frac{2(8\alpha)^l (l + 1)!}{(2l + 2)!}}\left(2\zeta\right)^n \sqrt{\frac{2\zeta}{(2n)!}} \\
+  \int_0^\infty \int_0^\pi \int_0^{2\pi} r^{n + l + 1} e^{-\alpha r^2 - \zeta r} Y_{l,m}(\mathbf{r})^*Y_{l,m}(\mathbf{r})\sin\theta d\phi d\theta dr
+\end{multline*}
+
+
+$$ = 2\left(\frac{8\alpha^3}{\pi}\right)^{1/4} \sqrt{\frac{2(8\alpha)^l (l + 1)!}{(2l + 2)!}} (2\zeta)^n \sqrt{\frac{2\zeta}{(2n)!}} \int_0^\infty r^{n + l + 1} e^{-\alpha r^2 - \zeta r} dr$$
+
+$$r = \frac{u}{\sqrt{\alpha}}$$
+
+$$u = \sqrt{\alpha}r$$
+
+$$dr = \frac{du}{\sqrt{\alpha}}$$
+
+$$S_{n,l,m}(\alpha,\zeta) = 2\left(\frac{8\alpha^3}{\pi}\right)^{1/4} \sqrt{\frac{2(8\alpha)^l (l + 1)!}{(2l + 2)!}} (2\zeta)^n \sqrt{\frac{2\zeta}{(2n)!}} \alpha^{-\frac{n + l + 2}{2}} \int_0^\infty u^{n + l + 1} e^{-u^2 - \frac{\zeta}{\sqrt{\alpha}}u} du$$
+
+\begin{multline*}
+  S_{n,l,m}(\alpha, \zeta) = 2\left(\frac{8\alpha^3}{\pi}\right)^{1/4} \sqrt{\frac{2(8\alpha)^l (l + 1)!}{(2l + 2)!}} (2\zeta)^n \sqrt{\frac{2\zeta}{(2n)!}} \alpha^{-\frac{n + l + 2}{2}} \frac{1}{2} \ddots\\
+  \left(\Gamma\left(\frac{n + l + 2}{2}\right)\,_1F_1\left(\frac{n + l + 2}{2}; \frac{1}{2}; \frac{\zeta^2}{4\alpha}\right) - \frac{\zeta}{\sqrt{\alpha}}\Gamma\left(\frac{n + l + 3}{2}\right)\, _1F_1\left(\frac{n + l + 3}{2}; \frac{3}{2}; \frac{\zeta^2}{4\alpha}\right)\right)
+\end{multline*}
+
+Find the derivatives according to $\alpha$.
+
+$$\partialder{G_{l,m}(\alpha_1, \alpha_2)}{\alpha_1} = 2^{l + 3/2} \alpha_2^{\frac{2l + 3}{4}} \frac{\partial}{\partial \alpha_1} \frac{\alpha_1^{\frac{2l + 3}{4}}}{\left(\alpha_1 + \alpha_2\right)^{\frac{2l + 3}{2}}}$$
+$$= 2^{l + 3/2} \alpha_2^{\frac{2l + 3}{4}} \frac{\frac{2l + 3}{4} \alpha_1^{\frac{2l - 1}{4}} \left(\alpha_1 + \alpha_2\right)^{\frac{2l + 3}{2}} - \frac{2l + 3}{2} \alpha_1^{\frac{2l + 3}{4}} \left(\alpha_1 + \alpha_2\right)^{\frac{2l + 1}{2}}}{\left(\alpha_1 + \alpha_2\right)^{2l + 3}}$$
+$$= \frac{2^{l + 3/2} \left(\alpha_1\alpha_2\right)^{\frac{2l + 3}{4}}}{\left(\alpha_1 + \alpha_2\right)^{\frac{2l + 3}{2}}}\left(\frac{2l + 3}{4\alpha_1} - \frac{2l + 3}{2\left(\alpha_1 + \alpha_2\right)}\right)$$
+
+$$\partialder{}{\alpha_1} G_{l,m}(\alpha_1, \alpha_2) = G_{l,m}(\alpha_1, \alpha_2) \left(\frac{2l + 3}{4\alpha_1} - \frac{2l + 3}{2\left(\alpha_1 + \alpha_2\right)}\right)$$
+And for the Slater.
+$$C = \left(\frac{8\alpha^3}{\pi}\right)^{1/4}(2\zeta)^n\sqrt{\frac{4\zeta (8\alpha)^l(l +1)!}{(2n)! (2l + 2)!}} \alpha^{-\frac{n + l + 2}{2}}$$
+\begin{multline*}
+  \partialder{}{\alpha} S_{n,l,m}(\alpha, \zeta) = \frac{\frac{3}{4} + \frac{l}{2} - \frac{n + l + 2}{2}}{\alpha}S_{n,l,m}(\alpha,\zeta) + \\
+  \frac{C\zeta}{12\alpha^{5/2}}\left(\zeta^2\left(n + l + 3\right)\Gamma\left(\frac{n + l + 3}{2}\right)\, _1F_1\left(\frac{n + l + 5}{2}; \frac{5}{2}; \frac{\zeta^2}{4\alpha}\right) - \right.\\
+  3\sqrt{\alpha}\zeta\left(n + l + 2\right)\Gamma\left(\frac{n + l + 2}{2}\right)\,_1F_1\left(\frac{n + l + 4}{2}; \frac{3}{2}; \frac{\zeta^2}{4\alpha}\right) +\\
+  \left.6\alpha\Gamma\left(\frac{n + l + 3}{2}\right)\,_1F_1\left(\frac{n + l + 3}{2}; \frac{3}{2}; \frac{\zeta^2}{4\alpha}\right)\right)
+\end{multline*}
+$$= -\frac{2n + 1}{4\alpha}S_{n,l,m}(\alpha,\zeta) + \ldots$$
+
+  
+  
+Find the equation for the gradient descent.
+
+$$L = \int \left(\sum_{k=1}^N c_k g_{l,m}(\alpha_k,\mathbf{r}) - s_{n,l,m}(\zeta,\mathbf{r})\right)^2 d\mathbf{r} - \lambda \left(\int \left(\sum_{k=1}^N c_k g_{l,m}(\alpha_k, \mathbf{r})\right)^2 dr - 1\right)$$
+
+\section*{Overlap and Kinetic Integrals}
+
+These integrals are of the form
+$$\left(\mathbf{a}\middle|\mathbf{b}\right) = \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty g_{\mathbf{a}}\left(\mathbf{\alpha}, \mathbf{A}, \mathbf{r}\right)g_{\mathbf{b}}\left(\mathbf{\beta}, \mathbf{B}, \mathbf{r}\right) dxdydz$$
+$$-\frac{1}{2}\left(\mathbf{a}\middle|\nabla^2\middle|\mathbf{b}\right) = \int_{-\infty}^\infty\int_{-\infty}^\infty\int_{-\infty}^\infty g_{\mathbf{a}}\left(\mathbf{\alpha}, \mathbf{A}, \mathbf{r}\right)\nabla^2 g_{\mathbf{b}}\left(\mathbf{\beta}, \mathbf{B}, \mathbf{r}\right) dxdydz$$
+We will only consider cartesian orbitals here. This means that
+$$g_{\mathbf{a}}\left(\alpha, \mathbf{A}, \mathbf{r}\right) = \sum_{k = 1}^{K_A} D_{A}^{(k)} \left(x - A_x\right)^{a_x}\left(y - A_y\right)^{a_y}\left(z - A_z\right)^{a_z}e^{-\alpha_k \left(\mathbf{r} - \mathbf{A}\right)^2}$$
+\subsection*{Overlap}
+Multiply the integral by $\frac{i - A_i}{i - B_i} + \frac{A_i - B_i}{i - B_i}$.
+$$\left(\mathbf{a}\middle|\mathbf{b}\right) = \left(\mathbf{a} + \mathbf{1}_i\middle|\mathbf{b} - \mathbf{1}_i\right) + \left(A_i - B_i\right)\left(\mathbf{a}\middle|\mathbf{b} - \mathbf{1}_i\right)$$
+This means that the integrals can be transformed into something that looks like
+$$\left(\mathbf{e}\middle|\mathbf{0}\right) = \sum_{K_A}\sum_{K_B} D_AD_B \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \left(x - A_x\right)^{e_x} \left(y - A_y\right)^{e_y} \left(z - A_z\right)^{e_z} e^{-\alpha\left(\mathbf{r} - \mathbf{A}\right)^2} e^{-\beta\left(\mathbf{r} - \mathbf{B}\right)^2} dx dy dz$$
+Here we can then complete the square.
+$$\zeta = \alpha + \beta$$
+$$\left(\alpha + \beta\right) r^2 - 2\alpha \mathbf{r}\cdot\mathbf{A} - 2\beta \mathbf{r} \cdot\mathbf{B} + \alpha A^2 + \beta B^2$$
+$$\mathbf{P} = \frac{\alpha\mathbf{A} + \beta \mathbf{B}}{\zeta}$$
+$$\zeta r^2 - 2\zeta \mathbf{r}\cdot\mathbf{P} + \alpha A^2 + \beta B^2$$
+$$= \zeta \left(\mathbf{r} - \mathbf{P}\right)^2 + \alpha A^2 + \beta B^2 - \zeta P^2$$
+$$= \zeta \left(\mathbf{r} - \mathbf{P}\right)^2 + \alpha A^2 + \beta B^2 - \frac{\alpha^2 A^2 + \beta^2 B^2 + 2\alpha\beta\mathbf{A}\cdot\mathbf{B}}{\zeta}$$
+$$= \zeta \left(\mathbf{r} - \mathbf{P}\right)^2 + \frac{\alpha^2 A^2 + \alpha\beta A^2 + \alpha\beta B^2 + \beta^2 B^2 - \alpha^2 A^2 - \beta^2 B^2 - 2\alpha\beta\mathbf{A}\cdot\mathbf{B}}{\zeta}$$
+$$= \zeta \left(\mathbf{r} - \mathbf{P}\right)^2 + \frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2$$
+Substituting this in gives
+$$\left(\mathbf{e}\middle|\mathbf{0}\right) = \sum_{K_A}\sum_{K_B} D_AD_B e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2} \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \left(x - A_x\right)^{e_x} \left(y - A_y\right)^{e_y} \left(z - A_z\right)^{e_z} e^{-\zeta\left(\mathbf{r} - \mathbf{P}\right)^2} dxdydz$$
+Now, decontracting gives
+$$\left[\mathbf{e}\middle|\mathbf{0}\right] = D_AD_B e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2} \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \left(x - A_x\right)^{e_x} \left(y - A_y\right)^{e_y} \left(z - A_z\right)^{e_z} e^{-\zeta\left(\mathbf{r} - \mathbf{P}\right)^2} dxdydz$$
+Multiplying the kernel by $\frac{i - P_i}{i - A_i} + \frac{P_i - A_i}{i - A_i}$ gives
+$$\left[\mathbf{a}\middle|\mathbf{p}\right] = \left[\mathbf{a} - \mathbf{1}_i\middle|\mathbf{p} + \mathbf{1}_i\right] + \left(P_i - A_i\right)\left[\mathbf{a} - \mathbf{1}_i\middle|\mathbf{p}\right]$$
+This can then be written in terms of the following integral.
+$$\left[\mathbf{0}\middle|\mathbf{p}\right] = D_AD_Be^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{P}\right)^2} \int_{-\infty}^\infty \int_{-\infty}^\infty \int_{-\infty}^\infty \left(x - P_x\right)^{p_x}\left(y - P_y\right)^{p_y}\left(z - P_z\right)^{p_z} e^{-\zeta \left(\mathbf{r} - \mathbf{P}\right)^2} dxdydz$$
+Now let $\mathbf{r'} = \left(x', y', z'\right) = \mathbf{r} - \mathbf{P}$.
+$$= D_AD_Be^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{P}\right)^2} \int_{-\infty}^\infty \left(x'\right)^{p_x}e^{-\zeta \left(x'\right)^2} dx'\int_{-\infty}^\infty \left(y'\right)^{p_y}e^{-\zeta \left(y'\right)^2} dy'\int_{-\infty}^\infty \left(z'\right)^{p_z}e^{-\zeta \left(z'\right)^2} dz'$$
+Now, solve the individual integrals. If the exponent on the $t$ is odd, this integral is zero, so only handle the even exponents.
+$$\int_{-\infty}^\infty t^{2n} e^{-\zeta t^2} dt = 2\int_0^\infty t^{2n} e^{-\zeta t^2}dt$$
+Let $u = \zeta t^2$, $dt = \frac{du}{2\zeta t} = \frac{du}{2\sqrt{\zeta u}}$.
+$$= \frac{1}{\zeta^{n + \frac{1}{2}}} \int_0^\infty u^{n - \frac{1}{2}} e^{-u} du$$
+$$= \frac{1}{\zeta^{n + \frac{1}{2}}}\Gamma\left(n + \frac{1}{2}\right)$$
+This could be further simplified to factorials, but it is not necessary. So the integral finally becomes for $p_x, p_y, p_z$ all even,
+$$\left[\mathbf{0}\middle|\mathbf{p}\right] = \frac{D_AD_Be^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}}{\zeta^{p + \frac{3}{2}}}\Gamma\left(\frac{p_x + 1}{2}\right)\Gamma\left(\frac{p_y + 1}{2}\right)\Gamma\left(\frac{p_z + 1}{2}\right)$$
+
+\subsection*{Kinetic Energy}
+
+First, find the Laplacian of the right orbitals.
+$$\nabla^2 g_{\mathbf{b}}\left(\mathbf{r} - \mathbf{B}\right) = \sum_{i=x,y,z}4\beta^2 g_{\mathbf{b} + \mathbf{2}_i}\left(\mathbf{r} - \mathbf{B}\right) - 2\beta\left(2b + 3\right)g_{\mathbf{b}}\left(\mathbf{r} - \mathbf{B}\right) + b_i\left(b_i - 1\right) g_{\mathbf{b} - \mathbf{2}_i}\left(\mathbf{r} - \mathbf{B}\right)$$
+
+
+
+\section*{Attraction Integral Algorithm}
+Here, $\psi_{\mathbf{a}}(\mathbf{r}) = \sum_{k=1}^{K_A} D_A x^{a_x}y^{a_y}z^{a_z}e^{-\alpha_kr^2}$. The integral will be denoted as follows.
+
+$$\left(\mathbf{a}\mathbf{b}\middle|\mathbf{C}\right) = \int\frac{\psi_{\mathbf{a}}(\mathbf{r} - \mathbf{A}) \psi_{\mathbf{b}}(\mathbf{r} - \mathbf{B})}{\left|\mathbf{r} - \mathbf{C}\right|} d\mathbf{r}$$
+
+This represents a linear combination of integrals. An individual term will be noted as
+\begin{multline*}
+  \left[\mathbf{a}\mathbf{b}\middle|\mathbf{C}\right] = D_AD_B\ddots\\
+  \int\frac{\left(x - A_x\right)^{a_x}\left(y - A_y\right)^{a_y}\left(z - A_z\right)^{a_z} e^{-\alpha\left(\mathbf{r} - \mathbf{A}\right)^2}\left(x - B_x\right)^{b_x}\left(y - B_y\right)^{b_y}\left(z - B_z\right)^{b_z} e^{-\beta\left(\mathbf{r} - \mathbf{B}\right)^2}}{\left|\mathbf{r} - \mathbf{C}\right|} d\mathbf{r}
+\end{multline*}
+
+Next, define the following constants and vectors.
+$$\zeta = \alpha + \beta, K = \frac{2\pi}{\zeta}e^{-\frac{\alpha\beta}{\zeta}\left(\mathbf{A} - \mathbf{B}\right)^2}, \mathbf{P} = \frac{\alpha\mathbf{A} + \beta\mathbf{B}}{\zeta}, \mathbf{R} = \mathbf{C} - \mathbf{P}$$
+$$F_m(T) = \int_0^1 t^{2m} e^{-Tt^2} dt$$
+
+To compute these integrals, a recursive formula can be used. It is derived from the recursive definition of Hermite polynomials. In the following equations, $i = x, y, z$, $\mathbf{1}_i = \left(\delta_{ix}, \delta_{iy}, \delta_{iz}\right)$, and $\mathbf{2}_i = 2\left(\mathbf{1}_i\right)$.
+
+$$\left[\overline{\mathbf{r}}\middle|\mathbf{C}\right]^{(m)} = R_i\left[\overline{\mathbf{p} - \mathbf{1}_i}\middle|\mathbf{C}\right]^{(m + 1)} - (p_i - 1)\left[\overline{\mathbf{p} - \mathbf{2}_i}\middle|\mathbf{C}\right]^{(m + 1)}$$
+$$\left[\mathbf{0}\middle|\mathbf{C}\right]^{(m)} = KD_AD_B(2\zeta)^mF_m\left(\zeta R^2\right)$$
+$$\left[\overline{\mathbf{p}}\middle|\mathbf{C}\right] = \left[\overline{\mathbf{p}}\middle|\mathbf{C}\right]^{(0)}$$
+
+These represent integrals of Hermite polynomials with the Gaussian kernel. These can then be contracted with $u,v$ scaling to become
+$$\left(\overline{\mathbf{p}}\middle|\mathbf{C}\right)_{u,v} = \sum_{k_A}^{K_A}\sum_{k_B}^{K_B} \frac{\left(2\beta\right)^u}{\left(2\zeta\right)^v}\left[\overline{\mathbf{p}}\middle|\mathbf{C}\right]$$
+
+Using the recurrence relation
+\begin{multline*}
+  \left(\mathbf{a}\overline{\mathbf{p}}\middle|\mathbf{C}\right)_{u,v} = p_i\left(\left(\mathbf{a} - \mathbf{1}_i\right)\left(\overline{\mathbf{p} - \mathbf{1}_i}\right)\middle|\mathbf{C}\right)_{u,v} - \left(A_i - B_i\right) \left(\left(\mathbf{a} - \mathbf{1}_i\right)\overline{\mathbf{p}}\middle|\mathbf{C}\right)_{u+1,v+1} \\
+  + \left(\left(\mathbf{a} - \mathbf{1}_i\right)\left(\overline{\mathbf{p} + \mathbf{1}_i}\right)\middle|\mathbf{C}\right)_{u,v+1}
+\end{multline*}
+
+The integrals $\left(\mathbf{e0}\middle|\mathbf{C}\right) = \left(\mathbf{e0}\middle|\mathbf{C}\right)_{0,0}$ can be found. These can then be used to find the final integrals with the recurrence relation
+$$\left(\mathbf{ab}\middle|\mathbf{C}\right) = \left(\left(\mathbf{a} + \mathbf{1}_i\right)\left(\mathbf{b} - \mathbf{1}_i\right)\middle|\mathbf{C}\right) + \left(A_i - B_i\right)\left(\mathbf{a}\left(\mathbf{b} - \mathbf{1}_i\right)\middle|\mathbf{C}\right)$$
+
+\end{document}

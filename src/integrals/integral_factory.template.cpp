@@ -42,10 +42,7 @@ void compchem::IntegralFactory<Ints>::s_routine(const std::vector<const compchem
 				*centers->at(mu),
 				*centers->at(nu));
     out[mu * dim + nu] = res;
-    out[nu * dim + mu] = method.overlap(orbs->at(nu),
-				orbs->at(mu),
-				*centers->at(nu),
-				*centers->at(mu));
+    out[nu * dim + mu] = res;
   }
 }
 
@@ -374,6 +371,84 @@ compchem::TEIArray *compchem::IntegralFactory<Ints>::TEIints(const compchem::Mol
   delete centers;
 
   return out;
+}
+
+template<typename Ints>
+void compchem::IntegralFactory<Ints>::dipole(const Molecule *mol, double *mux, double *muy, double *muz, int *dim) {
+  if(mux == nullptr || muy == nullptr || muz == nullptr || dim == nullptr) {
+    throw new std::invalid_argument("The output values to the integral factory cn not be null.");
+  }
+  if(mol == nullptr) {
+    throw new std::invalid_argument("The molecule input to the integral factory can not be null.");
+  }
+  
+  int orbs = 0;
+  std::vector<const compchem::GaussianOrbital *> *orbitals =
+    new std::vector<const compchem::GaussianOrbital *>();
+  std::vector<std::array<double, 3> *> *centers =
+    new std::vector<std::array<double, 3> *>();
+  for(int i = 0; i < mol->getsize(); i++) {
+    orbs += mol->getatom(i).getnorbitals();
+    for(int j = 0; j < mol->getatom(i).getnorbitals(); j++) {
+      orbitals->push_back(static_cast<const compchem::GaussianOrbital *>
+			 (&mol->getatom(i).getorbital(j)));
+      centers->push_back(new std::array<double, 3>(mol->getatom(i).getpos()));
+    }
+  }
+  *dim = orbs;
+
+  Ints method = Ints(opts);
+
+  Polynomial<3> x({{1, 0, 0}}, {1}), y({{0, 1, 0}}, {1}), z({{0, 0, 1}}, {1});
+  x.translate(mol->getcomx(), mol->getcomy(), mol->getcomz());
+  y.translate(mol->getcomx(), mol->getcomy(), mol->getcomz());
+  z.translate(mol->getcomx(), mol->getcomy(), mol->getcomz());
+
+  #pragma omp parallel
+  #pragma omp single
+  {
+    for(int i = 0; i < orbs; i++) {
+      for(int j = 0; j <= i; j++) {
+	double resx, resy, resz;
+
+	#pragma omp task
+	{
+	  resx = method.polynomial((*orbitals)[i], (*orbitals)[j], *(*centers)[i],
+				   *(*centers)[j], x);
+	  mux[i * orbs + j] = resx;
+	  mux[j * orbs + i] = resx;
+	}
+
+	#pragma omp task
+	{
+	  resy = method.polynomial((*orbitals)[i], (*orbitals)[j], *(*centers)[i],
+				   *(*centers)[j], y);
+	  muy[i * orbs + j] = resy;
+	  muy[j * orbs + i] = resy;
+	}
+
+	#pragma omp task
+	{
+	  resz = method.polynomial((*orbitals)[i], (*orbitals)[j], *(*centers)[i],
+				   *(*centers)[j], z);
+	  muz[i * orbs + j] = resz;
+	  muz[j * orbs + i] = resz;
+	}
+      }
+    }
+    #pragma omp taskwait
+	
+
+    for(int i = 0; i < centers->size(); i++) {
+      delete centers->at(i);
+    }
+    orbitals->clear();
+    centers->clear();
+    
+    delete orbitals;
+    delete centers;
+  }
+  
 }
   
 

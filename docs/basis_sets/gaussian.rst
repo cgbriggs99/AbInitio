@@ -126,7 +126,7 @@ In this definition, :math:`N` is the number of terms in the linear combination r
 
 
 Non-member Functions
-====================
+--------------------
 
 .. cpp:function:: static void sort_internal(double *alphas, double *coefs, int size)
 

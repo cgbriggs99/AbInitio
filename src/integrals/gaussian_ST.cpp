@@ -288,4 +288,32 @@ double AnalyticIntegral::kinetic(const GaussianOrbital *o1,
   }
   return sum;
   
-} 
+}
+
+double AnalyticIntegral::polynomial(const GaussianOrbital *o1,
+				    const GaussianOrbital *o2,
+				    std::array<double, 3> center1,
+				    std::array<double, 3> center2,
+				    const Polynomial<3> &poly) const {
+  double sum = 0;
+
+  /*
+   * Multiply all of o2 by poly. Since o2(x') = o2(x - c),
+   * multiply by poly(x'+c).
+   */
+  Polynomial<3> poly2(poly);
+
+  poly2.translate(-center2[0], -center2[1], -center2[2]);
+
+  Polynomial<3> harms = poly2 * o2->getharms();
+  
+  for(int i = 0; i < o1->getharms().getsize(); i++) {
+    for(int j = 0; j < harms.getsize(); j++) {
+      sum += o1->getharms().getcoef(i) * harms.getcoef(j) *
+	compute_overlap(o1->getharms().gettermorder(i),
+			harms.gettermorder(j),
+			o1, o2, center1, center2);
+    }
+  }
+  return sum;
+}

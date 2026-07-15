@@ -20,7 +20,7 @@ Integer Options
 
     "``THREADS``", "``4``", ":cpp:func:`compchem::IntegralFactory::Smatrix`, :cpp:func:`compchem::IntegralFactory::Tmatrix`, :cpp:func:`compchem::IntegralFactory::Vmatrix`, :cpp:func:`compchem::IntegralFactory::TEIints`"
     "``BOYS POINTS``", "``32``", ":cpp:func:`compchem::AnalyticIntegral::boys_square`"
-    "``MAX SCF CYCLES``", "``100``", ""
+    "``MAX SCF CYCLES``", "``100``", ":cpp:func:`compchem::RHF::energy`"
 
 Floating-point Options
 ----------------------

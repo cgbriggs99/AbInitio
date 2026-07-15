@@ -13,3 +13,5 @@ These are the internal representations of atoms and molecules as used in the sof
    util/constants.hpp <constants>
    util/polynomial.hpp <polynomial>
    util/electron_configs.hpp <electron_configs>
+   util/tei_array.hpp <tei_array>
+   util/vector_ops.hpp <vector_ops>

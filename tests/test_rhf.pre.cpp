@@ -37,28 +37,44 @@ int test_rhf(void) {
 
   double *S = new double[49],
     *T = new double[49],
-    *V = new double[49];
-  int sdim, tdim, vdim;
+    *V = new double[49],
+    *mux = new double[49],
+    *muy = new double[49],
+    *muz = new double[49];
+  int sdim, tdim, vdim, ddim;
 
   IntegralFactory<AnalyticIntegral> factory;
 
   factory.Smatrix(mol, S, &sdim);
   factory.Tmatrix(mol, T, &tdim);
   factory.Vmatrix(mol, V, &vdim);
+  factory.dipole(mol, mux, muy, muz, &ddim);
   TEIArray *tei = factory.TEIints(mol);
 
   ASSERT_FATAL(mol->getelectrons() == 10);
 
   RHFWfn *wfn = new RHFWfn(mol->getelectrons(), orbs,
-			   S, T, V, tei);
+			   S, T, V, tei, mux, muy, muz);
 
   RHF rhf = RHF();
 
   double energy = rhf.energy(mol, wfn, wfn);
 
+  auto dipole = rhf.dipole(mol, wfn);
+
   ASSERT_WARN_MSG(NEAR(energy, -74.942079928192), warns,
 		  "Expected -74.942079928192, got %lf.\n",
 		  energy);
+
+  ASSERT_WARN_MSG(NEAR(dipole[0], 0), warns,
+		  "Expected 0, got %lf.\n",
+		  dipole[0]);
+  ASSERT_WARN_MSG(NEAR(dipole[1], 0), warns,
+		  "Expected 0.603521296525, got %lf.\n",
+		  dipole[1]);
+  ASSERT_WARN_MSG(NEAR(dipole[2], 0), warns,
+		  "Expected 0, got %lf.\n",
+		  dipole[2]);
 
   delete wfn;
   delete mol;

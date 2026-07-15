@@ -72,7 +72,7 @@ Methods to compute analytic integrals of Gaussian orbitals.
 
             F_j(T) = \frac{1}{2T^{j + \frac{1}{2}}} \left(\Gamma\left(j + \frac{1}{2}\right)\mathrm{erf}\left(\sqrt{T}\right) - (-1)^{j - 1}e^{-T}\sqrt{T}\sum_{k = 0}^{j - 1} \left(\frac{1}{2} - j\right)_{j - k - 1}(-T)^k\right)
 
-        This representation has stability problems for small :math:`T`, so a secondary sum is used if :math:`T < 0.001`, which is
+        This representation has stability problems for small :math:`T`, so a secondary sum is used if :math:`T < 1`, which is
 
         .. math::
 
@@ -131,3 +131,11 @@ Protected Methods
 
         Worker function for the attraction integral.
 
+    .. cpp:function:: double rep_integral(const int *pows1, const int *pows2, const int *pows3, const int *pows4, const std::array<double, 3> &c1, const std::array<double, 3> &c2, const std::array<double, 3> &c3, const std::array<double, 3> &c4, const compchem::GaussianOrbital *o1, const compchem::GaussianOrbital *o2, const compchem::GaussianOrbital *o3, const compchem::GaussianOrbital *o4) const
+
+    :params pows1, pows2, pows3, pows4: The exponents on each monomial term.
+    :params c1, c2, c3, c4: The centers for each orbital.
+    :params o1, o2, o3, o4: The orbitals to integrate.
+    :return: The electron-repulsion integral.
+
+    Worker function for the electron repulsion integral.
